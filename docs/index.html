@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07333a">
+  <meta name="description" content="Relatório semanal Câmara nas Redes: repercussão das propostas legislativas nas redes sociais abertas.">
+  <title>Câmara nas Redes — Relatório semanal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+:root{--ink:#07333a;--ink-2:#18464d;--mint:#36c7a6;--pale:#d7e6e8;--paper:#f2f8f8;--white:#fff;--muted:#718b90;--line:#b7cdd0;--red:#c3423b;--radius:21px;--shadow:0 10px 28px rgba(7,51,58,.055)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;background:var(--paper);color:var(--ink);font-family:"DM Sans",Arial,sans-serif;font-size:15px}button,select,input{font:inherit;color:inherit}button,a{-webkit-tap-highlight-color:transparent}a{color:inherit}.cover{position:relative;background:var(--ink);line-height:0;overflow:hidden}.cover>img{display:block;width:100%;height:auto;min-height:330px;max-height:640px;object-fit:cover;object-position:center}.cover-meta{position:absolute;right:clamp(22px,8vw,120px);bottom:30px;display:flex;gap:8px;align-items:center;line-height:1;font-size:12px;color:#fff;background:rgba(7,51,58,.75);padding:10px 13px;border:1px solid rgba(255,255,255,.15);border-radius:8px;backdrop-filter:blur(10px)}.cover-meta span+span:before{content:"·";margin-right:8px;color:var(--mint)}
+.main-nav{position:sticky;top:0;z-index:10;background:rgba(215,230,232,.96);border-top:3px solid var(--mint);box-shadow:0 5px 18px rgba(7,51,58,.06);backdrop-filter:blur(14px)}.nav-inner{max-width:1220px;margin:auto;min-height:57px;padding:8px 24px;display:flex;justify-content:center;align-items:center;gap:10px}.nav-link{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:8px 12px;color:var(--ink-2);border:1px solid #809ca0;border-radius:5px;text-decoration:none;font-size:14px;font-weight:600;white-space:nowrap;background:transparent;transition:background .18s,color .18s,border .18s,transform .18s;cursor:pointer}.nav-link:hover{transform:translateY(-1px);border-color:var(--ink)}.nav-link.active{background:var(--ink);border-color:var(--ink);color:#fff}.nav-icon{font-size:15px;font-weight:800;line-height:1}.import-link{margin-left:14px;border-color:transparent;color:#59787d}.import-link:hover{background:#c4dadd}
+main{max-width:1220px;margin:0 auto;padding:34px 30px 64px}.section{scroll-margin-top:82px}.overview{padding:4px 0 68px}.intro-row{display:flex;align-items:end;justify-content:space-between;gap:28px;margin:0 0 12px}.eyebrow{margin:0 0 8px;color:#66858a;font-size:10px;font-weight:800;letter-spacing:.13em}.section h1,.section h2,.section h3{font-family:Manrope,"DM Sans",sans-serif;letter-spacing:-.045em;margin:0;font-weight:800}.section h1{font-size:clamp(26px,3vw,38px);max-width:670px;line-height:1.1}.section h2{font-size:clamp(25px,2.6vw,34px);line-height:1.12}.section h3{font-size:19px;line-height:1.2}.select-wrap{display:flex;flex-direction:column;gap:6px;min-width:220px}.select-wrap label{font-size:11px;font-weight:700;color:#55767b}.select-wrap select{appearance:none;background:#fff;border:1px solid var(--line);border-radius:7px;padding:11px 36px 11px 12px;font-size:13px;font-weight:700;box-shadow:0 2px 7px rgba(7,51,58,.04);background-image:linear-gradient(45deg,transparent 50%,var(--ink) 50%),linear-gradient(135deg,var(--ink) 50%,transparent 50%);background-position:calc(100% - 16px) 16px,calc(100% - 11px) 16px;background-size:5px 5px,5px 5px;background-repeat:no-repeat}.summary-copy{max-width:775px;color:#5c787d;line-height:1.62;margin:0 0 28px;font-size:14px}.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin:20px 0 28px}.kpi-card{position:relative;min-height:151px;padding:21px 22px 18px;background:var(--pale);border-radius:19px 19px 19px 19px;border-top:7px solid var(--ink);box-shadow:var(--shadow);overflow:hidden}.kpi-label{font-size:11px;font-weight:800;letter-spacing:.025em;color:#315b62}.kpi-value{display:block;margin:12px 0 6px;font-family:Manrope,sans-serif;font-size:clamp(27px,3vw,42px);line-height:1;font-weight:800;letter-spacing:-.06em;white-space:nowrap}.kpi-foot{font-size:12px;line-height:1.2;color:#46686e;font-weight:600}.kpi-change{display:inline-block;padding:3px 7px;border-radius:5px;margin-right:6px;background:rgba(195,66,59,.13);color:var(--red);font-weight:800}.kpi-change.up{background:rgba(54,199,166,.22);color:#175850}.panel{background:var(--pale);border-radius:19px;border-top:7px solid var(--ink);padding:22px 25px 24px;box-shadow:var(--shadow);min-width:0}.trend-panel{margin-bottom:42px;min-height:325px}.panel-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:17px}.panel-note{color:#6e898e;font-size:11px;font-weight:600;white-space:nowrap}.info,.icon-button{display:inline-flex;width:17px;height:17px;border-radius:50%;align-items:center;justify-content:center;background:var(--ink);color:white;font-family:serif;font-style:normal;font-size:11px;font-weight:bold;cursor:help}.chart{width:100%;min-height:180px;position:relative}.chart svg{display:block;width:100%;height:auto;overflow:visible}.chart text{font-family:"DM Sans",Arial,sans-serif;fill:#668186}.chart .axis-label{font-size:11px}.chart .value-label{fill:var(--ink);font-size:12px;font-weight:800}.chart .gridline{stroke:#b5c9cc;stroke-width:1;stroke-dasharray:3 4}.chart .median{stroke:#8ba4a8;stroke-width:1.5;stroke-dasharray:5 5}.chart .bar{fill:var(--ink);transition:fill .18s}.chart .bar:hover{fill:#138b7e}.chart .bar-secondary{fill:#6b9da1}.chart .active-dot{fill:var(--mint);stroke:var(--ink);stroke-width:2}.chart .area{fill:rgba(54,199,166,.14)}.chart .line{fill:none;stroke:var(--ink);stroke-width:3}.chart .dot{fill:var(--ink);stroke:var(--pale);stroke-width:3;cursor:pointer}.chart .dot:hover{fill:var(--mint)}.chart [data-tip]{cursor:pointer}.section-heading{display:flex;align-items:end;justify-content:space-between;gap:20px;margin:30px 0 19px}.section-heading>div .eyebrow{margin-bottom:6px}.text-link{font-size:12px;font-weight:700;text-decoration:none;color:#557c81;border-bottom:1px solid #91abad;padding-bottom:3px;white-space:nowrap}.text-link span{color:var(--ink);font-size:15px}.proposal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}.proposal-card{position:relative;display:flex;flex-direction:column;min-height:332px;padding:20px 20px 16px;border-radius:18px;background:var(--pale);border-top:7px solid var(--ink);box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s;cursor:pointer}.proposal-card:hover{transform:translateY(-4px);box-shadow:0 15px 34px rgba(7,51,58,.12)}.proposal-title-row{display:flex;align-items:center;gap:11px;margin-bottom:8px}.rank-badge{display:flex;align-items:center;justify-content:center;min-width:34px;height:32px;padding:0 7px;background:var(--ink);border-radius:6px;color:#fff;font-size:16px;font-weight:800}.proposal-card h3{font-size:20px;white-space:nowrap}.proposal-summary{font-size:11px;line-height:1.35;font-weight:700;min-height:34px}.card-rule{border:0;border-top:1px solid #769399;margin:12px 0}.proposal-card .card-copy{font-size:12px;line-height:1.4;text-align:justify;color:#4c6e74;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;min-height:83px}.card-metrics{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:auto}.metric-mini label{display:block;margin:0 0 3px 4px;font-size:9px;font-weight:800}.metric-mini b{display:block;border-radius:5px;background:var(--ink);color:#fff;padding:7px 10px;font-size:14px;line-height:1}.card-more{align-self:center;margin-top:12px;border:0;background:none;color:#779398;font-size:11px;font-weight:700;text-decoration:underline;cursor:pointer}
+.analytics{border-top:1px solid var(--line);padding:48px 0 60px}.section-subtitle{margin:0;color:#769095;font-size:12px}.kpi-grid-compact{grid-template-columns:repeat(4,minmax(0,1fr));margin:19px 0 20px}.kpi-grid-compact .kpi-card{min-height:124px;padding:17px 19px 15px;border-radius:15px;border-top-width:6px}.kpi-grid-compact .kpi-value{font-size:31px;margin:10px 0 4px}.kpi-grid-compact .kpi-foot{font-size:11px}.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.analytics-grid .panel{min-height:345px}.chart-bars{min-height:235px;padding-top:8px}.switcher{display:flex;border:1px solid #9ab0b4;border-radius:6px;overflow:hidden}.switch{border:0;background:transparent;padding:6px 10px;color:#54757a;font-size:11px;font-weight:800;cursor:pointer}.switch.active{background:var(--ink);color:#fff}.chart-share{min-height:235px;padding-top:12px}.topics-panel{margin-top:18px}.icon-button{border:0}.proposals-section{border-top:1px solid var(--line);padding:48px 0 60px}.proposal-toolbar{display:flex;align-items:center;justify-content:space-between;gap:20px;margin:21px 0 16px}.proposal-tabs{display:flex;gap:7px;overflow-x:auto;padding:2px 0 7px;scrollbar-width:thin}.proposal-tab{flex:none;border:1px solid #9ab1b5;border-radius:7px;background:transparent;color:#456970;padding:8px 11px;font-size:12px;font-weight:700;cursor:pointer;transition:.15s}.proposal-tab:hover,.proposal-tab.active{background:var(--ink);border-color:var(--ink);color:white}.search-box{display:flex;align-items:center;gap:7px;min-width:194px;padding:0 10px;background:#fff;border:1px solid var(--line);border-radius:7px}.search-box span{font-size:20px;color:#759096}.search-box input{width:100%;min-width:0;padding:9px 0;border:0;outline:0;background:transparent;font-size:12px}.proposal-detail{background:var(--pale);border-radius:19px;border-top:7px solid var(--ink);padding:24px;box-shadow:var(--shadow)}.detail-heading{display:flex;justify-content:space-between;align-items:start;gap:20px}.detail-rank{font-size:12px;color:#648187;font-weight:700}.detail-heading h3{font-size:clamp(23px,3vw,32px);margin:3px 0 7px}.detail-description{max-width:780px;margin:0;color:#54747a;font-size:13px;line-height:1.5}.status-pill{display:inline-block;border:1px solid #8da9ad;border-radius:20px;padding:7px 10px;color:#46676c;font-size:10px;font-weight:700;white-space:nowrap}.detail-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:21px 0}.detail-kpi{padding:12px;background:rgba(255,255,255,.43);border-radius:8px}.detail-kpi small{display:block;color:#718b90;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.detail-kpi b{display:block;margin-top:5px;font-family:Manrope,sans-serif;font-size:19px;letter-spacing:-.04em}.detail-kpi span{display:block;margin-top:3px;color:#a54c45;font-size:10px;font-weight:700}.detail-kpi span.up{color:#227b61}.detail-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}.detail-panel{padding:18px;background:rgba(255,255,255,.38);border-radius:12px;min-width:0}.detail-panel h4{margin:0 0 14px;font-size:13px;font-weight:800}.detail-subtitle{margin:-8px 0 14px;font-size:10px;color:#718a8f}.channel-list,.argument-list{display:flex;flex-direction:column;gap:11px}.channel-row-top,.argument-top{display:flex;justify-content:space-between;gap:12px;font-size:11px}.channel-name,.argument-name{font-weight:700}.channel-value,.argument-value{font-weight:800;white-space:nowrap}.progress-track{height:7px;margin-top:5px;overflow:hidden;background:rgba(7,51,58,.1);border-radius:5px}.progress-fill{height:100%;border-radius:5px;background:var(--ink)}.argument-item{padding:11px 12px;background:rgba(255,255,255,.44);border-radius:8px;cursor:pointer;transition:background .15s}.argument-item:hover,.argument-item.open{background:rgba(255,255,255,.8)}.argument-description{display:none;margin:8px 0 0;color:#5a777c;font-size:11px;line-height:1.5}.argument-item.open .argument-description{display:block}.detail-story{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px}.detail-story .detail-panel{font-size:12px;line-height:1.6;color:#55747a}.detail-story h4{color:var(--ink)}.empty-state{padding:34px;text-align:center;color:#668186}.methodology{border-top:1px solid var(--line);padding:48px 0 20px}.method-tabs{display:flex;gap:8px;border-bottom:1px solid var(--line);margin:21px 0 0;overflow-x:auto}.method-tab{position:relative;white-space:nowrap;padding:11px 14px 12px;background:none;border:0;color:#6b878c;font-size:12px;font-weight:700;cursor:pointer}.method-tab.active{color:var(--ink)}.method-tab.active:after{content:"";position:absolute;bottom:-1px;left:12px;right:12px;height:3px;background:var(--mint);border-radius:3px 3px 0 0}.method-content{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding-top:18px}.method-card{padding:19px 21px;background:var(--pale);border-radius:13px}.method-card h3{margin:0 0 8px;font-size:15px;letter-spacing:-.02em}.method-card p,.method-card li{color:#527177;font-size:12px;line-height:1.62}.method-card p{margin:0}.method-card ul{margin:7px 0 0;padding-left:17px}.method-caveat{display:flex;gap:12px;align-items:start;margin-top:16px;padding:17px 20px;background:#e5efef;border-left:4px solid var(--mint);border-radius:8px}.caveat-icon{display:flex;flex:none;width:20px;height:20px;align-items:center;justify-content:center;background:var(--ink);border-radius:50%;color:white;font-size:12px;font-weight:800}.method-caveat p{margin:0;color:#527177;font-size:11px;line-height:1.55}.site-footer{display:flex;align-items:center;justify-content:space-between;gap:25px;padding:22px max(30px,calc((100% - 1220px)/2 + 30px));background:var(--ink);color:#d6e4e5;font-size:11px}.footer-brand{display:flex;align-items:center;gap:10px}.brand-mark{display:flex;width:32px;height:32px;justify-content:center;align-items:center;background:var(--mint);border-radius:50% 50% 50% 5px;color:var(--ink);font-family:Manrope,sans-serif;font-size:19px;font-weight:800}.footer-brand strong,.footer-brand small{display:block}.footer-brand strong{font-family:Manrope,sans-serif;font-size:12px}.footer-brand small{margin-top:3px;color:#92adb1;font-size:9px}.footer-credit{text-align:right;font-weight:600}.footer-anniversary{display:flex;align-items:center;gap:7px;border-left:1px solid #41646a;padding-left:16px;color:#aac3c5;font-size:8px;letter-spacing:.11em}.footer-anniversary b{font-family:Manrope,sans-serif;color:#41b978;font-size:26px;letter-spacing:-.1em}.toast{position:fixed;z-index:30;left:50%;bottom:24px;transform:translate(-50%,18px);opacity:0;padding:12px 16px;border-radius:8px;background:var(--ink);color:#fff;font-size:12px;font-weight:700;box-shadow:0 10px 30px #06262a33;transition:.2s;pointer-events:none}.toast.show{transform:translate(-50%,0);opacity:1}
+@media(max-width:850px){main{padding:27px 22px 50px}.cover>img{min-height:280px;object-position:42% center}.cover-meta{bottom:15px;right:20px;font-size:10px}.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.proposal-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.nav-inner{justify-content:flex-start;overflow-x:auto}.import-link{margin-left:auto}.analytics-grid{grid-template-columns:1fr}.analytics-grid .panel{min-height:280px}.chart-bars,.chart-share{min-height:205px}.site-footer{flex-wrap:wrap}.detail-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:570px){html{scroll-padding-top:68px}.cover>img{min-height:230px;object-position:35% center}.cover-meta{position:static;justify-content:center;border-radius:0;border:0;border-top:1px solid #2f7778;background:var(--ink);padding:9px;backdrop-filter:none}main{padding:24px 15px 40px}.nav-inner{min-height:54px;padding:7px 12px;gap:6px}.nav-link{font-size:12px;padding:8px 9px}.import-link{padding-inline:8px}.nav-icon{font-size:13px}.intro-row{align-items:stretch;flex-direction:column;gap:14px}.select-wrap{min-width:0;max-width:100%}.summary-copy{font-size:13px}.kpi-grid{gap:9px}.kpi-card{min-height:129px;padding:15px 14px;border-radius:15px;border-top-width:6px}.kpi-label{font-size:9px}.kpi-value{font-size:29px;margin:11px 0 6px}.kpi-foot{font-size:10px}.panel{padding:17px 15px;border-radius:15px}.trend-panel{min-height:260px;margin-bottom:34px}.panel-heading{align-items:start;gap:10px}.panel-note{font-size:9px;white-space:normal;text-align:right}.chart{min-height:150px}.section-heading{align-items:start;flex-direction:column;gap:9px;margin-top:23px}.text-link{align-self:flex-end}.proposal-grid{grid-template-columns:1fr;gap:12px}.proposal-card{min-height:0;padding:17px}.proposal-card .card-copy{min-height:0;-webkit-line-clamp:4}.proposal-card h3{font-size:19px}.analytics,.proposals-section,.methodology{padding:35px 0 42px}.kpi-grid-compact .kpi-card{min-height:111px;padding:13px 12px}.kpi-grid-compact .kpi-value{font-size:26px}.kpi-grid-compact .kpi-foot{font-size:9px}.analytics-grid .panel{min-height:250px}.proposal-toolbar{align-items:stretch;flex-direction:column;gap:9px;margin-top:16px}.proposal-tabs{order:1}.search-box{order:0}.proposal-detail{padding:16px;border-radius:15px}.detail-heading{flex-direction:column;gap:10px}.detail-heading h3{font-size:25px}.detail-kpis{grid-template-columns:repeat(2,1fr);gap:7px;margin:15px 0}.detail-kpi{padding:10px}.detail-kpi b{font-size:17px}.detail-grid,.detail-story{grid-template-columns:1fr;gap:10px}.detail-panel{padding:14px}.method-tabs{margin-top:14px}.method-tab{font-size:11px;padding-inline:10px}.method-content{grid-template-columns:1fr;gap:9px}.method-card{padding:16px}.site-footer{padding:20px 16px;gap:16px}.footer-credit{font-size:9px}.footer-anniversary{padding-left:9px}.footer-anniversary b{font-size:21px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+
+main{max-width:1000px}.proposal-grid{grid-template-columns:repeat(6,minmax(0,1fr))}.proposal-card{grid-column:span 2}.proposal-card:nth-child(4){grid-column:2 / span 2}.proposal-card:nth-child(5){grid-column:4 / span 2}.chart-bars{overflow-x:auto}.chart-bars svg{min-width:620px}@media(max-width:850px){.proposal-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.proposal-card,.proposal-card:nth-child(4),.proposal-card:nth-child(5){grid-column:auto}}@media(max-width:570px){.cover>img{min-height:0;max-height:none;object-fit:contain;object-position:center}}
+
+.site-footer{padding:22px max(30px,calc((100% - 1000px)/2 + 30px))}
+
+main .section{display:none}main .section.active{display:block}.cover{display:none}body.page-cover .cover{display:block}.preview-badge{display:inline-flex;align-items:center;gap:7px;margin-left:12px;padding:7px 10px;border-radius:16px;background:#bfe5dc;color:#175850;font-size:9px;letter-spacing:.06em;font-weight:800;white-space:nowrap}.preview-badge span{width:6px;height:6px;border-radius:50%;background:#198b68}.main-nav .nav-inner{flex-wrap:wrap}@media(max-width:850px){.preview-badge{margin-left:auto}}@media(max-width:570px){.preview-badge{margin-left:4px;font-size:8px;padding:6px 8px}.main-nav .nav-inner{flex-wrap:nowrap}.cover{display:none}body.page-cover .cover{display:block}}
+
+.proposal-subnav{position:sticky;top:60px;z-index:8;margin:18px 0 18px;padding:13px 16px 0;background:rgba(242,248,248,.97);border:1px solid #d5e3e4;border-radius:12px;box-shadow:0 8px 24px rgba(7,51,58,.06);backdrop-filter:blur(12px)}.proposal-subnav-heading{display:flex;align-items:center;justify-content:space-between}.proposal-subnav-heading .eyebrow{margin:0}.proposal-subnav .proposal-tabs{gap:2px;padding:7px 0 0}.proposal-subnav .proposal-tab{display:inline-flex;align-items:center;gap:8px;border:0;border-bottom:3px solid transparent;border-radius:0;background:transparent;color:#55767b;padding:12px 13px;font-size:12px}.proposal-subnav .proposal-tab:hover{background:rgba(215,230,232,.55);color:var(--ink)}.proposal-subnav .proposal-tab.active{border-bottom-color:var(--mint);background:transparent;color:var(--ink)}.proposal-tab-rank{display:grid;place-items:center;width:23px;height:23px;border-radius:5px;background:#c4d9dc;color:#476a70;font-size:10px;font-weight:800}.proposal-tab.active .proposal-tab-rank{background:var(--ink);color:#fff}@media(max-width:570px){.proposal-subnav{top:57px;margin:14px 0;padding:11px 10px 0}.proposal-subnav .proposal-tabs{gap:0}.proposal-subnav .proposal-tab{padding:10px 9px;font-size:11px}.proposal-tab-rank{width:20px;height:20px}}
+.trend-point{cursor:pointer;outline:none}.point-guide{stroke:#728f94;stroke-width:1;stroke-dasharray:4 5;opacity:0;transition:opacity .15s}.trend-point:hover .point-guide,.trend-point:focus .point-guide,.trend-point.selected .point-guide{opacity:.75}.trend-point circle{transition:r .16s,fill .16s,stroke .16s}.trend-point.selected circle{fill:var(--mint);stroke:var(--ink);stroke-width:3}.trend-point:focus-visible circle{stroke:#fff;stroke-width:4;filter:drop-shadow(0 0 2px var(--ink))}.trend-tooltip{position:absolute;z-index:2;display:none;min-width:124px;padding:10px 12px;border-radius:9px;background:var(--ink);color:#fff;box-shadow:0 9px 22px rgba(7,51,58,.23);transform:translate(-50%,-112%);pointer-events:none}.trend-tooltip.visible{display:flex;flex-direction:column;gap:3px}.trend-tooltip span{color:#9fc4c6;font-size:8px;font-weight:800;letter-spacing:.1em}.trend-tooltip strong{font-family:Manrope,sans-serif;font-size:18px;line-height:1}.trend-tooltip small{color:#d0e0e1;font-size:9px;white-space:nowrap}.trend-controls{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:3px 3px 12px}.median-toggle{display:inline-flex;align-items:center;gap:8px;border:0;background:transparent;padding:6px 0;color:#55757a;font-size:10px;font-weight:700;cursor:pointer}.median-toggle-state{padding:3px 6px;border-radius:9px;background:#c9dcde;color:#44666b;font-size:8px;text-transform:uppercase;letter-spacing:.04em}.legend-line{display:inline-block;width:22px;border-top:2px dashed #8ba4a8}.median-toggle[aria-pressed="false"] .legend-line{opacity:.35}.trend-hint{color:#789195;font-size:10px}.trend-detail{display:grid;grid-template-columns:1.1fr .8fr 1.5fr auto;align-items:center;gap:15px;padding:13px 15px;border:1px solid rgba(7,51,58,.1);border-radius:11px;background:rgba(255,255,255,.42)}.trend-detail-period{display:flex;flex-direction:column;gap:4px;color:#607e83;font-size:10px}.trend-detail-index{color:#466c72;font-size:9px;font-weight:800;letter-spacing:.08em}.trend-detail-value{display:flex;flex-direction:column;gap:2px}.trend-detail-value strong{font-family:Manrope,sans-serif;font-size:22px;letter-spacing:-.05em}.trend-detail-value span{color:#728b90;font-size:9px}.trend-detail-comparison{display:flex;flex-direction:column;gap:5px}.comparison-change,.comparison-median{font-size:10px;font-weight:700}.comparison-change.down{color:var(--red)}.comparison-change.up{color:#227b61}.comparison-median{color:#668186}.trend-steps{display:flex;align-items:center;gap:7px;color:#758e92;font-size:9px}.trend-steps button{width:25px;height:25px;border:1px solid #a9bfc2;border-radius:6px;background:transparent;color:var(--ink);font-size:15px;line-height:1;cursor:pointer}.trend-steps button:hover:not(:disabled){background:var(--ink);color:#fff}.trend-steps button:disabled{opacity:.35;cursor:default}@media(max-width:570px){.trend-panel{min-height:0}.trend-controls{align-items:flex-start;flex-direction:column;gap:4px;margin-bottom:9px}.trend-detail{grid-template-columns:1fr 1fr;gap:10px;padding:11px}.trend-detail-comparison{grid-column:1/-1}.trend-steps{grid-column:2;grid-row:1/3;justify-self:end;align-self:center}.trend-tooltip{min-width:112px;padding:8px 10px}.trend-tooltip strong{font-size:16px}}
+.cover{aspect-ratio:1440/568;min-height:0;max-height:none;background:#092e36}.cover>img.cover-art{position:absolute;inset:0;width:100%;height:100%;min-height:0;max-height:none;object-fit:fill}.cover-content{position:absolute;inset:0;color:#fff;line-height:normal}.cover-brand{position:absolute;left:12%;top:23.7%;margin:0;color:var(--ink);font-family:Manrope,"DM Sans",sans-serif;font-size:clamp(16px,2.2vw,32px);font-weight:800;letter-spacing:-.08em;line-height:1}.cover-content h1{position:absolute;left:9.9%;top:38%;width:69%;margin:0;color:#fff;font-family:Manrope,"DM Sans",sans-serif;font-size:clamp(30px,3.8vw,56px);font-weight:600;letter-spacing:-.07em;line-height:.99}.cover-divider{position:absolute;left:10%;top:58%;width:55%;height:1px;background:rgba(235,248,249,.8)}.cover-summary{position:absolute;left:10%;top:63%;width:54%;max-width:775px;margin:0;color:rgba(235,248,249,.76);font-size:clamp(11px,1.08vw,15px);line-height:1.18}.cover-meta{bottom:5%;right:8%;font-size:10px;padding:8px 10px}@media(max-width:650px){.cover{aspect-ratio:auto;min-height:490px;overflow:hidden}.cover>img.cover-art{object-fit:cover;object-position:right center}.cover:after{position:absolute;inset:0;content:"";background:linear-gradient(90deg,rgba(9,46,54,.94) 0%,rgba(9,46,54,.74) 57%,rgba(9,46,54,.22) 100%);pointer-events:none}.cover-content{z-index:1}.cover-brand{left:7%;top:8%;padding:8px 13px;background:var(--mint);border-radius:17px 17px 0 17px;font-size:17px}.cover-content h1{left:7%;top:22%;width:86%;font-size:clamp(30px,8vw,44px);line-height:1.02}.cover-divider{left:7%;top:51%;width:86%}.cover-summary{left:7%;top:56%;width:86%;font-size:13px;line-height:1.35}.cover-meta{z-index:2;position:absolute;right:7%;bottom:4%;font-size:9px}.cover-meta span+span:before{margin-right:5px}}
+</style>
+<style>
+/* Acabamento da composição segundo o wireframe do relatório. */
+.cover{aspect-ratio:1440/568;min-height:0;max-height:none;background:#092e36}
+.cover>img.cover-art{position:absolute;inset:0;width:100%;height:100%;min-height:0;max-height:none;object-fit:cover;object-position:center}
+.cover-content{position:absolute;inset:0;color:#fff;line-height:normal}
+.cover-brand{position:absolute;left:12%;top:23.7%;width:auto;height:auto;margin:0;padding:0;background:transparent;border-radius:0;color:var(--ink);font-family:Manrope,"DM Sans",sans-serif;font-size:clamp(24px,3.1vw,52px);font-weight:800;letter-spacing:-.075em;line-height:1;white-space:nowrap}
+.cover-content h1{position:absolute;left:10%;top:37.6%;width:68%;margin:0;color:#fff;font-family:Manrope,"DM Sans",sans-serif;font-size:clamp(34px,4vw,72px);font-weight:600;letter-spacing:-.055em;line-height:.98}
+.cover-divider{position:absolute;left:10%;top:58%;width:50%;height:1px;background:rgba(235,248,249,.8)}
+.cover-summary{position:absolute;left:10%;top:63%;width:50%;max-width:780px;margin:0;color:rgba(235,248,249,.78);font-size:clamp(13px,1.15vw,18px);line-height:1.25}
+.cover-meta{display:none}
+.nav-icon{width:17px;height:17px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-link{border-radius:6px;gap:8px;padding:8px 13px;transition:background .18s,color .18s,border-color .18s,box-shadow .18s}
+.nav-link:hover{transform:none;background:rgba(255,255,255,.58);box-shadow:0 2px 8px rgba(7,51,58,.08)}
+.nav-link.active:hover{background:var(--ink);color:#fff}
+.main-nav{border-top-width:3px}
+main{width:min(100%,1000px);max-width:1000px;margin-left:auto!important;margin-right:auto!important;padding-bottom:64px}
+.overview{padding-bottom:28px}
+.analytics,.proposals-section,.methodology{padding-bottom:32px}
+.overview .kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:21px 0 28px}
+.overview .kpi-card{min-height:153px;padding:22px 24px 18px}
+.analytics .kpi-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.section-heading{border-bottom:1px solid var(--line);padding-bottom:12px}
+.section-heading h2,.panel-heading h2,.panel-heading h3{color:var(--ink)}
+.eyebrow{letter-spacing:.12em}
+.panel,.kpi-card,.proposal-card,.proposal-detail,.method-card{box-shadow:0 8px 24px rgba(7,51,58,.045)}
+.proposal-card{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.proposal-card:hover,.proposal-card:focus-visible{transform:translateY(-3px);box-shadow:0 14px 30px rgba(7,51,58,.11);outline:none}
+.proposal-card:focus-visible,.nav-link:focus-visible,.method-tab:focus-visible,.proposal-tab:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid #1b9b83;outline-offset:3px}
+.trend-panel{min-height:0}
+.chart-trend{min-height:220px}
+.chart-bars{overflow:visible;padding-top:0}
+.chart-bars svg,.chart-share svg{display:block;width:100%;max-width:100%;min-width:0;height:auto}
+.chart-bars .axis-label,.chart-share .axis-label{font-size:11px}
+.chart-bars .value-label,.chart-share .value-label{font-size:11px}
+.chart .bar{transition:fill .18s,opacity .18s}
+.chart .bar:hover{fill:#138b7e;opacity:1}
+.chart .chart-category{fill:#55767b}
+.trend-detail{margin-top:10px}
+.proposal-subnav{position:sticky;top:64px;z-index:5;background:rgba(242,248,248,.96);backdrop-filter:blur(12px);border:1px solid var(--line);box-shadow:0 8px 20px rgba(7,51,58,.06)}
+.site-footer{display:flex;justify-content:flex-end;align-items:center;width:100%;min-height:4.3vw;margin:0;padding:7px 0;background:#092e36}
+.footer-art{display:block;width:min(56vw,1228px);max-width:100%;height:auto;margin-left:auto;object-fit:contain}
+@media(max-width:850px){.cover-brand{font-size:clamp(22px,3.8vw,34px)}.cover-content h1{font-size:clamp(34px,4.4vw,52px);width:76%}.cover-summary{width:58%;font-size:clamp(12px,1.45vw,15px)}.overview .kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.overview .kpi-card{padding:18px 16px}.overview .kpi-value{font-size:clamp(26px,4vw,36px)}}
+@media(max-width:570px){main{padding-bottom:30px}.cover{aspect-ratio:auto;min-height:500px;max-height:none;overflow:hidden}.cover>img.cover-art{object-fit:cover;object-position:65% center}.cover:after{position:absolute;inset:0;content:"";background:linear-gradient(90deg,rgba(9,46,54,.96) 0%,rgba(9,46,54,.84) 60%,rgba(9,46,54,.38) 100%);pointer-events:none}.cover-content{z-index:1}.cover-brand{left:6%;top:8%;width:auto;max-width:88%;height:auto;min-height:44px;padding:9px 16px;border-radius:0 22px 0 22px;font-size:clamp(20px,5vw,26px)}.cover-content h1{left:6%;top:23%;width:88%;font-size:clamp(32px,8.4vw,44px);line-height:1}.cover-divider{left:6%;top:52%;width:88%}.cover-summary{left:6%;top:57%;width:88%;font-size:14px;line-height:1.4}.cover-meta{display:none}.overview{padding-bottom:24px}.analytics,.proposals-section,.methodology{padding-bottom:24px}.overview .kpi-grid,.analytics .kpi-grid{grid-template-columns:1fr}.overview .kpi-card{min-height:120px;padding:17px 19px}.overview .kpi-value{font-size:34px}.chart-trend{min-height:170px}.proposal-subnav{top:60px}.section-heading{padding-bottom:10px}.nav-icon{width:15px;height:15px}.site-footer{justify-content:center;min-height:0;padding:8px}.footer-art{width:min(100%,500px);max-width:100%;margin:0 auto}}
+</style>
+</head>
+<body class="page-cover">
+  <header class="cover" id="inicio" aria-label="Câmara nas Redes, destaques da semana">
+    <img class="cover-art" src="Wireframe - 3.svg" onerror="this.onerror=null;this.src='assets/capa.svg'" alt="" aria-hidden="true">
+    <div class="cover-content">
+      <p class="cover-brand">CÂMARA NAS REDES</p>
+      <h1>Destaques da Semana:<br>5 Propostas com maior engajamento.</h1>
+      <div class="cover-divider"></div>
+      <p class="cover-summary" id="cover-summary">Carregando síntese da semana...</p>
+    </div>
+    <div class="cover-meta"><span id="edition-label">—</span><span id="period-label">—</span></div>
+  </header>
+  <nav class="main-nav" aria-label="Navegação do relatório">
+    <div class="nav-inner">
+      <a class="nav-link active" href="#destaques" data-section="destaques"><svg class="nav-icon" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="16" height="16" rx="3"/><path d="M6 7h8M6 10h8M6 13h5"/></svg>Destaques</a>
+      <a class="nav-link" href="#analitico" data-section="analitico"><svg class="nav-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 17V9h3v8M8.5 17V4h3v13M14 17v-6h3v6"/><path d="M2 18h16"/></svg>Analítico</a>
+      <a class="nav-link" href="#propostas" data-section="propostas"><svg class="nav-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 2.5h7l4 4V17a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1Z"/><path d="M12 2.5v4h4M7 10h6M7 13h6"/></svg>Propostas</a>
+      <a class="nav-link" href="#metodologia" data-section="metodologia"><svg class="nav-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 4.5A2.5 2.5 0 0 1 5.5 2H17v15H5.5A2.5 2.5 0 0 1 3 14.5z"/><path d="M3 14.5A2.5 2.5 0 0 1 5.5 12H17M7 5h6M7 8h6"/></svg>Metodologia</a>
+      <span class="preview-badge" id="status-badge"><span></span><b id="badge-text">DADOS ATUALIZADOS</b></span>
+    </div>
+  </nav>
+
+  <main>
+    <section class="section overview active" id="destaques">
+      <div class="intro-row">
+        <div><p class="eyebrow">DESTAQUES DA SEMANA</p><h2>Panorama do período</h2></div>
+        <div class="select-wrap"><label for="period-select">Período monitorado</label><select id="period-select" aria-label="Selecionar período"></select></div>
+      </div>
+      <div class="kpi-grid" id="kpi-grid"></div>
+      <article class="panel trend-panel">
+        <div class="panel-heading"><div><p class="eyebrow">RITMO DA CONVERSA</p><h2>Evolução do engajamento</h2></div><span class="panel-note">Últimas 4 semanas <i class="info" title="Os períodos sem postagens não aparecem no gráfico.">i</i></span></div>
+        <div id="trend-chart" class="chart chart-trend" aria-label="Gráfico de evolução semanal"></div>
+        <div class="trend-controls"><button class="median-toggle" id="median-toggle" type="button" aria-pressed="true"><span class="legend-line"></span>Mediana anual <span class="median-toggle-state">Visível</span></button><span class="trend-hint">Passe pelos pontos ou selecione uma semana</span></div>
+        <div class="trend-detail" id="trend-detail" aria-live="polite"></div>
+      </article>
+      <div class="section-heading"><div><p class="eyebrow">MAIOR REPERCUSSÃO</p><h2>Propostas em destaque</h2></div><a href="#propostas" class="text-link">Ver todas as propostas <span>↗</span></a></div>
+      <div id="highlight-cards" class="proposal-grid"></div>
+    </section>
+
+    <section class="section analytics" id="analitico">
+      <div class="section-heading"><div><p class="eyebrow">LEITURA DOS DADOS</p><h2>Analítico</h2></div><p class="section-subtitle">Resultados da participação na semana</p></div>
+      <div class="kpi-grid kpi-grid-compact" id="analytic-kpis"></div>
+      <div class="analytics-grid">
+        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">DISTRIBUIÇÃO</p><h3>Engajamento por canal</h3></div><button class="icon-button" title="O Instagram não considera compartilhamentos no engajamento." aria-label="Informações sobre métricas">i</button></div><div id="channel-chart" class="chart chart-bars"></div></article>
+        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">CONCENTRAÇÃO</p><h3>Participação das propostas</h3></div><span class="panel-note">Top 5 propostas</span></div><div id="share-chart" class="chart chart-share"></div></article>
+      </div>
+      <article class="panel topics-panel"><div class="panel-heading"><div><p class="eyebrow">ASSUNTOS EM PAUTA</p><h3>Temas com maior engajamento</h3></div><span class="panel-note">Pontos de engajamento</span></div><div id="topic-chart" class="chart chart-bars topic-bars"></div></article>
+    </section>
+
+    <section class="section proposals-section" id="propostas">
+      <div class="section-heading"><div><p class="eyebrow">DETALHAMENTO</p><h2>Propostas em destaque</h2></div><p class="section-subtitle" id="proposals-subtitle">5 propostas · selecione uma para ver os detalhes</p></div>
+      <nav class="proposal-subnav" aria-label="Submenu de propostas"><div class="proposal-subnav-heading"><span class="eyebrow">PROPOSTAS DA SEMANA</span><span class="panel-note" id="proposals-range-note">01 — 05</span></div><div id="proposal-tabs" class="proposal-tabs" role="tablist" aria-label="Selecionar uma das cinco propostas"></div></nav>
+      <div id="proposal-detail" class="proposal-detail"></div>
+    </section>
+
+    <section class="section methodology" id="metodologia">
+      <div class="section-heading"><div><p class="eyebrow">COMO LER OS RESULTADOS</p><h2>Metodologia</h2></div><p class="section-subtitle">Critérios, indicadores e limites do monitoramento</p></div>
+      <div class="method-tabs" role="tablist" aria-label="Seções da metodologia">
+        <button class="method-tab active" data-method="gerais">Informações gerais</button><button class="method-tab" data-method="calculos">Cálculos e definições</button><button class="method-tab" data-method="analise">Análise qualitativa</button>
+      </div>
+      <div id="method-content" class="method-content"></div>
+      <aside class="method-caveat"><span class="caveat-icon">i</span><p>Os resultados refletem publicações abertas captadas pela plataforma no período. Eles indicam tendências desse universo monitorado e não representam estatisticamente a opinião da sociedade brasileira.</p></aside>
+    </section>
+  </main>
+  <footer class="site-footer" aria-label="Coordenação de Relacionamento, Inteligência e Participação; Diretoria Executiva de Comunicação e Mídias Digitais; 200 anos da Câmara dos Deputados"><img class="footer-art" src="Group 65.png" onerror="this.onerror=null;this.src='assets/rodape-camara.png'" alt="Coordenação de Relacionamento, Inteligência e Participação · Diretoria Executiva de Comunicação e Mídias Digitais · 200 anos da Câmara dos Deputados"></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- Carrega o bundle JS gerado pelo analise.py (permite funcionamento via file:// sem erro de CORS) -->
+<script src="dados/dados_dashboard.js"></script>
+<script>
+const fmtInt = new Intl.NumberFormat('pt-BR');
+const fmtCompact = new Intl.NumberFormat('pt-BR',{notation:'compact',maximumFractionDigits:1});
+let report;
+let selectedProposal = 0;
+let activeMethod = 'gerais';
+let selectedWeek = 0;
+let showMedian = true;
+
+function esc(value='') { return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function formatNumber(value,compact=false) { return value == null ? '—' : (compact ? fmtCompact.format(value) : fmtInt.format(value)); }
+function percentage(value) { return `${Number(value).toLocaleString('pt-BR',{maximumFractionDigits:1})}%`; }
+function showToast(message) { const node=document.getElementById('toast'); node.textContent=message; node.classList.add('show'); clearTimeout(showToast.timer); showToast.timer=setTimeout(()=>node.classList.remove('show'),2800); }
+
+async function fetchDashboardData() {
+  const timestamp = Date.now();
+  const candidates = [
+    `./dados/dados_dashboard.json?t=${timestamp}`,          // 1º: Estrutura do GitHub Pages (docs/dados/)
+    `dados/dados_dashboard.json?t=${timestamp}`,            // 2º: Caminho relativo direto
+    `../dados_painel/dados_dashboard.json?t=${timestamp}`   // 3º: Fallback caso ainda rode na pasta front/
+  ];
+
+  for (const url of candidates) {
+    try {
+      const resp = await fetch(url, { cache: 'no-store' });
+      if (resp.ok) return await resp.json();
+    } catch (_) {
+      // Ignora erro de rede/CORS (ex: aberto direto via file://) e testa a próxima opção
+    }
+  }
+
+  // Fallback se estiver rodando localmente sem servidor HTTP (file://)
+  if (window.CAMARA_DEMO_DATA) return window.CAMARA_DEMO_DATA;
+
+  throw new Error('Não foi possível localizar dados_dashboard.json ou dados_dashboard.js.');
+}
+
+async function loadReport() {
+  try {
+    report = await fetchDashboardData();
+    if (!report?.proposals?.length || !report?.kpis?.length) {
+      throw Error('A base precisa conter kpis e proposals.');
+    }
+
+    document.getElementById('edition-label').textContent = report.edition || 'Relatório semanal';
+    document.getElementById('period-label').textContent = report.period || '';
+    document.getElementById('cover-summary').textContent = report.summary || '';
+    document.getElementById('badge-text').textContent = (report.edition || 'BASE ATUALIZADA').toUpperCase();
+
+    const select = document.getElementById('period-select');
+    select.innerHTML = `<option>${esc(report.edition || 'Relatório atual')} · ${esc(report.period || '')}</option>`;
+
+    const headlineKpis = ['ENGAJAMENTO GERAL', 'POSTAGENS', 'ALCANCE ESTIMADO'];
+    renderKpis(report.kpis.filter(k => headlineKpis.includes(String(k.label).toUpperCase())), 'kpi-grid');
+    renderKpis(report.kpis, 'analytic-kpis');
+
+    selectedWeek = Math.max(0, (report.history?.length || 1) - 1);
+    renderTrend();
+    renderCards();
+    renderChannelChart();
+    renderShareChart();
+    renderTopics();
+    renderProposalTabs();
+    renderProposalDetail();
+    renderMethod();
+  } catch (error) {
+    showToast(error.message);
+  }
+}
+
+function renderKpis(items,target) {
+  const node=document.getElementById(target);
+  node.innerHTML=items.map(k=>{
+    const isUp = Number(k.change) >= 0;
+    const changeBadge = k.change != null
+      ? `<span class="kpi-change ${isUp ? 'up' : 'down'}">${isUp ? '↑' : '↓'} ${percentage(Math.abs(k.change))}</span>`
+      : '';
+    return `<article class="kpi-card"><span class="kpi-label">${esc(k.label)}</span><strong class="kpi-value">${formatNumber(k.value,k.format==='compact')}</strong><div class="kpi-foot">${changeBadge}${esc(k.foot||'')}</div></article>`;
+  }).join('');
+}
+
+function svgWrap(viewBox,content,label) { return `<svg viewBox="0 0 ${viewBox}" role="img" aria-label="${esc(label)}" xmlns="http://www.w3.org/2000/svg">${content}</svg>`; }
+
+function renderTrend() {
+  const chartNode=document.getElementById('trend-chart'),W=Math.max(320,Math.round(chartNode.clientWidth||900)),H=W<500?260:236,left=W<390?48:58,right=20,top=22,bottom=48,values=report.history||[], max=Math.max(...values.map(x=>x.value||0),report.median||0)*1.12;
+  if(!values.length){document.getElementById('trend-chart').innerHTML='<div class="empty-state">Ainda não há histórico semanal na base.</div>';return;}
+  selectedWeek=Math.min(selectedWeek,values.length-1);
+  const y=v=>top+(H-bottom-top)*(1-(v/max)),x=i=>left+i*(W-left-right)/Math.max(values.length-1,1);
+  let parts='';
+  [0,.25,.5,.75,1].forEach(p=>{const yy=top+(H-bottom-top)*p;parts+=`<line class="gridline" x1="${left}" y1="${yy}" x2="${W-right}" y2="${yy}"/><text class="axis-label" x="${left-10}" y="${yy+4}" text-anchor="end">${formatNumber(max*(1-p),true)}</text>`;});
+  if(report.median){const yy=y(report.median);parts+=`<line class="median" x1="${left}" y1="${yy}" x2="${W-right}" y2="${yy}" style="${showMedian?'':'display:none'}"/><text class="axis-label median-label" x="${W-right}" y="${yy-7}" text-anchor="end" style="${showMedian?'':'display:none'}">Mediana anual · ${formatNumber(report.median,true)}</text>`;}
+  const coords=values.map((d,i)=>`${x(i)},${y(d.value)}`).join(' '),area=`${x(0)},${H-bottom} ${coords} ${x(values.length-1)},${H-bottom}`;
+  parts+=`<polygon class="area" points="${area}"/><polyline class="line" points="${coords}"/>`;
+  values.forEach((d,i)=>{const selected=i===selectedWeek;parts+=`<g class="trend-point ${selected?'selected':''}" data-index="${i}" role="button" tabindex="0" aria-pressed="${selected}" aria-label="Semana ${d.week}, ${esc(d.display||formatNumber(d.value))} pontos de engajamento"><line class="point-guide" x1="${x(i)}" y1="${top}" x2="${x(i)}" y2="${H-bottom}"/><circle class="dot" cx="${x(i)}" cy="${y(d.value)}" r="${selected?8:6}"/><title>Semana ${d.week}: ${esc(d.display||formatNumber(d.value))}</title></g><text class="value-label" x="${x(i)}" y="${y(d.value)-14}" text-anchor="middle">${esc(d.display||formatNumber(d.value,true))}</text><text class="axis-label" x="${x(i)}" y="${H-23}" text-anchor="middle">${esc(d.label)}</text><text class="axis-label" x="${x(i)}" y="${H-8}" text-anchor="middle">Semana ${d.week}</text>`;});
+  document.getElementById('trend-chart').innerHTML=svgWrap(`${W} ${H}`,parts,'Evolução semanal do engajamento. Os pontos podem ser selecionados.');
+  document.getElementById('trend-chart').insertAdjacentHTML('beforeend','<div class="trend-tooltip" id="trend-tooltip" role="status"></div>');
+  wireTrendInteractions(values,{W,H,x,y});
+  renderTrendDetail(values,selectedWeek);
+  const toggle=document.getElementById('median-toggle');
+  toggle.setAttribute('aria-pressed',String(showMedian));
+  toggle.querySelector('.median-toggle-state').textContent=showMedian?'Visível':'Oculta';
+  toggle.onclick=()=>{showMedian=!showMedian;document.querySelectorAll('.median,.median-label').forEach(n=>n.style.display=showMedian?'':'none');toggle.setAttribute('aria-pressed',String(showMedian));toggle.querySelector('.median-toggle-state').textContent=showMedian?'Visível':'Oculta';};
+}
+
+function getWeekRangeLabel(d){
+  return d?.range || d?.label || '';
+}
+
+function renderTrendDetail(values,index){
+  const d=values[index];if(!d)return;
+  const previous=values[index-1];
+  const reportedChange=index===values.length-1?report.kpis?.[0]?.change:null;
+  const change=reportedChange!=null?reportedChange:(previous?.value?((d.value-previous.value)/previous.value)*100:null);
+  const medianDelta=report.median?((d.value-report.median)/report.median)*100:null;
+  const compare=change==null?'Sem comparação anterior':`${change<0?'↓':'↑'} ${percentage(Math.abs(change))} em relação à semana ${previous ? previous.week : 'anterior'}`;
+  const medianText=medianDelta==null?'':`${medianDelta>=0?'Acima':'Abaixo'} da mediana anual em ${percentage(Math.abs(medianDelta))}`;
+  document.getElementById('trend-detail').innerHTML=`<div class="trend-detail-period"><span class="trend-detail-index">SEMANA ${d.week}</span><span>${esc(getWeekRangeLabel(d))}</span></div><div class="trend-detail-value"><strong>${esc(d.display||formatNumber(d.value,true))}</strong><span>pontos de engajamento</span></div><div class="trend-detail-comparison"><span class="comparison-change ${change<0?'down':'up'}">${compare}</span>${medianText?`<span class="comparison-median">${medianText}</span>`:''}</div><div class="trend-steps"><button type="button" data-step="-1" ${index===0?'disabled':''} aria-label="Semana anterior">←</button><span>${index+1} de ${values.length}</span><button type="button" data-step="1" ${index===values.length-1?'disabled':''} aria-label="Próxima semana">→</button></div>`;
+  document.querySelectorAll('.trend-steps button').forEach(button=>button.addEventListener('click',()=>selectTrendWeek(Math.max(0,Math.min(values.length-1,index+Number(button.dataset.step))))));
+}
+
+function showTrendTooltip(index,geometry){
+  const d=report.history[index],tooltip=document.getElementById('trend-tooltip');if(!d||!tooltip)return;
+  const left=Math.min(87,Math.max(13,geometry.x(index)/geometry.W*100));
+  const top=Math.min(75,Math.max(18,geometry.y(d.value)/geometry.H*100));
+  tooltip.style.left=`${left}%`;tooltip.style.top=`${top}%`;
+  tooltip.innerHTML=`<span>SEMANA ${d.week}</span><strong>${esc(d.display||formatNumber(d.value,true))}</strong><small>${esc(getWeekRangeLabel(d))}</small>`;tooltip.classList.add('visible');
+}
+
+function selectTrendWeek(index){
+  selectedWeek=index;
+  document.querySelectorAll('.trend-point').forEach(point=>{const selected=Number(point.dataset.index)===index;point.classList.toggle('selected',selected);point.setAttribute('aria-pressed',String(selected));point.querySelector('circle').setAttribute('r',selected?'8':'6');});
+  renderTrendDetail(report.history,index);
+}
+
+function wireTrendInteractions(values,geometry){
+  const points=[...document.querySelectorAll('.trend-point')],tooltip=document.getElementById('trend-tooltip');
+  points.forEach(point=>{
+    const index=Number(point.dataset.index);
+    point.addEventListener('pointerenter',()=>showTrendTooltip(index,geometry));
+    point.addEventListener('pointerleave',()=>{if(document.activeElement!==point)tooltip.classList.remove('visible');});
+    point.addEventListener('focus',()=>showTrendTooltip(index,geometry));
+    point.addEventListener('blur',()=>tooltip.classList.remove('visible'));
+    point.addEventListener('click',()=>selectTrendWeek(index));
+    point.addEventListener('keydown',event=>{
+      if(event.key==='Enter'||event.key===' '){event.preventDefault();selectTrendWeek(index);}
+      if(event.key==='ArrowRight'||event.key==='ArrowLeft'){event.preventDefault();const next=Math.max(0,Math.min(values.length-1,index+(event.key==='ArrowRight'?1:-1)));points[next].focus();selectTrendWeek(next);}
+    });
+  });
+}
+
+function buildFallbackSummary(p) {
+  if (p.summary) return p.summary;
+  const parts = [];
+  if (p.posts != null && p.authors != null) {
+    parts.push(`Reuniu ${formatNumber(p.posts)} publicações de ${formatNumber(p.authors)} autores únicos na semana`);
+  } else if (p.posts != null) {
+    parts.push(`Reuniu ${formatNumber(p.posts)} publicações monitoradas na semana`);
+  }
+  if (p.reach != null) {
+    parts.push(`com alcance estimado de ${formatNumber(p.reach, true)}`);
+  }
+  const sentence1 = parts.length ? parts.join(', ') + '.' : '';
+  const sentence2 = p.status ? `Situação atual: ${p.status}.` : '';
+  return [sentence1, sentence2].filter(Boolean).join(' ') || 'Consulte os dados disponíveis para esta proposta no detalhamento.';
+}
+
+function renderCards() {
+  const proposals=report.proposals.slice(0,5);
+  document.getElementById('highlight-cards').innerHTML=proposals.map((p,i)=>`<article class="proposal-card" data-open="${i}" tabindex="0" role="button" aria-label="Ver detalhes de ${esc(p.id)}"><div class="proposal-title-row"><span class="rank-badge">${i+1}º</span><h3>${esc(p.id)}</h3></div><div class="proposal-summary">${esc(p.description)}</div><hr class="card-rule"><p class="card-copy">${esc(buildFallbackSummary(p))}</p><div class="card-metrics"><div class="metric-mini"><label>ENGAJAMENTO</label><b>${formatNumber(p.engagement)}</b></div><div class="metric-mini"><label>(%) DO TOTAL</label><b>${percentage(p.share||0)}</b></div></div><button class="card-more" data-open="${i}">Saiba mais ↗</button></article>`).join('');
+  document.querySelectorAll('[data-open]').forEach(n=>{n.addEventListener('click',()=>openProposal(Number(n.dataset.open)));n.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openProposal(Number(n.dataset.open));}})});
+}
+
+function chartLabelLines(value,maxChars){
+  const words=String(value).split(/\s+/),lines=[];let line='';
+  words.forEach(word=>{const next=line?`${line} ${word}`:word;if(line&&next.length>maxChars){lines.push(line);line=word}else line=next;});
+  if(line)lines.push(line);return lines;
+}
+
+function renderBarChart(target,data,{max=null,labels=true,compact=true}={}) {
+  const node=document.getElementById(target);
+  if(!data.length){node.innerHTML='<div class="empty-state">Ainda não há dados suficientes para este gráfico.</div>';return;}
+  const W=Math.max(320,Math.round(node.clientWidth||420)),top=12,bottom=30,topic=target==='topic-chart',left=topic?Math.max(145,Math.min(176,Math.round(W*.39))):(labels?Math.max(96,Math.min(122,Math.round(W*.29))):34),right=62,rowHeight=topic?44:48,H=Math.max(215,data.length*rowHeight+top+bottom),maxVal=max||Math.max(...data.map(d=>d.value||0))*1.18||1,row=(H-top-bottom)/Math.max(data.length,1),barH=Math.min(19,row*.42),plotW=W-left-right;let out='';
+  (W<380?[0,.5,1]:[0,.25,.5,.75,1]).forEach(p=>{const xx=left+plotW*p;out+=`<line class="gridline" x1="${xx}" y1="${top}" x2="${xx}" y2="${H-bottom}"/><text class="axis-label" x="${xx}" y="${H-7}" text-anchor="middle">${formatNumber(maxVal*p,compact)}</text>`;});
+  data.forEach((d,i)=>{const yy=top+row*i+(row-barH)/2,bw=plotW*Math.max(d.value||0,0)/maxVal,lines=chartLabelLines(d.name,topic?Math.max(16,Math.floor((left-18)/5.4)):24),labelY=yy+barH/2-((lines.length-1)*5.5),label=lines.map((line,j)=>`<tspan x="${left-8}" dy="${j?11:0}">${esc(line)}</tspan>`).join('');out+=`<text class="axis-label chart-category" x="${left-8}" y="${labelY}" text-anchor="end">${label}</text><rect class="bar ${i%2?'bar-secondary':''}" x="${left}" y="${yy}" width="${Math.max(bw,1.5)}" height="${barH}" rx="4"><title>${esc(d.name)}: ${esc(d.display||formatNumber(d.value))}</title></rect><text class="value-label" x="${Math.min(W-right+2,left+bw+6)}" y="${yy+barH*.78}">${esc(d.display||formatNumber(d.value,compact))}</text>`;});
+  node.innerHTML=svgWrap(`${W} ${H}`,out,'Gráfico de barras em pontos de engajamento: '+data.map(d=>`${d.name}, ${d.display||formatNumber(d.value)}`).join('; '));
+}
+
+function renderChannelChart(){renderBarChart('channel-chart',report.channels||[],{labels:true,compact:true});}
+function renderTopics(){renderBarChart('topic-chart',report.topics||[],{labels:true,compact:true});}
+
+function renderShareChart() {
+  const node=document.getElementById('share-chart'),data=report.proposals.slice(0,5);
+  if(!data.length){node.innerHTML='<div class="empty-state">Ainda não há propostas para comparar.</div>';return;}
+  const W=Math.max(320,Math.round(node.clientWidth||420)),H=260,left=Math.max(98,Math.min(132,Math.round(W*.31))),right=48,top=12,bottom=30,row=(H-top-bottom)/data.length,plotW=W-left-right;let out='';
+  (W<380?[0,.5,1]:[0,.25,.5,.75,1]).forEach(p=>{const xx=left+plotW*p;out+=`<line class="gridline" x1="${xx}" y1="${top}" x2="${xx}" y2="${H-bottom}"/><text class="axis-label" x="${xx}" y="${H-7}" text-anchor="middle">${percentage(p*100)}</text>`;});
+  data.forEach((d,i)=>{const yy=top+row*i+(row-18)/2,bw=plotW*(d.share||0)/100;out+=`<text class="axis-label chart-category" x="${left-8}" y="${yy+12}" text-anchor="end">${esc(d.id)}</text><rect class="bar ${i%2?'bar-secondary':''}" x="${left}" y="${yy}" width="${Math.max(bw,1.5)}" height="18" rx="4"><title>${esc(d.id)} · ${percentage(d.share||0)} do engajamento</title></rect><text class="value-label" x="${Math.min(W-right+2,left+bw+6)}" y="${yy+12}">${percentage(d.share||0)}</text>`;});
+  document.getElementById('share-chart').innerHTML=svgWrap(`${W} ${H}`,out,'Participação percentual das cinco propostas no engajamento total');
+}
+
+function renderProposalTabs() {
+  const list=report.proposals.slice(0,5);
+  document.getElementById('proposal-tabs').innerHTML=list.map((p,i)=>`<button class="proposal-tab ${i===selectedProposal?'active':''}" role="tab" aria-selected="${i===selectedProposal}" data-index="${i}"><span class="proposal-tab-rank">0${i+1}</span><span>${esc(p.id)}</span></button>`).join('');
+  document.querySelectorAll('.proposal-tab').forEach(n=>n.addEventListener('click',()=>{selectedProposal=Number(n.dataset.index);renderProposalTabs();renderProposalDetail();}));
+}
+
+function renderProposalDetail() {
+  const p=report.proposals[selectedProposal];if(!p){document.getElementById('proposal-detail').innerHTML='<div class="empty-state">Selecione uma proposta para ver o detalhamento.</div>';return;}
+  const isUp = Number(p.change) >= 0;
+  const kpis=[
+    ['Engajamento',formatNumber(p.engagement),p.change!=null?{text:`${isUp?'↑':'↓'} ${percentage(Math.abs(p.change))} vs. semana anterior`,up:isUp}:null],
+    ['Postagens',formatNumber(p.posts),null],
+    ['Autores',formatNumber(p.authors),null],
+    ['Alcance estimado',formatNumber(p.reach),null]
+  ];
+  const maxChannel=Math.max(...(p.channels||[]).map(c=>c.value||0),1);
+  const channels=(p.channels||[]).map(c=>`<div><div class="channel-row-top"><span class="channel-name">${esc(c.name)}</span><span class="channel-value">${esc(c.display||formatNumber(c.value))}</span></div><div class="progress-track"><div class="progress-fill" style="width:${Math.max(2,c.value/maxChannel*100)}%"></div></div></div>`).join('')||'<p class="detail-subtitle">Dados de canal por proposta indisponíveis na base.</p>';
+  const args=(p.arguments||[]).map((a,i)=>`<div class="argument-item"><div class="argument-top"><span class="argument-name">${i+1}. ${esc(a.name)}</span><span class="argument-value">${esc(a.count)} · ${percentage(a.share)}</span></div><div class="progress-track"><div class="progress-fill" style="width:${Math.min(a.share,100)}%"></div></div><p class="argument-description">${esc(a.description)}</p></div>`).join('')||'<p class="detail-subtitle">Análise qualitativa indisponível.</p>';
+  document.getElementById('proposal-detail').innerHTML=`<div class="detail-heading"><div><span class="detail-rank">PROPOSTA ${selectedProposal+1} DE ${Math.min(report.proposals.length,5)}</span><h3>${esc(p.id)}</h3><p class="detail-description">${esc(p.description||'')}</p></div>${p.status?`<span class="status-pill">${esc(p.status)}</span>`:''}</div><div class="detail-kpis">${kpis.map(k=>`<div class="detail-kpi"><small>${k[0]}</small><b>${k[1]}</b>${k[2]?`<span class="${k[2].up?'up':'down'}">${k[2].text}</span>`:''}</div>`).join('')}</div><div class="detail-grid"><article class="detail-panel"><h4>Engajamento por canal</h4><p class="detail-subtitle">Pontos registrados nesta semana</p><div class="channel-list">${channels}</div></article><article class="detail-panel"><h4>O que dizem</h4><p class="detail-subtitle">Argumentos mais frequentes · toque para expandir</p><div class="argument-list">${args}</div></article></div><div class="detail-story"><article class="detail-panel"><h4>O que mobilizou</h4>${esc(p.mobilization||p.summary||'Síntese qualitativa não informada na base para esta proposta.')}</article><article class="detail-panel"><h4>Publicação representativa</h4>${esc(p.sample||'Exemplo não informado na base.')}</article></div>`;
+  document.querySelectorAll('.argument-item').forEach(n=>n.addEventListener('click',()=>n.classList.toggle('open')));
+}
+
+function openProposal(index){selectedProposal=Math.min(index,4);renderProposalTabs();renderProposalDetail();navigateToPage('propostas');}
+
+function renderMethod() {
+  const items=report.methodology?.[activeMethod]||[];
+  document.getElementById('method-content').innerHTML=items.map(m=>`<article class="method-card"><h3>${esc(m.title)}</h3><p>${esc(m.text)}</p></article>`).join('');
+}
+
+document.querySelectorAll('.method-tab').forEach(b=>b.addEventListener('click',()=>{activeMethod=b.dataset.method;document.querySelectorAll('.method-tab').forEach(x=>x.classList.toggle('active',x===b));renderMethod();}));
+const pageIds=['destaques','analitico','propostas','metodologia'];
+function renderVisibleCharts(page){
+  if(!report)return;
+  if(page==='destaques')renderTrend();
+  if(page==='analitico'){renderChannelChart();renderShareChart();renderTopics();}
+}
+function navigateToPage(page,updateHistory=true) {
+  if(!pageIds.includes(page))page='destaques';
+  document.querySelectorAll('main .section').forEach(section=>section.classList.toggle('active',section.id===page));
+  document.querySelectorAll('.nav-link[data-section]').forEach(link=>{const selected=link.dataset.section===page;link.classList.toggle('active',selected);if(selected)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');});
+  document.body.classList.toggle('page-cover',page==='destaques');
+  if(updateHistory&&location.hash!==`#${page}`)history.pushState({page},'',`#${page}`);
+  requestAnimationFrame(()=>renderVisibleCharts(page));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('a[href^="#"]').forEach(link=>link.addEventListener('click',event=>{const page=link.getAttribute('href').slice(1);if(pageIds.includes(page)){event.preventDefault();navigateToPage(page);}}));
+window.addEventListener('popstate',()=>navigateToPage(location.hash.slice(1),false));
+let chartResizeFrame=0;
+window.addEventListener('resize',()=>{if(chartResizeFrame)return;chartResizeFrame=requestAnimationFrame(()=>{chartResizeFrame=0;renderVisibleCharts(document.querySelector('main .section.active')?.id);});});
+loadReport();
+navigateToPage(location.hash.slice(1)||'destaques',false);
+</script>
+</body>
+</html>

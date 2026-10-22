@@ -1,0 +1,14 @@
+# Credenciais e tokens de acesso do Google Drive (NUNCA SUBIR)
+scripts/token.json
+scripts/credentials.json
+scripts/service_account.json
+
+# Arquivos temporários do Excel/Office
+~$*.xlsx
+*.tmp
+
+# Cache Python e ambientes virtuais
+__pycache__/
+*.pyc
+.venv/
+env/
