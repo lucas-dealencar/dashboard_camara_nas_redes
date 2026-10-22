@@ -1,7 +1,7 @@
 {
   "edition": "41ª semana · 1ª edição",
   "period": "5 a 11 de outubro de 2026",
-  "summary": "O engajamento aumentou 120,2% em relação à semana anterior e ficou 0,6% abaixo da mediana do ano. O destaque foi a proposta PL 994/2026, que concentrou 22,7% dos pontos de engajamento da semana.",
+  "summary": "O engajamento aumentou 120,2% em relação à semana anterior e ficou 0,6% abaixo da mediana do ano. O destaque foi a proposta PL DE TESTE, que concentrou 4090,3% dos pontos de engajamento da semana.",
   "kpis": [
     {
       "label": "ENGAJAMENTO GERAL",
@@ -87,6 +87,18 @@
   ],
   "topics": [],
   "proposals": [
+    {
+      "id": "PL DE TESTE",
+      "description": "EMENTA TESTE",
+      "status": "SITUACAO TESTE",
+      "engagement": 50000000,
+      "share": 4090.3,
+      "posts": 50000000,
+      "authors": 50000000,
+      "reach": 50000000,
+      "change": null,
+      "channels": []
+    },
     {
       "id": "PL 994/2026",
       "description": "Extingue a ANCINE e redistribui suas competências.",
@@ -192,18 +204,6 @@
       "posts": 3,
       "authors": 3,
       "reach": 680469,
-      "change": null,
-      "channels": []
-    },
-    {
-      "id": "PL 3613/2026",
-      "description": "Proíbe afiliados de apostas de lucrar com as perdas dos usuários.",
-      "status": "Aguarda despacho do Presidente da Câmara",
-      "engagement": 16329,
-      "share": 1.3,
-      "posts": 12,
-      "authors": 12,
-      "reach": 340488,
       "change": null,
       "channels": []
     }
