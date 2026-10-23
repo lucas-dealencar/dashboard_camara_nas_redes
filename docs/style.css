@@ -2,7 +2,6 @@
    Barra de navegação + Filtro de Proposta + Filtro global de Semana (Power BI)
    ========================================================================== */
 
-/* Barra de navegação alinhada ao container de 1000px do main */
 .main-nav .nav-inner {
   display: flex;
   align-items: center;
@@ -98,7 +97,6 @@
   color: var(--ink);
 }
 
-/* Dropdown de sugestões ao pesquisar/clicar em "Selecione a Proposta" */
 .proposta-sugestoes {
   display: none;
   position: absolute;
@@ -176,7 +174,7 @@
 }
 
 /* ==========================================================================
-   Filtro Global de Semana ("Power BI") reposicionado acima dos KPIs
+   Filtro Global de Semana ("Power BI")
    ========================================================================== */
 .top-filter-bar {
   display: flex;
@@ -261,7 +259,6 @@
   text-overflow: ellipsis;
 }
 
-/* Painel dropdown estilo Power BI: busca + lista + rodapé */
 .periodo-painel {
   display: none;
   position: absolute;
@@ -459,7 +456,7 @@
 }
 
 /* ==========================================================================
-   Novos Cartões de "Propostas em Destaque" (Empilhados 1 abaixo do outro)
+   Cartões de "Propostas em Destaque" (Empilhados 1 abaixo do outro)
    ========================================================================== */
 .section-heading-lined {
   margin: 34px 0 20px;
@@ -611,7 +608,23 @@
   color: var(--ink);
 }
 
-/* Responsividade */
+/* ==========================================================================
+   Ajuste do Gráfico na aba Analítico (Centralizado e Responsivo)
+   ========================================================================== */
+.chart-bars {
+  min-height: 235px;
+  padding-top: 8px;
+  width: 100%;
+}
+
+.chart-bars svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Responsividade geral */
 @media (max-width: 850px) {
   .main-nav .nav-inner {
     flex-direction: column;
