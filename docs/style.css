@@ -608,10 +608,33 @@
   margin: 0 auto;
 }
 
-/* Remoção de Foco/Outline nativo no Gráfico de Colunas */
 .trend-point { outline: none !important; }
 .trend-point:focus { outline: none !important; }
 .trend-point:focus-visible { outline: none !important; }
+
+/* ==========================================================================
+   Rodapé - Imagem Diminuída
+   ========================================================================== */
+.site-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  min-height: 4.3vw;
+  margin: 0;
+  padding: 12px 0;
+  background: #092e36;
+}
+
+.footer-art {
+  display: block;
+  /* Largura reduzida para deixar a imagem de rodapé menor e mais discreta */
+  width: min(35vw, 600px);
+  max-width: 100%;
+  height: auto;
+  margin-left: auto;
+  object-fit: contain;
+}
 
 /* Responsividade geral */
 @media (max-width: 850px) {

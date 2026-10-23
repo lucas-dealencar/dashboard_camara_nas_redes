@@ -37,7 +37,7 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
 .methodology{padding:10px 0 20px}.method-tabs{display:flex;gap:8px;border-bottom:1px solid var(--line);margin:21px 0 0;overflow-x:auto}.method-tab{position:relative;white-space:nowrap;padding:11px 14px 12px;background:none;border:0;color:#6b878c;font-size:12px;font-weight:700;cursor:pointer}.method-tab.active{color:var(--ink)}.method-tab.active:after{content:"";position:absolute;bottom:-1px;left:12px;right:12px;height:3px;background:var(--mint);border-radius:3px 3px 0 0}.method-content{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding-top:18px}.method-card{padding:19px 21px;background:var(--pale);border-radius:13px}.method-card h3{margin:0 0 8px;font-size:15px;letter-spacing:-.02em}.method-card p,.method-card li{color:#527177;font-size:12px;line-height:1.62}.method-card p{margin:0}.method-caveat{display:flex;gap:12px;align-items:start;margin-top:16px;padding:17px 20px;background:#e5efef;border-left:4px solid var(--mint);border-radius:8px}.caveat-icon{display:flex;flex:none;width:20px;height:20px;align-items:center;justify-content:center;background:var(--ink);border-radius:50%;color:white;font-size:12px;font-weight:800}.method-caveat p{margin:0;color:#527177;font-size:11px;line-height:1.55}
 .proposal-subnav{position:sticky;top:var(--nav-h,60px);z-index:8;margin:18px 0 18px;padding:13px 16px 0;background:rgba(242,248,248,.97);border:1px solid #d5e3e4;border-radius:12px;box-shadow:0 8px 24px rgba(7,51,58,.06);backdrop-filter:blur(12px)}.proposal-subnav-heading{display:flex;align-items:center;justify-content:space-between}.proposal-subnav-heading .eyebrow{margin:0}.proposal-subnav .proposal-tabs{gap:2px;padding:7px 0 0}.proposal-subnav .proposal-tab{display:inline-flex;align-items:center;gap:8px;border:0;border-bottom:3px solid transparent;border-radius:0;background:transparent;color:#55767b;padding:12px 13px;font-size:12px}.proposal-subnav .proposal-tab:hover{background:rgba(215,230,232,.55);color:var(--ink)}.proposal-subnav .proposal-tab.active{border-bottom-color:var(--mint);background:transparent;color:var(--ink)}.proposal-tab-rank{display:grid;place-items:center;width:23px;height:23px;border-radius:5px;background:#c4d9dc;color:#476a70;font-size:10px;font-weight:800}.proposal-tab.active .proposal-tab-rank{background:var(--ink);color:#fff}
 .site-footer{display:flex;justify-content:flex-end;align-items:center;width:100%;min-height:4.3vw;margin:0;padding:7px 0;background:#092e36}
-.footer-art{display:block;width:min(56vw,1228px);max-width:100%;height:auto;margin-left:auto;object-fit:contain}
+.footer-art{display:block;width:min(35vw,600px);max-width:100%;height:auto;margin-left:auto;object-fit:contain}
 .toast{position:fixed;z-index:30;left:50%;bottom:24px;transform:translate(-50%,18px);opacity:0;padding:12px 16px;border-radius:8px;background:var(--ink);color:#fff;font-size:12px;font-weight:700;box-shadow:0 10px 30px #06262a33;transition:.2s;pointer-events:none}.toast.show{transform:translate(-50%,0);opacity:1}
 
 /* ==========================================================================
@@ -859,17 +859,44 @@ function chartLabelLines(value,maxChars){
   if(line)lines.push(line);return lines;
 }
 
-function renderBarChart(target,data,{max=null,labels=true,compact=true}={}) {
+function renderBarChart(target, data, {max=null, labels=true, compact=true, colorMap=null}={}) {
   const node=document.getElementById(target);
   if(!node) return;
   if(!data.length){node.innerHTML='<div class="empty-state">Ainda não há dados suficientes para este gráfico.</div>';return;}
   const W=Math.max(320,Math.round(node.clientWidth||420)),top=12,bottom=30,topic=target==='topic-chart',left=topic?Math.max(145,Math.min(176,Math.round(W*.39))):(labels?Math.max(96,Math.min(122,Math.round(W*.29))):34),right=62,rowHeight=topic?44:48,H=Math.max(215,data.length*rowHeight+top+bottom),maxVal=max||Math.max(...data.map(d=>d.value||0))*1.18||1,row=(H-top-bottom)/Math.max(data.length,1),barH=Math.min(19,row*.42),plotW=W-left-right;let out='';
   (W<380?[0,.5,1]:[0,.25,.5,.75,1]).forEach(p=>{const xx=left+plotW*p;out+=`<line class="gridline" x1="${xx}" y1="${top}" x2="${xx}" y2="${H-bottom}"/><text class="axis-label" x="${xx}" y="${H-7}" text-anchor="middle">${formatNumber(maxVal*p,compact)}</text>`;});
-  data.forEach((d,i)=>{const yy=top+row*i+(row-barH)/2,bw=plotW*Math.max(d.value||0,0)/maxVal,lines=chartLabelLines(d.name,topic?Math.max(16,Math.floor((left-18)/5.4)):24),labelY=yy+barH/2-((lines.length-1)*5.5),label=lines.map((line,j)=>`<tspan x="${left-8}" dy="${j?11:0}">${esc(line)}</tspan>`).join('');out+=`<text class="axis-label chart-category" x="${left-8}" y="${labelY}" text-anchor="end">${label}</text><rect class="bar ${i%2?'bar-secondary':''}" x="${left}" y="${yy}" width="${Math.max(bw,1.5)}" height="${barH}" rx="4"><title>${esc(d.name)}: ${esc(d.display||formatNumber(d.value))}</title></rect><text class="value-label" x="${Math.min(W-right+2,left+bw+6)}" y="${yy+barH*.78}">${esc(d.display||formatNumber(d.value,compact))}</text>`;});
+  
+  data.forEach((d,i)=>{
+    const yy = top + row*i + (row-barH)/2;
+    const bw = plotW * Math.max(d.value||0,0) / maxVal;
+    const lines = chartLabelLines(d.name,topic ? Math.max(16,Math.floor((left-18)/5.4)) : 24);
+    const labelY = yy + barH/2 - ((lines.length-1)*5.5);
+    const label = lines.map((line,j)=>`<tspan x="${left-8}" dy="${j?11:0}">${esc(line)}</tspan>`).join('');
+    
+    // Injeção de cor via colorMap caso seja o gráfico de canais
+    const fillAttr = (colorMap && colorMap[d.name]) ? `style="fill: ${colorMap[d.name]} !important;"` : '';
+    
+    out+=`<text class="axis-label chart-category" x="${left-8}" y="${labelY}" text-anchor="end">${label}</text>
+          <rect class="bar ${i%2?'bar-secondary':''}" x="${left}" y="${yy}" width="${Math.max(bw,1.5)}" height="${barH}" rx="4" ${fillAttr}><title>${esc(d.name)}: ${esc(d.display||formatNumber(d.value))}</title></rect>
+          <text class="value-label" x="${Math.min(W-right+2,left+bw+6)}" y="${yy+barH*.78}">${esc(d.display||formatNumber(d.value,compact))}</text>`;
+  });
+  
   node.innerHTML=svgWrap(`${W} ${H}`,out,'Gráfico de barras em pontos de engajamento: '+data.map(d=>`${d.name}, ${d.display||formatNumber(d.value)}`).join('; '));
 }
 
-function renderChannelChart(){renderBarChart('channel-chart',report.channels||[],{labels:true,compact:true});}
+function renderChannelChart(){
+  // Aplicando o código de cores para as redes sociais conforme solicitado
+  renderBarChart('channel-chart', report.channels||[], {
+    labels: true, 
+    compact: true,
+    colorMap: {
+      'Instagram': '#C13584',
+      'X (Twitter)': '#101010',
+      'Facebook': '#1877F2',
+      'Bluesky': '#1185FE'
+    }
+  });
+}
 function renderTopics(){renderBarChart('topic-chart',report.topics||[],{labels:true,compact:true});}
 
 function renderShareChart() {
@@ -915,11 +942,13 @@ function renderMethod() {
 
 document.querySelectorAll('.method-tab').forEach(b=>b.addEventListener('click',()=>{activeMethod=b.dataset.method;document.querySelectorAll('.method-tab').forEach(x=>x.classList.toggle('active',x===b));renderMethod();}));
 const pageIds=['destaques','analitico','propostas','metodologia'];
+
 function renderVisibleCharts(page){
   if(!report)return;
   if(page==='destaques')renderTrend();
   if(page==='analitico'){renderChannelChart();renderShareChart();renderTopics();}
 }
+
 function navigateToPage(page,updateHistory=true) {
   if(!pageIds.includes(page))page='destaques';
   document.querySelectorAll('main .section').forEach(section=>section.classList.toggle('active',section.id===page));
@@ -927,8 +956,15 @@ function navigateToPage(page,updateHistory=true) {
   document.body.classList.toggle('page-cover',page==='destaques');
   if(updateHistory&&location.hash!==`#${page}`)history.pushState({page},'',`#${page}`);
   requestAnimationFrame(()=>renderVisibleCharts(page));
-  window.scrollTo({top:0,behavior:'smooth'});
+  
+  // Impede de rolar a tela toda pro topo se estivermos mais abaixo na página.
+  // Vai travar a rolagem exatamente abaixo do menu de navegação.
+  const navTop = document.querySelector('.main-nav').offsetTop;
+  if (window.scrollY > navTop) {
+      window.scrollTo({top: navTop, behavior:'smooth'});
+  }
 }
+
 document.querySelectorAll('a[href^="#"]').forEach(link=>link.addEventListener('click',event=>{const page=link.getAttribute('href').slice(1);if(pageIds.includes(page)){event.preventDefault();navigateToPage(page);}}));
 window.addEventListener('popstate',()=>navigateToPage(location.hash.slice(1),false));
 let chartResizeFrame=0;
