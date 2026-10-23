@@ -628,7 +628,6 @@
 
 .footer-art {
   display: block;
-  /* Largura reduzida para deixar a imagem de rodapé menor e mais discreta */
   width: min(35vw, 600px);
   max-width: 100%;
   height: auto;
