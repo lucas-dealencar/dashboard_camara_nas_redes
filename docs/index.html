@@ -18,11 +18,13 @@
 :root{--ink:#07333a;--ink-2:#18464d;--mint:#36c7a6;--pale:#d7e6e8;--paper:#f2f8f8;--white:#fff;--muted:#718b90;--line:#b7cdd0;--red:#c3423b;--radius:21px;--shadow:0 10px 28px rgba(7,51,58,.055)}
 *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;background:var(--paper);color:var(--ink);font-family:"DM Sans",Arial,sans-serif;font-size:15px}button,select,input{font:inherit;color:inherit}button,a{-webkit-tap-highlight-color:transparent}a{color:inherit}
 
-/* Correção da capa: limpa a sobreposição e deixa apenas o SVG de fundo com o resumo correto */
+/* Correção da capa: adicionando título e linha de volta e reajustando os espaços */
 .cover{position:relative;background:#07333a;line-height:0;overflow:hidden;aspect-ratio:1440/568}
 .cover>img.cover-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
 .cover-content{position:absolute;inset:0;color:#fff}
-.cover-summary{position:absolute;left:10%;top:58%;width:50%;max-width:780px;margin:0;color:rgba(235,248,249,.85);font-size:clamp(13px,1.15vw,16px);line-height:1.4}
+.cover-content h1{position:absolute;left:10%;top:36%;width:80%;margin:0;color:#fff;font-family:Manrope,"DM Sans",sans-serif;font-size:clamp(30px,3.8vw,64px);font-weight:700;letter-spacing:-.04em;line-height:1.05}
+.cover-divider{position:absolute;left:10%;top:57%;width:75%;max-width:860px;height:1px;background:rgba(255,255,255,.3)}
+.cover-summary{position:absolute;left:10%;top:62%;width:70%;max-width:800px;margin:0;color:rgba(235,248,249,.85);font-size:clamp(13px,1.15vw,16px);line-height:1.5}
 .cover-meta{position:absolute;right:clamp(22px,8vw,120px);bottom:30px;display:flex;gap:8px;align-items:center;line-height:1;font-size:12px;color:#fff;background:rgba(7,51,58,.75);padding:10px 13px;border:1px solid rgba(255,255,255,.15);border-radius:8px;backdrop-filter:blur(10px)}.cover-meta span+span:before{content:"·";margin-right:8px;color:var(--mint)}
 
 .main-nav{position:sticky;top:0;z-index:10;background:rgba(215,230,232,.96);border-top:3px solid var(--mint);box-shadow:0 5px 18px rgba(7,51,58,.06);backdrop-filter:blur(14px)}.nav-link{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:7px 12px;color:var(--ink-2);border:1px solid #4a6c71;border-radius:5px;text-decoration:none;font-size:13.5px;font-weight:600;white-space:nowrap;background:transparent;transition:background .18s,color .18s,border .18s,transform .18s;cursor:pointer}.nav-link:hover{transform:translateY(-1px);border-color:var(--ink)}.nav-link.active{background:var(--ink);border-color:var(--ink);color:#fff}.nav-icon{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -47,6 +49,8 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
   <header class="cover" id="inicio" aria-label="Câmara nas Redes, destaques da semana">
     <img class="cover-art" src="Wireframe - 3.svg" onerror="this.onerror=null;this.src='assets/capa.svg'" alt="" aria-hidden="true">
     <div class="cover-content">
+      <h1>Destaques da Semana:<br>5 Propostas com maior engajamento.</h1>
+      <div class="cover-divider"></div>
       <p class="cover-summary" id="cover-summary">Carregando síntese da semana...</p>
     </div>
     <div class="cover-meta"><span id="edition-label">—</span><span id="period-label">—</span></div>
@@ -107,6 +111,11 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
     </div>
 
     <section class="section overview active" id="destaques">
+      <div class="section-heading-lined">
+        <h2>PROPOSTAS EM DESTAQUE</h2>
+      </div>
+      <div id="highlight-cards" class="proposal-list"></div>
+
       <div class="kpi-grid" id="kpi-grid"></div>
 
       <article class="panel trend-panel">
@@ -123,11 +132,6 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
         </div>
         <div class="trend-detail" id="trend-detail" aria-live="polite"></div>
       </article>
-
-      <div class="section-heading-lined">
-        <h2>PROPOSTAS EM DESTAQUE</h2>
-      </div>
-      <div id="highlight-cards" class="proposal-list"></div>
     </section>
 
     <section class="section analytics" id="analitico">
@@ -612,7 +616,6 @@ function renderCards() {
       <div class="proposal-card-right">
         <div class="proposal-summary">${esc(p.description)}</div>
         <p class="card-copy">${esc(buildFallbackSummary(p))}</p>
-        <button type="button" class="card-more" data-open="${idx}">Saiba mais ↗</button>
       </div>
     </article>
   `).join('');

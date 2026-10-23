@@ -459,7 +459,7 @@
    Cartões de "Propostas em Destaque" (Empilhados 1 abaixo do outro)
    ========================================================================== */
 .section-heading-lined {
-  margin: 34px 0 20px;
+  margin: 0 0 20px; /* Margem superior zerada pois agora é o primeiro elemento */
 }
 
 .section-heading-lined h2 {
@@ -476,6 +476,7 @@
   display: flex;
   flex-direction: column;
   gap: 18px;
+  margin-bottom: 38px; /* Espaçamento entre as propostas e os gráficos/KPIs abaixo */
 }
 
 .proposal-card {
@@ -585,27 +586,6 @@
   line-height: 1.45;
   color: #2f5258;
   text-align: left;
-}
-
-.card-more {
-  align-self: flex-start;
-  margin-top: 10px;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: #6a888d;
-  font-size: 11px;
-  font-weight: 700;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.proposal-card:first-child .card-more {
-  align-self: flex-end;
-}
-
-.card-more:hover {
-  color: var(--ink);
 }
 
 /* ==========================================================================
