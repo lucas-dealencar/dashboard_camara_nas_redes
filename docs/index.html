@@ -18,7 +18,6 @@
 :root{--ink:#07333a;--ink-2:#18464d;--mint:#36c7a6;--pale:#d7e6e8;--paper:#f2f8f8;--white:#fff;--muted:#718b90;--line:#b7cdd0;--red:#c3423b;--radius:21px;--shadow:0 10px 28px rgba(7,51,58,.055)}
 *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;background:var(--paper);color:var(--ink);font-family:"DM Sans",Arial,sans-serif;font-size:15px}button,select,input{font:inherit;color:inherit}button,a{-webkit-tap-highlight-color:transparent}a{color:inherit}
 
-/* Correção da capa: adicionando título e linha de volta e reajustando os espaços */
 .cover{position:relative;background:#07333a;line-height:0;overflow:hidden;aspect-ratio:1440/568}
 .cover>img.cover-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
 .cover-content{position:absolute;inset:0;color:#fff}
@@ -111,13 +110,16 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
     </div>
 
     <section class="section overview active" id="destaques">
+      <!-- 1. Propostas em destaque no topo -->
       <div class="section-heading-lined">
         <h2>PROPOSTAS EM DESTAQUE</h2>
       </div>
       <div id="highlight-cards" class="proposal-list"></div>
 
+      <!-- 2. Cartões de KPI no meio -->
       <div class="kpi-grid" id="kpi-grid"></div>
 
+      <!-- 3. Gráfico de Evolução no final -->
       <article class="panel trend-panel">
         <div class="panel-heading">
           <h2 class="panel-title-sm">EVOLUÇÃO NAS ÚLTIMAS 4 SEMANAS</h2>
