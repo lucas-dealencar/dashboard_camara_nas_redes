@@ -111,7 +111,7 @@ def main():
     ap.add_argument("--manual", action="store_true", help="Roda uma vez e encerra")
     ap.add_argument(
         "--horario",
-        default="07:30",
+        default="11:30",
         help="Horário diário para atualização automática",
     )
     args = ap.parse_args()
