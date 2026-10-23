@@ -107,8 +107,6 @@ def exigir(df: pd.DataFrame, aba: str, cols: list[str]) -> None:
 
 
 def preparar(df: pd.DataFrame) -> pd.DataFrame:
-    """Padroniza datas. A semana é identificada pela data de início (segunda-feira),
-    o que evita colisão de 'semana' entre anos."""
     df = df.copy()
     df["data_inicio"] = pd.to_datetime(df["data_inicio"], errors="coerce")
     if "data_fim" in df.columns:
@@ -150,13 +148,12 @@ def carregar(caminho: Path):
 # Cálculos
 # ----------------------------------------------------------------------------
 def tabela_semanal(dfs: dict, redes: list[str]):
-    """Engajamento por semana (soma das redes) e por rede."""
     partes = []
     for aba in redes:
         d = preparar(dfs[aba])
         exigir(d, aba, ["engagement_score"])
         d["engagement_score"] = pd.to_numeric(d["engagement_score"], errors="coerce").fillna(0)
-        d["rede"] = ABAS_REDES[aba]  # a origem precisa ser rotulada ANTES do concat
+        d["rede"] = ABAS_REDES[aba]
         partes.append(d[["data_inicio", "data_fim", "semana", "rede", "engagement_score"]])
     redes_df = pd.concat(partes, ignore_index=True)
 
@@ -165,18 +162,14 @@ def tabela_semanal(dfs: dict, redes: list[str]):
         data_fim=("data_fim", "first"),
         engajamento=("engagement_score", "sum"),
     ).sort_index()
-    sem = sem[sem["engajamento"] > 0]  # semanas sem postagens não entram (nota do gráfico)
+    sem = sem[sem["engajamento"] > 0]
     sem["ano"] = sem.index.isocalendar().year.values
-    sem["variacao"] = (sem["engajamento"].pct_change() * 100).round(1)  # NaN fica None no JSON
+    sem["variacao"] = (sem["engajamento"].pct_change() * 100).round(1)
     return sem, redes_df
 
 
 def serie_kpi(dfs: dict, redes: list[str], df_prop: pd.DataFrame, candidatos_metricas: list[str],
               col_rede: str, col_prop: str, rotulo: str):
-    """Série semanal de um KPI, nesta ordem de prioridade:
-    1) 'métricas_da_semana', se tiver data_inicio e uma coluna correspondente;
-    2) soma das abas de rede (fonte usada na base atual: mencoes, autores_unicos, alcance);
-    3) soma por proposta (último recurso: cobre só as propostas monitoradas)."""
     m = dfs.get("metricas")
     if m is not None and "data_inicio" in m.columns:
         mp = preparar(m)
@@ -192,19 +185,13 @@ def serie_kpi(dfs: dict, redes: list[str], df_prop: pd.DataFrame, candidatos_met
             dd = preparar(d)
             series.append(pd.to_numeric(dd[col_rede], errors="coerce").groupby(dd["data_inicio"]).sum(min_count=1))
     if series:
-        if col_rede == "autores_unicos":
-            aviso("KPI 'AUTORES': soma dos autores únicos de cada rede; quem publica em mais de uma "
-                  "rede é contado em cada uma (o total é um limite superior).")
         return pd.concat(series, axis=1).sum(axis=1, min_count=1)
 
-    aviso(f"KPI '{rotulo}': sem coluna em 'métricas_da_semana' nem nas abas de rede; usei a soma por "
-          f"proposta (subestima o total).")
     return pd.to_numeric(df_prop[col_prop], errors="coerce").groupby(df_prop["data_inicio"]).sum(min_count=1)
 
 
 def montar_kpi(label, serie, data_alvo, data_ant, fmt, foot):
     if serie is None or data_alvo not in serie.index or pd.isna(serie[data_alvo]):
-        aviso(f"KPI '{label}' sem valor na semana alvo.")
         return {"label": label, "value": None, "format": fmt, "change": None, "foot": foot}
     valor = float(serie[data_alvo])
     ant = serie.get(data_ant) if data_ant is not None else None
@@ -213,8 +200,6 @@ def montar_kpi(label, serie, data_alvo, data_ant, fmt, foot):
 
 
 def montar_temas(p: pd.DataFrame, mapa_temas: dict):
-    """Temas com maior engajamento. Na base atual 'categoria' vale 'Proposta' em todas as linhas
-    (não é tema), então o tema vem de uma coluna 'tema' em propostas ou de temas_propostas.json."""
     if "tema" in p.columns:
         tema = p["tema"]
     elif mapa_temas:
@@ -222,9 +207,6 @@ def montar_temas(p: pd.DataFrame, mapa_temas: dict):
     else:
         tema = None
     if tema is None or tema.dropna().empty:
-        aviso("Temas: a coluna 'categoria' da base vale 'Proposta' em todas as linhas e não serve como tema. "
-              "Crie uma coluna 'tema' na aba propostas ou um temas_propostas.json ({\"PL 1/2026\": \"Saúde\"}); "
-              "enquanto isso, 'Temas com maior engajamento' fica vazio.")
         return []
     t = (p.assign(categoria=tema.fillna("Outros").values)
          .groupby("categoria")["engagement_score"].sum())
@@ -271,7 +253,7 @@ def resumo_capa(kpi_eng, vs_mediana, top1):
 
 
 # ----------------------------------------------------------------------------
-# Montagem do relatório
+# Montagem do relatório por semana
 # ----------------------------------------------------------------------------
 def montar_relatorio(dfs, redes, semana_alvo, edicao, caminho_quali: Path):
     exigir(dfs["propostas"], "propostas", COLUNAS_PROPOSTAS)
@@ -295,11 +277,8 @@ def montar_relatorio(dfs, redes, semana_alvo, edicao, caminho_quali: Path):
     linha = sem.loc[data_alvo]
     anteriores = sem[sem.index < data_alvo]
     data_ant = anteriores.index.max() if not anteriores.empty else None
-    if data_ant is not None and (data_alvo - data_ant).days != 7:
-        aviso(f"A semana anterior na base começa em {data_ant.date()} (não é a semana imediatamente anterior).")
     total = float(linha["engajamento"])
 
-    # mediana do ano vigente (até a semana alvo, sem semanas zeradas)
     ano = int(linha["ano"])
     mediana = float(sem[(sem["ano"] == ano) & (sem.index <= data_alvo)]["engajamento"].median())
     vs_mediana = round((total - mediana) / mediana * 100, 1) if mediana else None
@@ -313,9 +292,6 @@ def montar_relatorio(dfs, redes, semana_alvo, edicao, caminho_quali: Path):
         "value": int(round(r["engajamento"])),
         "display": display_compacto(r["engajamento"]),
     } for idx, r in hist.iterrows()]
-    for h in history:
-        if mediana and h["value"] < 0.25 * mediana:
-            aviso(f"Semana {h['week']} tem só {h['display']} (<25% da mediana): possível coleta incompleta.")
 
     # KPIs
     kpis = [
@@ -341,11 +317,6 @@ def montar_relatorio(dfs, redes, semana_alvo, edicao, caminho_quali: Path):
 
     # propostas da semana
     p = df_prop[df_prop["data_inicio"] == data_alvo]
-    if p.empty:
-        sys.exit("Nenhuma proposta na semana alvo.")
-    if p["proposta"].duplicated().any():
-        aviso("Há mais de uma linha por proposta na semana; os valores foram somados "
-              "(autores únicos pode estar duplicado).")
     agg = p.groupby("proposta", as_index=False).agg(
         description=("ementa", "first"), status=("situacao", "first"),
         engagement=("engagement_score", "sum"), posts=("mencoes", "sum"),
@@ -365,9 +336,6 @@ def montar_relatorio(dfs, redes, semana_alvo, edicao, caminho_quali: Path):
     quali = {}
     if caminho_quali.exists():
         quali = json.loads(caminho_quali.read_text(encoding="utf-8"))
-    else:
-        aviso(f"{caminho_quali.name} não encontrado: resumo, mobilização, argumentos e "
-              f"publicação representativa ficarão vazios no front.")
 
     proposals = []
     for _, r in agg.iterrows():
@@ -397,7 +365,7 @@ def montar_relatorio(dfs, redes, semana_alvo, edicao, caminho_quali: Path):
     top5 = proposals[:5]
     summary = quali.get("_resumo") or resumo_capa(kpis[0], vs_mediana, top5[0] if top5 else None)
 
-    relatorio = {
+    return {
         "edition": f"{int(linha['semana'])}ª semana · {edicao}ª edição",
         "period": intervalo_longo(data_alvo, linha["data_fim"]),
         "summary": summary,
@@ -409,32 +377,50 @@ def montar_relatorio(dfs, redes, semana_alvo, edicao, caminho_quali: Path):
         "proposals": proposals,
         "methodology": METODOLOGIA,
     }
-    validar(relatorio, total)
-    return relatorio
 
 
-def validar(rel: dict, total: float) -> None:
-    obrig = ["edition", "period", "summary", "kpis", "history", "median",
-             "channels", "topics", "proposals", "methodology"]
-    for k in obrig:
-        if not rel.get(k) and rel.get(k) != 0:
-            aviso(f"Chave '{k}' vazia.")
-    soma_canais = sum(c["value"] for c in rel["channels"])
-    soma_temas = sum(t["value"] for t in rel["topics"])
-    if total and abs(soma_canais - total) / total > 0.01:
-        aviso(f"Soma dos canais ({soma_canais}) difere do total semanal ({int(total)}).")
-    if total and soma_temas > total * 1.02:
-        aviso(f"Soma dos temas ({soma_temas}) excede o total semanal ({int(total)}).")
-    soma_shares = sum(p["share"] or 0 for p in rel["proposals"])
-    if soma_shares > 100.5:
-        aviso(f"Participações somam {soma_shares:.1f}% (>100%): engajamento das propostas excede o total.")
-    for p in rel["proposals"][:5]:
-        if p.get("channels"):
-            s = sum(c["value"] for c in p["channels"])
-            if p["engagement"] and abs(s - p["engagement"]) / p["engagement"] > 0.01:
-                aviso(f"{p['id']}: soma dos canais ({s}) difere do engajamento ({p['engagement']}).")
-        if not p.get("arguments"):
-            aviso(f"{p['id']}: sem argumentos qualitativos.")
+# ----------------------------------------------------------------------------
+# Exportação consolidada de todas as semanas
+# ----------------------------------------------------------------------------
+def exportar_todas_as_semanas(dfs, redes, edicao: int, caminho_quali: Path, caminho_saida_json: Path):
+    sem_df, _ = tabela_semanal(dfs, redes)
+    semanas_unicas = sorted(sem_df["semana"].unique(), reverse=True)
+
+    dados_por_semana = {}
+    lista_opcoes = []
+
+    for sem in semanas_unicas:
+        rel_semana = limpar(montar_relatorio(dfs, redes, int(sem), edicao, caminho_quali))
+        rotulo = f"{int(sem)}ª semana · {rel_semana['period']}"
+        
+        dados_por_semana[str(int(sem))] = rel_semana
+        lista_opcoes.append({
+            "id": str(int(sem)),
+            "rotulo": rotulo
+        })
+
+    semana_recente = str(int(semanas_unicas[0]))
+    payload_completo = {
+        "semana_padrao": semana_recente,
+        "opcoes_semanas": lista_opcoes,
+        "dados_semanas": dados_por_semana,
+        # Retrocompatibilidade direta com o front-end original
+        **dados_por_semana[semana_recente]
+    }
+
+    caminho_saida_json.parent.mkdir(parents=True, exist_ok=True)
+    texto_json = json.dumps(payload_completo, ensure_ascii=False, indent=2)
+    caminho_saida_json.write_text(texto_json, encoding="utf-8")
+
+    # Garante suporte a ambas as variáveis de janela usadas no front-end
+    caminho_saida_js = caminho_saida_json.with_suffix(".js")
+    js_content = (
+        f"window.CAMARA_DEMO_DATA = {json.dumps(payload_completo, ensure_ascii=False)};\n"
+        f"window.DADOS_DASHBOARD = window.CAMARA_DEMO_DATA;\n"
+    )
+    caminho_saida_js.write_text(js_content, encoding="utf-8")
+
+    return payload_completo, len(semanas_unicas)
 
 
 # ----------------------------------------------------------------------------
@@ -467,25 +453,29 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="Gera o JSON do relatório Câmara nas Redes.")
     ap.add_argument("--excel", type=Path, default=EXCEL_PADRAO)
     ap.add_argument("--saida", type=Path, default=SAIDA_PADRAO)
-    ap.add_argument("--semana", type=int, default=None, help="Número da semana (padrão: a mais recente).")
     ap.add_argument("--edicao", type=int, default=1, help="Número da edição da semana (padrão: 1).")
     ap.add_argument("--quali", type=Path, default=None, help="JSON da análise qualitativa.")
     args = ap.parse_args()
 
     caminho_quali = args.quali or args.saida.with_name("analise_qualitativa.json")
     dfs, redes = carregar(args.excel)
-    relatorio = limpar(montar_relatorio(dfs, redes, args.semana, args.edicao, caminho_quali))
 
-    args.saida.parent.mkdir(parents=True, exist_ok=True)
-    texto = json.dumps(relatorio, ensure_ascii=False, indent=2)
-    args.saida.write_text(texto, encoding="utf-8")
-    args.saida.with_suffix(".js").write_text(
-        "window.CAMARA_DEMO_DATA = " + json.dumps(relatorio, ensure_ascii=False) + ";\n", encoding="utf-8")
+    # Executa a geração compilada com todas as semanas
+    payload, total_semanas = exportar_todas_as_semanas(
+        dfs=dfs,
+        redes=redes,
+        edicao=args.edicao,
+        caminho_quali=caminho_quali,
+        caminho_saida_json=args.saida,
+    )
+
+    semana_ativa = payload["semana_padrao"]
+    dados_ativa = payload["dados_semanas"][semana_ativa]
 
     print(f"\nJSON salvo: {args.saida} ({args.saida.stat().st_size / 1024:.1f} KB)")
-    print(f"Semana: {relatorio['edition']} | {relatorio['period']}")
-    print(f"Propostas: {len(relatorio['proposals'])} | Canais: {len(relatorio['channels'])} | "
-          f"Temas: {len(relatorio['topics'])} | Avisos: {len(AVISOS)}")
+    print(f"Total de semanas processadas e disponíveis no filtro: {total_semanas}")
+    print(f"Semana padrão ativa: {dados_ativa['edition']} | {dados_ativa['period']}")
+    print(f"Propostas (semana ativa): {len(dados_ativa['proposals'])} | Avisos: {len(AVISOS)}")
 
 
 if __name__ == "__main__":

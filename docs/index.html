@@ -17,31 +17,29 @@
   <style>
 :root{--ink:#07333a;--ink-2:#18464d;--mint:#36c7a6;--pale:#d7e6e8;--paper:#f2f8f8;--white:#fff;--muted:#718b90;--line:#b7cdd0;--red:#c3423b;--radius:21px;--shadow:0 10px 28px rgba(7,51,58,.055)}
 *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;background:var(--paper);color:var(--ink);font-family:"DM Sans",Arial,sans-serif;font-size:15px}button,select,input{font:inherit;color:inherit}button,a{-webkit-tap-highlight-color:transparent}a{color:inherit}.cover{position:relative;background:var(--ink);line-height:0;overflow:hidden}.cover>img{display:block;width:100%;height:auto;min-height:330px;max-height:640px;object-fit:cover;object-position:center}.cover-meta{position:absolute;right:clamp(22px,8vw,120px);bottom:30px;display:flex;gap:8px;align-items:center;line-height:1;font-size:12px;color:#fff;background:rgba(7,51,58,.75);padding:10px 13px;border:1px solid rgba(255,255,255,.15);border-radius:8px;backdrop-filter:blur(10px)}.cover-meta span+span:before{content:"·";margin-right:8px;color:var(--mint)}
-.main-nav{position:sticky;top:0;z-index:10;background:rgba(215,230,232,.96);border-top:3px solid var(--mint);box-shadow:0 5px 18px rgba(7,51,58,.06);backdrop-filter:blur(14px)}.nav-inner{max-width:1220px;margin:auto;min-height:57px;padding:8px 24px;display:flex;justify-content:center;align-items:center;gap:10px}.nav-link{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:8px 12px;color:var(--ink-2);border:1px solid #809ca0;border-radius:5px;text-decoration:none;font-size:14px;font-weight:600;white-space:nowrap;background:transparent;transition:background .18s,color .18s,border .18s,transform .18s;cursor:pointer}.nav-link:hover{transform:translateY(-1px);border-color:var(--ink)}.nav-link.active{background:var(--ink);border-color:var(--ink);color:#fff}.nav-icon{font-size:15px;font-weight:800;line-height:1}.import-link{margin-left:14px;border-color:transparent;color:#59787d}.import-link:hover{background:#c4dadd}
-main{max-width:1220px;margin:0 auto;padding:34px 30px 64px}.section{scroll-margin-top:82px}.overview{padding:4px 0 68px}.intro-row{display:flex;align-items:end;justify-content:space-between;gap:28px;margin:0 0 12px}.eyebrow{margin:0 0 8px;color:#66858a;font-size:10px;font-weight:800;letter-spacing:.13em}.section h1,.section h2,.section h3{font-family:Manrope,"DM Sans",sans-serif;letter-spacing:-.045em;margin:0;font-weight:800}.section h1{font-size:clamp(26px,3vw,38px);max-width:670px;line-height:1.1}.section h2{font-size:clamp(25px,2.6vw,34px);line-height:1.12}.section h3{font-size:19px;line-height:1.2}
-
-
-.summary-copy{max-width:775px;color:#5c787d;line-height:1.62;margin:0 0 28px;font-size:14px}.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin:20px 0 28px}.kpi-card{position:relative;min-height:151px;padding:21px 22px 18px;background:var(--pale);border-radius:19px;border-top:7px solid var(--ink);box-shadow:var(--shadow);overflow:hidden}.kpi-label{font-size:11px;font-weight:800;letter-spacing:.025em;color:#315b62}.kpi-value{display:block;margin:12px 0 6px;font-family:Manrope,sans-serif;font-size:clamp(27px,3vw,42px);line-height:1;font-weight:800;letter-spacing:-.06em;white-space:nowrap}.kpi-foot{font-size:12px;line-height:1.2;color:#46686e;font-weight:600}.kpi-change{display:inline-block;padding:3px 7px;border-radius:5px;margin-right:6px;background:rgba(195,66,59,.13);color:var(--red);font-weight:800}.kpi-change.up{background:rgba(54,199,166,.22);color:#175850}.panel{background:var(--pale);border-radius:19px;border-top:7px solid var(--ink);padding:22px 25px 24px;box-shadow:var(--shadow);min-width:0}.trend-panel{margin-bottom:42px;min-height:325px}.panel-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:17px}.panel-note{color:#6e898e;font-size:11px;font-weight:600;white-space:nowrap}.info,.icon-button{display:inline-flex;width:17px;height:17px;border-radius:50%;align-items:center;justify-content:center;background:var(--ink);color:white;font-family:serif;font-style:normal;font-size:11px;font-weight:bold;cursor:help}.chart{width:100%;min-height:180px;position:relative}.chart svg{display:block;width:100%;height:auto;overflow:visible}.chart text{font-family:"DM Sans",Arial,sans-serif;fill:#668186}.chart .axis-label{font-size:11px}.chart .value-label{fill:var(--ink);font-size:12px;font-weight:800}.chart .gridline{stroke:#b5c9cc;stroke-width:1;stroke-dasharray:3 4}.chart .median{stroke:#8ba4a8;stroke-width:1.5;stroke-dasharray:5 5}.chart .bar{fill:var(--ink);transition:fill .18s}.chart .bar:hover{fill:#138b7e}.chart .bar-secondary{fill:#6b9da1}.chart .active-dot{fill:var(--mint);stroke:var(--ink);stroke-width:2}.chart .area{fill:rgba(54,199,166,.14)}.chart .line{fill:none;stroke:var(--ink);stroke-width:3}.chart .dot{fill:var(--ink);stroke:var(--pale);stroke-width:3;cursor:pointer}.chart .dot:hover{fill:var(--mint)}.chart [data-tip]{cursor:pointer}.section-heading{display:flex;align-items:end;justify-content:space-between;gap:20px;margin:30px 0 19px}.section-heading>div .eyebrow{margin-bottom:6px}.text-link{font-size:12px;font-weight:700;text-decoration:none;color:#557c81;border-bottom:1px solid #91abad;padding-bottom:3px;white-space:nowrap}.text-link span{color:var(--ink);font-size:15px}.proposal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}.proposal-card{position:relative;display:flex;flex-direction:column;min-height:332px;padding:20px 20px 16px;border-radius:18px;background:var(--pale);border-top:7px solid var(--ink);box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s;cursor:pointer}.proposal-card:hover{transform:translateY(-4px);box-shadow:0 15px 34px rgba(7,51,58,.12)}.proposal-title-row{display:flex;align-items:center;gap:11px;margin-bottom:8px}.rank-badge{display:flex;align-items:center;justify-content:center;min-width:34px;height:32px;padding:0 7px;background:var(--ink);border-radius:6px;color:#fff;font-size:16px;font-weight:800}.proposal-card h3{font-size:20px;white-space:nowrap}.proposal-summary{font-size:11px;line-height:1.35;font-weight:700;min-height:34px}.card-rule{border:0;border-top:1px solid #769399;margin:12px 0}.proposal-card .card-copy{font-size:12px;line-height:1.4;text-align:justify;color:#4c6e74;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;min-height:83px}.card-metrics{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:auto}.metric-mini label{display:block;margin:0 0 3px 4px;font-size:9px;font-weight:800}.metric-mini b{display:block;border-radius:5px;background:var(--ink);color:#fff;padding:7px 10px;font-size:14px;line-height:1}.card-more{align-self:center;margin-top:12px;border:0;background:none;color:#779398;font-size:11px;font-weight:700;text-decoration:underline;cursor:pointer}
-.analytics{border-top:1px solid var(--line);padding:48px 0 60px}.section-subtitle{margin:0;color:#769095;font-size:12px}.kpi-grid-compact{grid-template-columns:repeat(4,minmax(0,1fr));margin:19px 0 20px}.kpi-grid-compact .kpi-card{min-height:124px;padding:17px 19px 15px;border-radius:15px;border-top-width:6px}.kpi-grid-compact .kpi-value{font-size:31px;margin:10px 0 4px}.kpi-grid-compact .kpi-foot{font-size:11px}.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.analytics-grid .panel{min-height:345px}.chart-bars{min-height:235px;padding-top:8px}.switcher{display:flex;border:1px solid #9ab0b4;border-radius:6px;overflow:hidden}.switch{border:0;background:transparent;padding:6px 10px;color:#54757a;font-size:11px;font-weight:800;cursor:pointer}.switch.active{background:var(--ink);color:#fff}.chart-share{min-height:235px;padding-top:12px}.topics-panel{margin-top:18px}.icon-button{border:0}.proposals-section{border-top:1px solid var(--line);padding:48px 0 60px}.proposal-toolbar{display:flex;align-items:center;justify-content:space-between;gap:20px;margin:21px 0 16px}.proposal-tabs{display:flex;gap:7px;overflow-x:auto;padding:2px 0 7px;scrollbar-width:thin}.proposal-tab{flex:none;border:1px solid #9ab1b5;border-radius:7px;background:transparent;color:#456970;padding:8px 11px;font-size:12px;font-weight:700;cursor:pointer;transition:.15s}.proposal-tab:hover,.proposal-tab.active{background:var(--ink);border-color:var(--ink);color:white}.search-box{display:flex;align-items:center;gap:7px;min-width:194px;padding:0 10px;background:#fff;border:1px solid var(--line);border-radius:7px}.search-box span{font-size:20px;color:#759096}.search-box input{width:100%;min-width:0;padding:9px 0;border:0;outline:0;background:transparent;font-size:12px}.proposal-detail{background:var(--pale);border-radius:19px;border-top:7px solid var(--ink);padding:24px;box-shadow:var(--shadow)}.detail-heading{display:flex;justify-content:space-between;align-items:start;gap:20px}.detail-rank{font-size:12px;color:#648187;font-weight:700}.detail-heading h3{font-size:clamp(23px,3vw,32px);margin:3px 0 7px}.detail-description{max-width:780px;margin:0;color:#54747a;font-size:13px;line-height:1.5}.status-pill{display:inline-block;border:1px solid #8da9ad;border-radius:20px;padding:7px 10px;color:#46676c;font-size:10px;font-weight:700;white-space:nowrap}.detail-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:21px 0}.detail-kpi{padding:12px;background:rgba(255,255,255,.43);border-radius:8px}.detail-kpi small{display:block;color:#718b90;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.detail-kpi b{display:block;margin-top:5px;font-family:Manrope,sans-serif;font-size:19px;letter-spacing:-.04em}.detail-kpi span{display:block;margin-top:3px;color:#a54c45;font-size:10px;font-weight:700}.detail-kpi span.up{color:#227b61}.detail-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}.detail-panel{padding:18px;background:rgba(255,255,255,.38);border-radius:12px;min-width:0}.detail-panel h4{margin:0 0 14px;font-size:13px;font-weight:800}.detail-subtitle{margin:-8px 0 14px;font-size:10px;color:#718a8f}.channel-list,.argument-list{display:flex;flex-direction:column;gap:11px}.channel-row-top,.argument-top{display:flex;justify-content:space-between;gap:12px;font-size:11px}.channel-name,.argument-name{font-weight:700}.channel-value,.argument-value{font-weight:800;white-space:nowrap}.progress-track{height:7px;margin-top:5px;overflow:hidden;background:rgba(7,51,58,.1);border-radius:5px}.progress-fill{height:100%;border-radius:5px;background:var(--ink)}.argument-item{padding:11px 12px;background:rgba(255,255,255,.44);border-radius:8px;cursor:pointer;transition:background .15s}.argument-item:hover,.argument-item.open{background:rgba(255,255,255,.8)}.argument-description{display:none;margin:8px 0 0;color:#5a777c;font-size:11px;line-height:1.5}.argument-item.open .argument-description{display:block}.detail-story{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px}.detail-story .detail-panel{font-size:12px;line-height:1.6;color:#55747a}.detail-story h4{color:var(--ink)}.empty-state{padding:34px;text-align:center;color:#668186}.methodology{border-top:1px solid var(--line);padding:48px 0 20px}.method-tabs{display:flex;gap:8px;border-bottom:1px solid var(--line);margin:21px 0 0;overflow-x:auto}.method-tab{position:relative;white-space:nowrap;padding:11px 14px 12px;background:none;border:0;color:#6b878c;font-size:12px;font-weight:700;cursor:pointer}.method-tab.active{color:var(--ink)}.method-tab.active:after{content:"";position:absolute;bottom:-1px;left:12px;right:12px;height:3px;background:var(--mint);border-radius:3px 3px 0 0}.method-content{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding-top:18px}.method-card{padding:19px 21px;background:var(--pale);border-radius:13px}.method-card h3{margin:0 0 8px;font-size:15px;letter-spacing:-.02em}.method-card p,.method-card li{color:#527177;font-size:12px;line-height:1.62}.method-card p{margin:0}.method-card ul{margin:7px 0 0;padding-left:17px}.method-caveat{display:flex;gap:12px;align-items:start;margin-top:16px;padding:17px 20px;background:#e5efef;border-left:4px solid var(--mint);border-radius:8px}.caveat-icon{display:flex;flex:none;width:20px;height:20px;align-items:center;justify-content:center;background:var(--ink);border-radius:50%;color:white;font-size:12px;font-weight:800}.method-caveat p{margin:0;color:#527177;font-size:11px;line-height:1.55}.site-footer{display:flex;align-items:center;justify-content:space-between;gap:25px;padding:22px max(30px,calc((100% - 1220px)/2 + 30px));background:var(--ink);color:#d6e4e5;font-size:11px}
-.proposal-grid{grid-template-columns:repeat(6,minmax(0,1fr))}.proposal-card{grid-column:span 2}.proposal-card:nth-child(4){grid-column:2 / span 2}.proposal-card:nth-child(5){grid-column:4 / span 2}.chart-bars{overflow-x:auto}.chart-bars svg{min-width:620px}
-main{width:min(100%,1000px);max-width:1000px;margin-left:auto!important;margin-right:auto!important;padding-bottom:64px}
-main .section{display:none}main .section.active{display:block}.cover{display:none}body.page-cover .cover{display:block}
-.preview-badge{display:inline-flex;align-items:center;gap:7px;margin-left:12px;padding:7px 10px;border-radius:16px;background:#bfe5dc;color:#175850;font-size:9px;letter-spacing:.06em;font-weight:800;white-space:nowrap}.preview-badge span{width:6px;height:6px;border-radius:50%;background:#198b68}
+.main-nav{position:sticky;top:0;z-index:10;background:rgba(215,230,232,.96);border-top:3px solid var(--mint);box-shadow:0 5px 18px rgba(7,51,58,.06);backdrop-filter:blur(14px)}.nav-link{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:7px 12px;color:var(--ink-2);border:1px solid #4a6c71;border-radius:5px;text-decoration:none;font-size:13.5px;font-weight:600;white-space:nowrap;background:transparent;transition:background .18s,color .18s,border .18s,transform .18s;cursor:pointer}.nav-link:hover{transform:translateY(-1px);border-color:var(--ink)}.nav-link.active{background:var(--ink);border-color:var(--ink);color:#fff}.nav-icon{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64px}.section{scroll-margin-top:82px;display:none}.section.active{display:block}.overview{padding:0 0 40px}.eyebrow{margin:0 0 8px;color:#66858a;font-size:10px;font-weight:800;letter-spacing:.13em}.section h1,.section h2,.section h3{font-family:Manrope,"DM Sans",sans-serif;letter-spacing:-.045em;margin:0;font-weight:800}.section h1{font-size:clamp(26px,3vw,38px);max-width:670px;line-height:1.1}.section h2{font-size:clamp(22px,2.4vw,30px);line-height:1.12}.section h3{font-size:19px;line-height:1.2}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin:0 0 26px}.kpi-card{position:relative;min-height:158px;padding:22px 24px 18px;background:var(--pale);border-radius:19px;border-top:7px solid var(--ink);box-shadow:var(--shadow);overflow:hidden}.kpi-label{font-size:11px;font-weight:800;letter-spacing:.025em;color:var(--ink)}.kpi-value{display:block;margin:12px 0 8px;font-family:Manrope,sans-serif;font-size:clamp(28px,3.2vw,42px);line-height:1;font-weight:800;letter-spacing:-.055em;white-space:nowrap}.kpi-foot{display:flex;align-items:center;gap:6px;font-size:11.5px;line-height:1.2;color:var(--ink);font-weight:700}.kpi-change{display:inline-block;padding:4px 7px;border-radius:5px;background:rgba(195,66,59,.14);color:var(--red);font-weight:800;white-space:nowrap}.kpi-change.up{background:rgba(54,199,166,.22);color:#175850}
+.panel{background:var(--pale);border-radius:19px;border-top:7px solid var(--ink);padding:22px 25px 24px;box-shadow:var(--shadow);min-width:0}.trend-panel{margin-bottom:38px;min-height:325px}.panel-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:17px}.panel-title-sm{font-family:"DM Sans",sans-serif;font-size:12px!important;font-weight:800!important;letter-spacing:.02em!important;text-transform:uppercase;color:var(--ink)}.panel-note{color:#6e898e;font-size:11px;font-weight:600;white-space:nowrap}.info,.icon-button{display:inline-flex;width:17px;height:17px;border-radius:50%;align-items:center;justify-content:center;background:var(--ink);color:white;font-family:serif;font-style:normal;font-size:11px;font-weight:bold;cursor:help}
+.chart{width:100%;min-height:180px;position:relative}.chart svg{display:block;width:100%;height:auto;overflow:visible}.chart text{font-family:"DM Sans",Arial,sans-serif;fill:#668186}.chart .axis-label{font-size:11px}.chart .value-label{fill:var(--ink);font-size:12px;font-weight:800}.chart .gridline{stroke:#b5c9cc;stroke-width:1;stroke-dasharray:3 4}.chart .median{stroke:#8ba4a8;stroke-width:1.5;stroke-dasharray:5 5}.chart .bar{fill:var(--ink);transition:fill .18s}.chart .bar:hover{fill:#138b7e}.chart .bar-secondary{fill:#6b9da1}.chart .active-dot{fill:var(--mint);stroke:var(--ink);stroke-width:2}.chart .area{fill:rgba(54,199,166,.14)}.chart .line{fill:none;stroke:var(--ink);stroke-width:3}.chart .dot{fill:var(--ink);stroke:var(--pale);stroke-width:3;cursor:pointer}.chart .dot:hover{fill:var(--mint)}
+.section-heading{display:flex;align-items:end;justify-content:space-between;gap:20px;margin:26px 0 19px}.section-heading>div .eyebrow{margin-bottom:6px}
+.analytics{padding:10px 0 60px}.section-subtitle{margin:0;color:#769095;font-size:12px}.kpi-grid-compact{grid-template-columns:repeat(4,minmax(0,1fr));margin:19px 0 20px}.kpi-grid-compact .kpi-card{min-height:124px;padding:17px 19px 15px;border-radius:15px;border-top-width:6px}.kpi-grid-compact .kpi-value{font-size:31px;margin:10px 0 4px}.kpi-grid-compact .kpi-foot{font-size:11px}.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.analytics-grid .panel{min-height:345px}.chart-bars{min-height:235px;padding-top:8px;overflow-x:auto}.chart-bars svg{min-width:620px}.chart-share{min-height:235px;padding-top:12px}.topics-panel{margin-top:18px}.icon-button{border:0}
+.proposals-section{padding:10px 0 60px}.proposal-tabs{display:flex;gap:7px;overflow-x:auto;padding:2px 0 7px;scrollbar-width:thin}.proposal-tab{flex:none;border:1px solid #9ab1b5;border-radius:7px;background:transparent;color:#456970;padding:8px 11px;font-size:12px;font-weight:700;cursor:pointer;transition:.15s}.proposal-tab:hover,.proposal-tab.active{background:var(--ink);border-color:var(--ink);color:white}.proposal-detail{background:var(--pale);border-radius:19px;border-top:7px solid var(--ink);padding:24px;box-shadow:var(--shadow)}.detail-heading{display:flex;justify-content:space-between;align-items:start;gap:20px}.detail-rank{font-size:12px;color:#648187;font-weight:700}.detail-heading h3{font-size:clamp(23px,3vw,32px);margin:3px 0 7px}.detail-description{max-width:780px;margin:0;color:#54747a;font-size:13px;line-height:1.5}.status-pill{display:inline-block;border:1px solid #8da9ad;border-radius:20px;padding:7px 10px;color:#46676c;font-size:10px;font-weight:700;white-space:nowrap}.detail-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:21px 0}.detail-kpi{padding:12px;background:rgba(255,255,255,.43);border-radius:8px}.detail-kpi small{display:block;color:#718b90;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.detail-kpi b{display:block;margin-top:5px;font-family:Manrope,sans-serif;font-size:19px;letter-spacing:-.04em}.detail-kpi span{display:block;margin-top:3px;color:#a54c45;font-size:10px;font-weight:700}.detail-kpi span.up{color:#227b61}.detail-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}.detail-panel{padding:18px;background:rgba(255,255,255,.38);border-radius:12px;min-width:0}.detail-panel h4{margin:0 0 14px;font-size:13px;font-weight:800}.detail-subtitle{margin:-8px 0 14px;font-size:10px;color:#718a8f}.channel-list,.argument-list{display:flex;flex-direction:column;gap:11px}.channel-row-top,.argument-top{display:flex;justify-content:space-between;gap:12px;font-size:11px}.channel-name,.argument-name{font-weight:700}.channel-value,.argument-value{font-weight:800;white-space:nowrap}.progress-track{height:7px;margin-top:5px;overflow:hidden;background:rgba(7,51,58,.1);border-radius:5px}.progress-fill{height:100%;border-radius:5px;background:var(--ink)}.argument-item{padding:11px 12px;background:rgba(255,255,255,.44);border-radius:8px;cursor:pointer;transition:background .15s}.argument-item:hover,.argument-item.open{background:rgba(255,255,255,.8)}.argument-description{display:none;margin:8px 0 0;color:#5a777c;font-size:11px;line-height:1.5}.argument-item.open .argument-description{display:block}.detail-story{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px}.detail-story .detail-panel{font-size:12px;line-height:1.6;color:#55747a}.detail-story h4{color:var(--ink)}.empty-state{padding:34px;text-align:center;color:#668186}
+.methodology{padding:10px 0 20px}.method-tabs{display:flex;gap:8px;border-bottom:1px solid var(--line);margin:21px 0 0;overflow-x:auto}.method-tab{position:relative;white-space:nowrap;padding:11px 14px 12px;background:none;border:0;color:#6b878c;font-size:12px;font-weight:700;cursor:pointer}.method-tab.active{color:var(--ink)}.method-tab.active:after{content:"";position:absolute;bottom:-1px;left:12px;right:12px;height:3px;background:var(--mint);border-radius:3px 3px 0 0}.method-content{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding-top:18px}.method-card{padding:19px 21px;background:var(--pale);border-radius:13px}.method-card h3{margin:0 0 8px;font-size:15px;letter-spacing:-.02em}.method-card p,.method-card li{color:#527177;font-size:12px;line-height:1.62}.method-card p{margin:0}.method-caveat{display:flex;gap:12px;align-items:start;margin-top:16px;padding:17px 20px;background:#e5efef;border-left:4px solid var(--mint);border-radius:8px}.caveat-icon{display:flex;flex:none;width:20px;height:20px;align-items:center;justify-content:center;background:var(--ink);border-radius:50%;color:white;font-size:12px;font-weight:800}.method-caveat p{margin:0;color:#527177;font-size:11px;line-height:1.55}
 .proposal-subnav{position:sticky;top:var(--nav-h,60px);z-index:8;margin:18px 0 18px;padding:13px 16px 0;background:rgba(242,248,248,.97);border:1px solid #d5e3e4;border-radius:12px;box-shadow:0 8px 24px rgba(7,51,58,.06);backdrop-filter:blur(12px)}.proposal-subnav-heading{display:flex;align-items:center;justify-content:space-between}.proposal-subnav-heading .eyebrow{margin:0}.proposal-subnav .proposal-tabs{gap:2px;padding:7px 0 0}.proposal-subnav .proposal-tab{display:inline-flex;align-items:center;gap:8px;border:0;border-bottom:3px solid transparent;border-radius:0;background:transparent;color:#55767b;padding:12px 13px;font-size:12px}.proposal-subnav .proposal-tab:hover{background:rgba(215,230,232,.55);color:var(--ink)}.proposal-subnav .proposal-tab.active{border-bottom-color:var(--mint);background:transparent;color:var(--ink)}.proposal-tab-rank{display:grid;place-items:center;width:23px;height:23px;border-radius:5px;background:#c4d9dc;color:#476a70;font-size:10px;font-weight:800}.proposal-tab.active .proposal-tab-rank{background:var(--ink);color:#fff}
 .trend-point{cursor:pointer;outline:none}.point-guide{stroke:#728f94;stroke-width:1;stroke-dasharray:4 5;opacity:0;transition:opacity .15s}.trend-point:hover .point-guide,.trend-point:focus .point-guide,.trend-point.selected .point-guide{opacity:.75}.trend-point circle{transition:r .16s,fill .16s,stroke .16s}.trend-point.selected circle{fill:var(--mint);stroke:var(--ink);stroke-width:3}.trend-point:focus-visible circle{stroke:#fff;stroke-width:4;filter:drop-shadow(0 0 2px var(--ink))}.trend-tooltip{position:absolute;z-index:2;display:none;min-width:124px;padding:10px 12px;border-radius:9px;background:var(--ink);color:#fff;box-shadow:0 9px 22px rgba(7,51,58,.23);transform:translate(-50%,-112%);pointer-events:none}.trend-tooltip.visible{display:flex;flex-direction:column;gap:3px}.trend-tooltip span{color:#9fc4c6;font-size:8px;font-weight:800;letter-spacing:.1em}.trend-tooltip strong{font-family:Manrope,sans-serif;font-size:18px;line-height:1}.trend-tooltip small{color:#d0e0e1;font-size:9px;white-space:nowrap}.trend-controls{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:3px 3px 12px}.median-toggle{display:inline-flex;align-items:center;gap:8px;border:0;background:transparent;padding:6px 0;color:#55757a;font-size:10px;font-weight:700;cursor:pointer}.median-toggle-state{padding:3px 6px;border-radius:9px;background:#c9dcde;color:#44666b;font-size:8px;text-transform:uppercase;letter-spacing:.04em}.legend-line{display:inline-block;width:22px;border-top:2px dashed #8ba4a8}.median-toggle[aria-pressed="false"] .legend-line{opacity:.35}.trend-hint{color:#789195;font-size:10px}.trend-detail{display:grid;grid-template-columns:1.1fr .8fr 1.5fr auto;align-items:center;gap:15px;padding:13px 15px;border:1px solid rgba(7,51,58,.1);border-radius:11px;background:rgba(255,255,255,.42)}.trend-detail-period{display:flex;flex-direction:column;gap:4px;color:#607e83;font-size:10px}.trend-detail-index{color:#466c72;font-size:9px;font-weight:800;letter-spacing:.08em}.trend-detail-value{display:flex;flex-direction:column;gap:2px}.trend-detail-value strong{font-family:Manrope,sans-serif;font-size:22px;letter-spacing:-.05em}.trend-detail-value span{color:#728b90;font-size:9px}.trend-detail-comparison{display:flex;flex-direction:column;gap:5px}.comparison-change,.comparison-median{font-size:10px;font-weight:700}.comparison-change.down{color:var(--red)}.comparison-change.up{color:#227b61}.comparison-median{color:#668186}.trend-steps{display:flex;align-items:center;gap:7px;color:#758e92;font-size:9px}.trend-steps button{width:25px;height:25px;border:1px solid #a9bfc2;border-radius:6px;background:transparent;color:var(--ink);font-size:15px;line-height:1;cursor:pointer}.trend-steps button:hover:not(:disabled){background:var(--ink);color:#fff}.trend-steps button:disabled{opacity:.35;cursor:default}
-.cover{aspect-ratio:1440/568;min-height:0;max-height:none;background:#092e36}
+.cover{display:none;aspect-ratio:1440/568;min-height:0;max-height:none;background:#092e36}body.page-cover .cover{display:block}
 .cover>img.cover-art{position:absolute;inset:0;width:100%;height:100%;min-height:0;max-height:none;object-fit:cover;object-position:center}
 .cover-content{position:absolute;inset:0;color:#fff;line-height:normal}
 .cover-brand{position:absolute;left:12%;top:23.7%;margin:0;color:var(--ink);font-family:Manrope,"DM Sans",sans-serif;font-size:clamp(24px,3.1vw,52px);font-weight:800;letter-spacing:-.075em;line-height:1;white-space:nowrap}
 .cover-content h1{position:absolute;left:10%;top:37.6%;width:68%;margin:0;color:#fff;font-family:Manrope,"DM Sans",sans-serif;font-size:clamp(34px,4vw,72px);font-weight:600;letter-spacing:-.055em;line-height:.98}
 .cover-divider{position:absolute;left:10%;top:58%;width:50%;height:1px;background:rgba(235,248,249,.8)}
 .cover-summary{position:absolute;left:10%;top:63%;width:50%;max-width:780px;margin:0;color:rgba(235,248,249,.78);font-size:clamp(13px,1.15vw,18px);line-height:1.25}
-.nav-icon{width:17px;height:17px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .site-footer{display:flex;justify-content:flex-end;align-items:center;width:100%;min-height:4.3vw;margin:0;padding:7px 0;background:#092e36}
 .footer-art{display:block;width:min(56vw,1228px);max-width:100%;height:auto;margin-left:auto;object-fit:contain}
 .toast{position:fixed;z-index:30;left:50%;bottom:24px;transform:translate(-50%,18px);opacity:0;padding:12px 16px;border-radius:8px;background:var(--ink);color:#fff;font-size:12px;font-weight:700;box-shadow:0 10px 30px #06262a33;transition:.2s;pointer-events:none}.toast.show{transform:translate(-50%,0);opacity:1}
-@media(max-width:850px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.proposal-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.proposal-card,.proposal-card:nth-child(4),.proposal-card:nth-child(5){grid-column:auto}.analytics-grid{grid-template-columns:1fr}.detail-grid,.detail-story{grid-template-columns:1fr}.trend-detail{grid-template-columns:1fr 1fr}main{padding-left:16px;padding-right:16px}}
-@media(max-width:570px){.detail-kpis{grid-template-columns:1fr 1fr}.trend-detail{grid-template-columns:1fr}.detail-heading{flex-direction:column}.intro-row{flex-direction:column;align-items:stretch}.periodo-filtro{max-width:100%}.overview .kpi-grid,.analytics .kpi-grid{grid-template-columns:1fr}.proposal-grid{grid-template-columns:1fr}}
+@media(max-width:850px){.kpi-grid,.kpi-grid-compact{grid-template-columns:repeat(2,minmax(0,1fr))}.analytics-grid,.detail-grid,.detail-story,.method-content{grid-template-columns:1fr}.trend-detail{grid-template-columns:1fr 1fr}main{padding-left:16px;padding-right:16px}}
+@media(max-width:570px){.detail-kpis,.kpi-grid,.kpi-grid-compact,.trend-detail{grid-template-columns:1fr}.detail-heading{flex-direction:column}.periodo-filtro{max-width:100%}}
   </style>
 </head>
 <body class="page-cover">
@@ -55,44 +53,86 @@ main .section{display:none}main .section.active{display:block}.cover{display:non
     </div>
     <div class="cover-meta"><span id="edition-label">—</span><span id="period-label">—</span></div>
   </header>
+
+  <!-- 2 & 3: Menus reorganizados à esquerda e Filtro de pesquisa textual à direita -->
   <nav class="main-nav" aria-label="Navegação do relatório">
     <div class="nav-inner">
-      <span class="nav-spacer" aria-hidden="true"></span>
       <div class="nav-links">
-      <a class="nav-link active" href="#destaques" data-section="destaques"><svg class="nav-icon" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="16" height="16" rx="3"/><path d="M6 7h8M6 10h8M6 13h5"/></svg>Destaques</a>
-      <a class="nav-link" href="#analitico" data-section="analitico"><svg class="nav-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 17V9h3v8M8.5 17V4h3v13M14 17v-6h3v6"/><path d="M2 18h16"/></svg>Analítico</a>
-      <a class="nav-link" href="#propostas" data-section="propostas"><svg class="nav-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 2.5h7l4 4V17a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1Z"/><path d="M12 2.5v4h4M7 10h6M7 13h6"/></svg>Propostas</a>
-      <a class="nav-link" href="#metodologia" data-section="metodologia"><svg class="nav-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 4.5A2.5 2.5 0 0 1 5.5 2H17v15H5.5A2.5 2.5 0 0 1 3 14.5z"/><path d="M3 14.5A2.5 2.5 0 0 1 5.5 12H17M7 5h6M7 8h6"/></svg>Metodologia</a>
+        <a class="nav-link active" href="#destaques" data-section="destaques">
+          <svg class="nav-icon" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="16" height="16" rx="3"/><path d="M6 7h8M6 10h8M6 13h5"/></svg>Destaques
+        </a>
+        <a class="nav-link" href="#analitico" data-section="analitico">
+          <svg class="nav-icon" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="16" height="16" rx="3"/><path d="M6 14V9M10 14V6M14 14v-4"/></svg>Analítico
+        </a>
+        <a class="nav-link" href="#propostas" data-section="propostas">
+          <svg class="nav-icon" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="16" height="16" rx="3"/><path d="M6 14V9M10 14V6M14 14v-4"/></svg>Propostas
+        </a>
+        <a class="nav-link" href="#metodologia" data-section="metodologia">
+          <svg class="nav-icon" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="16" height="16" rx="3"/><path d="M6 14V9M10 14V6M14 14v-4"/></svg>Metodologia
+        </a>
       </div>
-      <div class="periodo-filtro" id="filtro-semana">
-        <button type="button" class="periodo-btn" id="btn-semana-atual" aria-haspopup="listbox" aria-expanded="false" aria-controls="lista-semanas">
-          <span class="periodo-btn-texto"><small class="periodo-label">PERÍODO MONITORADO</small><span id="texto-semana-ativa">Carregando período...</span></span>
-          <svg class="periodo-seta" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4.5 6 8.5 10 4.5"/></svg>
-        </button>
-        <div class="periodo-painel" id="painel-semana">
-          <label class="periodo-busca"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3.5 3.5"/></svg><input id="busca-semana" type="search" placeholder="Pesquisar semana ou mês" autocomplete="off" aria-label="Pesquisar semana ou mês" aria-controls="lista-semanas"></label>
-          <ul class="periodo-lista" id="lista-semanas" role="listbox" aria-label="Semanas monitoradas"></ul>
-          <div class="periodo-rodape"><span id="contagem-semanas"></span><button type="button" id="limpar-semana">Ir para a mais recente</button></div>
-        </div>
+
+      <div class="proposta-busca-wrapper" id="proposta-busca-wrapper">
+        <label class="proposta-busca-box" for="busca-proposta-global">
+          <svg class="proposta-busca-icon" viewBox="0 0 16 16" aria-hidden="true">
+            <circle cx="7" cy="7" r="4.5"/>
+            <path d="m10.5 10.5 3.5 3.5"/>
+          </svg>
+          <input id="busca-proposta-global" type="search" placeholder="Selecione a Proposta" autocomplete="off" aria-label="Selecione ou pesquise uma proposta">
+          <button type="button" class="proposta-busca-clear" id="limpar-busca-proposta" aria-label="Limpar pesquisa">&times;</button>
+        </label>
+        <ul class="proposta-sugestoes" id="lista-sugestoes-proposta" role="listbox" aria-label="Sugestões de propostas"></ul>
       </div>
     </div>
   </nav>
 
   <main>
-    <section class="section overview active" id="destaques">
-      <div class="intro-row">
-        <div><p class="eyebrow">DESTAQUES DA SEMANA</p><h2>Panorama do período</h2><p class="intro-period" id="intro-period"></p></div>
+    <!-- 4: Reposicionamento do filtro "Power BI" (Selecione a Semana) -->
+    <div class="top-filter-bar">
+      <div class="periodo-filtro" id="filtro-semana">
+        <button type="button" class="periodo-btn" id="btn-semana-atual" aria-haspopup="listbox" aria-expanded="false" aria-controls="lista-semanas">
+          <svg class="periodo-seta" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4.5 6 8.5 10 4.5"/></svg>
+          <span class="periodo-btn-texto">
+            <span id="texto-semana-ativa">Selecione a Semana</span>
+          </span>
+        </button>
+        <div class="periodo-painel" id="painel-semana">
+          <label class="periodo-busca">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3.5 3.5"/></svg>
+            <input id="busca-semana" type="search" placeholder="Pesquisar semana ou mês" autocomplete="off" aria-label="Pesquisar semana ou mês" aria-controls="lista-semanas">
+          </label>
+          <ul class="periodo-lista" id="lista-semanas" role="listbox" aria-label="Semanas monitoradas"></ul>
+          <div class="periodo-rodape">
+            <span id="contagem-semanas"></span>
+            <button type="button" id="limpar-semana">Ir para a mais recente</button>
+          </div>
+        </div>
       </div>
+    </div>
 
+    <section class="section overview active" id="destaques">
       <div class="kpi-grid" id="kpi-grid"></div>
+
       <article class="panel trend-panel">
-        <div class="panel-heading"><div><p class="eyebrow">RITMO DA CONVERSA</p><h2>Evolução do engajamento</h2></div><span class="panel-note">Últimas 4 semanas <i class="info" title="Os períodos sem postagens não aparecem no gráfico.">i</i></span></div>
+        <div class="panel-heading">
+          <h2 class="panel-title-sm">EVOLUÇÃO NAS ÚLTIMAS 4 SEMANAS</h2>
+          <span class="panel-note">Últimas 4 semanas <i class="info" title="Os períodos sem postagens não aparecem no gráfico.">i</i></span>
+        </div>
         <div id="trend-chart" class="chart chart-trend" aria-label="Gráfico de evolução semanal"></div>
-        <div class="trend-controls"><button class="median-toggle" id="median-toggle" type="button" aria-pressed="true"><span class="legend-line"></span>Mediana anual <span class="median-toggle-state">Visível</span></button><span class="trend-hint">Passe pelos pontos ou selecione uma semana</span></div>
+        <div class="trend-controls">
+          <button class="median-toggle" id="median-toggle" type="button" aria-pressed="true">
+            <span class="legend-line"></span>Mediana anual <span class="median-toggle-state">Visível</span>
+          </button>
+          <span class="trend-hint">Passe pelos pontos ou selecione uma semana</span>
+        </div>
         <div class="trend-detail" id="trend-detail" aria-live="polite"></div>
       </article>
-      <div class="section-heading"><div><p class="eyebrow">MAIOR REPERCUSSÃO</p><h2>Propostas em destaque</h2></div><a href="#propostas" class="text-link">Ver todas as propostas <span>↗</span></a></div>
-      <div id="highlight-cards" class="proposal-grid"></div>
+
+      <!-- 1: Cartões de propostas posicionados um abaixo do outro -->
+      <div class="section-heading-lined">
+        <h2>PROPOSTAS EM DESTAQUE</h2>
+      </div>
+      <div id="highlight-cards" class="proposal-list"></div>
     </section>
 
     <section class="section analytics" id="analitico">
@@ -106,8 +146,8 @@ main .section{display:none}main .section.active{display:block}.cover{display:non
     </section>
 
     <section class="section proposals-section" id="propostas">
-      <div class="section-heading"><div><p class="eyebrow">DETALHAMENTO</p><h2>Propostas em destaque</h2></div><p class="section-subtitle" id="proposals-subtitle">5 propostas · selecione uma para ver os detalhes</p></div>
-      <nav class="proposal-subnav" aria-label="Submenu de propostas"><div class="proposal-subnav-heading"><span class="eyebrow">PROPOSTAS DA SEMANA</span><span class="panel-note" id="proposals-range-note">01 — 05</span></div><div id="proposal-tabs" class="proposal-tabs" role="tablist" aria-label="Selecionar uma das cinco propostas"></div></nav>
+      <div class="section-heading"><div><p class="eyebrow">DETALHAMENTO</p><h2>Propostas em destaque</h2></div><p class="section-subtitle" id="proposals-subtitle">Selecione uma proposta para ver os detalhes</p></div>
+      <nav class="proposal-subnav" aria-label="Submenu de propostas"><div class="proposal-subnav-heading"><span class="eyebrow">PROPOSTAS DA SEMANA</span><span class="panel-note" id="proposals-range-note">01 — 05</span></div><div id="proposal-tabs" class="proposal-tabs" role="tablist" aria-label="Selecionar uma proposta"></div></nav>
       <div id="proposal-detail" class="proposal-detail"></div>
     </section>
 
@@ -127,7 +167,7 @@ main .section{display:none}main .section.active{display:block}.cover{display:non
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <!-- Carrega o bundle JS gerado pelo analise.py (suporte para abertura direta sem erro de CORS) -->
-<script src="dados/dados_dashboard.js"></script>
+<script src="dados_dashboard.js" onerror="this.onerror=null;this.src='dados/dados_dashboard.js'"></script>
 
 <script>
 const fmtInt = new Intl.NumberFormat('pt-BR');
@@ -139,15 +179,19 @@ let activeMethod = 'gerais';
 let selectedWeek = 0;
 let showMedian = true;
 let activeWeekId = null;
+let proposalSearchQuery = '';
 
 function esc(value='') { return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function formatNumber(value,compact=false) { return value == null ? '—' : (compact ? fmtCompact.format(value) : fmtInt.format(value)); }
 function percentage(value) { return `${Number(value).toLocaleString('pt-BR',{maximumFractionDigits:1})}%`; }
 function showToast(message) { const node=document.getElementById('toast'); node.textContent=message; node.classList.add('show'); clearTimeout(showToast.timer); showToast.timer=setTimeout(()=>node.classList.remove('show'),2800); }
 
+const normText = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
 async function fetchDashboardData() {
   const timestamp = Date.now();
   const candidates = [
+    `./dados_dashboard.json?t=${timestamp}`,
     `./dados/dados_dashboard.json?t=${timestamp}`,
     `dados/dados_dashboard.json?t=${timestamp}`,
     `../dados_painel/dados_dashboard.json?t=${timestamp}`
@@ -174,6 +218,7 @@ async function loadReport() {
     const fallback = isMultiWeek() ? String(rawPayload.semana_padrao) : 'padrao';
     activeWeekId = weekOptions.some(o => o.id === wanted) ? wanted : fallback;
     initSlicer();
+    initProposalSearch();
     renderCurrentWeek();
     syncUrl();
   } catch (error) {
@@ -181,13 +226,88 @@ async function loadReport() {
   }
 }
 
-/* ===== Filtro de semana (lista estilo Power BI) ===== */
-let weekOptions = [];   // [{id,title,range,short}] da mais recente para a mais antiga
-let slicerItems = [];   // itens visíveis depois da busca
-let slicerActive = 0;   // item destacado pelo teclado ou mouse
+/* ===== 3. Filtro de pesquisa textual ("Selecione a Proposta") ===== */
+function initProposalSearch() {
+  const wrapper = document.getElementById('proposta-busca-wrapper');
+  const input = document.getElementById('busca-proposta-global');
+  const clearBtn = document.getElementById('limpar-busca-proposta');
+  const list = document.getElementById('lista-sugestoes-proposta');
+  if (!wrapper || !input) return;
+
+  input.addEventListener('focus', () => {
+    renderProposalSuggestions(input.value);
+    wrapper.classList.add('aberto');
+  });
+
+  input.addEventListener('input', () => {
+    proposalSearchQuery = input.value;
+    clearBtn.classList.toggle('visivel', Boolean(proposalSearchQuery.trim()));
+    renderProposalSuggestions(proposalSearchQuery);
+    wrapper.classList.add('aberto');
+    renderCards();
+  });
+
+  clearBtn.addEventListener('click', () => {
+    input.value = '';
+    proposalSearchQuery = '';
+    clearBtn.classList.remove('visivel');
+    renderProposalSuggestions('');
+    renderCards();
+    input.focus();
+  });
+
+  list.addEventListener('click', e => {
+    const item = e.target.closest('.proposta-sugestao-item');
+    if (!item) return;
+    const idx = Number(item.dataset.index);
+    input.value = report.proposals[idx]?.id || '';
+    proposalSearchQuery = input.value;
+    clearBtn.classList.toggle('visivel', Boolean(proposalSearchQuery.trim()));
+    wrapper.classList.remove('aberto');
+    renderCards();
+    openProposal(idx);
+  });
+
+  document.addEventListener('pointerdown', e => {
+    if (!wrapper.contains(e.target)) wrapper.classList.remove('aberto');
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') wrapper.classList.remove('aberto');
+  });
+}
+
+function renderProposalSuggestions(query = '') {
+  const list = document.getElementById('lista-sugestoes-proposta');
+  if (!list || !report?.proposals) return;
+  const q = normText(query).trim();
+  const allProposals = report.proposals.map((p, index) => ({ p, index }));
+  const matches = allProposals.filter(({ p }) =>
+    !q || normText(`${p.id} ${p.description} ${p.status || ''}`).includes(q)
+  );
+
+  if (!matches.length) {
+    list.innerHTML = '<li class="proposta-sugestao-vazio">Nenhuma proposta encontrada</li>';
+    return;
+  }
+
+  list.innerHTML = matches.map(({ p, index }) => `
+    <li class="proposta-sugestao-item" role="option" data-index="${index}">
+      <div class="proposta-sugestao-info">
+        <b>${esc(p.id)}</b>
+        <small>${esc(p.description || '')}</small>
+      </div>
+      <span class="proposta-sugestao-rank">${index + 1}º</span>
+    </li>
+  `).join('');
+}
+
+/* ===== 4. Filtro de semana (lista estilo Power BI) ===== */
+let weekOptions = [];
+let slicerItems = [];
+let slicerActive = 0;
 let lastPointer = { x: -1, y: -1 };
 
-const normText = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 function isMultiWeek() { return !!(rawPayload && rawPayload.dados_semanas && rawPayload.opcoes_semanas); }
 function getWeekReport(id) { return isMultiWeek() ? rawPayload.dados_semanas[id] : rawPayload; }
 
@@ -209,7 +329,7 @@ function syncUrl() {
     if (activeWeekId === String(rawPayload.semana_padrao)) url.searchParams.delete('semana');
     else url.searchParams.set('semana', activeWeekId);
     history.replaceState(history.state, '', url);
-  } catch (_) { /* abertura direta por file:// não permite alterar a URL */ }
+  } catch (_) {}
 }
 
 function initSlicer() {
@@ -232,7 +352,7 @@ function initSlicer() {
   panel.addEventListener('keydown', onSlicerKey);
   list.addEventListener('click', e => { const li = e.target.closest('.periodo-item'); if (li) selectWeek(li.dataset.id); });
   list.addEventListener('pointermove', e => {
-    if (e.clientX === lastPointer.x && e.clientY === lastPointer.y) return; // rolagem não muda o item sob o ponteiro
+    if (e.clientX === lastPointer.x && e.clientY === lastPointer.y) return;
     lastPointer = { x: e.clientX, y: e.clientY };
     const li = e.target.closest('.periodo-item');
     if (li) setSlicerActive(Number(li.dataset.idx), false);
@@ -313,7 +433,7 @@ function selectWeek(id, { closeMenu = true } = {}) {
   if (id !== activeWeekId) {
     const previous = activeWeekId;
     activeWeekId = id;
-    if (!renderCurrentWeek()) activeWeekId = previous; // mantém a semana anterior se a nova vier sem dados
+    if (!renderCurrentWeek()) activeWeekId = previous;
     syncUrl();
   }
   if (closeMenu) closeSlicer(true);
@@ -341,19 +461,19 @@ function renderCurrentWeek() {
   document.getElementById('edition-label').textContent = report.edition || 'Relatório semanal';
   document.getElementById('period-label').textContent = report.period || '';
   document.getElementById('cover-summary').textContent = report.summary || '';
-  document.getElementById('intro-period').textContent = [report.edition, report.period].filter(Boolean).join(' · ');
   document.title = `Câmara nas Redes — ${String(report.edition || 'Relatório semanal').split(' · ')[0]}`;
 
-  const headlineKpis = ['ENGAJAMENTO GERAL', 'POSTAGENS', 'ALCANCE ESTIMADO'];
+  const headlineKpis = ['ENGAJAMENTO GERAL', 'POSTAGENS', 'POSTAGEM', 'ALCANCE ESTIMADO'];
   renderKpis(report.kpis.filter(k => headlineKpis.includes(String(k.label).toUpperCase())), 'kpi-grid');
   renderKpis(report.kpis, 'analytic-kpis');
 
-  // se a proposta aberta também está no top 5 da nova semana, continua selecionada
-  selectedProposal = Math.max(0, report.proposals.slice(0, 5).findIndex(p => p.id === previousProposalId));
+  const foundIdx = report.proposals.findIndex(p => p.id === previousProposalId);
+  selectedProposal = foundIdx >= 0 ? foundIdx : 0;
   selectedWeek = Math.max(0, (report.history?.length || 1) - 1);
 
   renderTrend();
   renderCards();
+  renderProposalSuggestions(proposalSearchQuery);
   renderChannelChart();
   renderShareChart();
   renderTopics();
@@ -368,10 +488,12 @@ function renderKpis(items,target) {
   const node=document.getElementById(target);
   node.innerHTML=items.map(k=>{
     const isUp = Number(k.change) >= 0;
-    const changeBadge = k.change != null
+    const isPostsOrReach = ['POSTAGENS', 'POSTAGEM', 'ALCANCE ESTIMADO'].includes(String(k.label).toUpperCase());
+    const showBadge = k.change != null && !(target === 'kpi-grid' && isPostsOrReach);
+    const changeBadge = showBadge
       ? `<span class="kpi-change ${isUp ? 'up' : 'down'}">${isUp ? '↑' : '↓'} ${percentage(Math.abs(k.change))}</span>`
       : '';
-    return `<article class="kpi-card"><span class="kpi-label">${esc(k.label)}</span><strong class="kpi-value">${formatNumber(k.value,k.format==='compact')}</strong><div class="kpi-foot">${changeBadge}${esc(k.foot||'')}</div></article>`;
+    return `<article class="kpi-card"><span class="kpi-label">${esc(k.label)}</span><strong class="kpi-value">${formatNumber(k.value,k.format==='compact')}</strong><div class="kpi-foot">${changeBadge}<span>${esc(k.foot||'')}</span></div></article>`;
   }).join('');
 }
 
@@ -460,10 +582,63 @@ function buildFallbackSummary(p) {
   return [sentence1, sentence2].filter(Boolean).join(' ') || 'Consulte os dados disponíveis para esta proposta no detalhamento.';
 }
 
+/* ===== 1. Renderização dos cartões empilhados (1 abaixo do outro) ===== */
 function renderCards() {
-  const proposals=report.proposals.slice(0,5);
-  document.getElementById('highlight-cards').innerHTML=proposals.map((p,i)=>`<article class="proposal-card" data-open="${i}" tabindex="0" role="button" aria-label="Ver detalhes de ${esc(p.id)}"><div class="proposal-title-row"><span class="rank-badge">${i+1}º</span><h3>${esc(p.id)}</h3></div><div class="proposal-summary">${esc(p.description)}</div><hr class="card-rule"><p class="card-copy">${esc(buildFallbackSummary(p))}</p><div class="card-metrics"><div class="metric-mini"><label>ENGAJAMENTO</label><b>${formatNumber(p.engagement)}</b></div><div class="metric-mini"><label>(%) DO TOTAL</label><b>${percentage(p.share||0)}</b></div></div><button class="card-more" data-open="${i}">Saiba mais ↗</button></article>`).join('');
-  document.querySelectorAll('[data-open]').forEach(n=>{n.addEventListener('click',()=>openProposal(Number(n.dataset.open)));n.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openProposal(Number(n.dataset.open));}})});
+  const container = document.getElementById('highlight-cards');
+  if (!container || !report?.proposals) return;
+
+  const q = normText(proposalSearchQuery).trim();
+  const indexedProposals = report.proposals.map((p, idx) => ({ p, idx }));
+
+  const filtered = q
+    ? indexedProposals.filter(({ p }) =>
+        normText(`${p.id} ${p.description} ${p.status || ''} ${buildFallbackSummary(p)}`).includes(q)
+      )
+    : indexedProposals.slice(0, 5);
+
+  if (!filtered.length) {
+    container.innerHTML = `<div class="empty-state">Nenhuma proposta encontrada para "<strong>${esc(proposalSearchQuery)}</strong>".</div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map(({ p, idx }) => `
+    <article class="proposal-card" data-open="${idx}" tabindex="0" role="button" aria-label="Ver detalhes de ${esc(p.id)}">
+      <div class="proposal-card-left">
+        <div class="proposal-title-row">
+          <span class="rank-badge">${idx + 1}º</span>
+          <h3>${esc(p.id)}</h3>
+        </div>
+        <div class="card-metrics">
+          <div class="metric-mini">
+            <label>ENGAJAMENTO</label>
+            <b>${formatNumber(p.engagement)}</b>
+          </div>
+          <div class="metric-mini">
+            <label>(%) DO TOTAL</label>
+            <b>${percentage(p.share || 0)}</b>
+          </div>
+        </div>
+      </div>
+      <div class="proposal-card-right">
+        <div class="proposal-summary">${esc(p.description)}</div>
+        <p class="card-copy">${esc(buildFallbackSummary(p))}</p>
+        <button type="button" class="card-more" data-open="${idx}">Saiba mais ↗</button>
+      </div>
+    </article>
+  `).join('');
+
+  container.querySelectorAll('[data-open]').forEach(n => {
+    n.addEventListener('click', e => {
+      e.stopPropagation();
+      openProposal(Number(n.dataset.open));
+    });
+    n.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openProposal(Number(n.dataset.open));
+      }
+    });
+  });
 }
 
 function chartLabelLines(value,maxChars){
@@ -496,8 +671,10 @@ function renderShareChart() {
 }
 
 function renderProposalTabs() {
-  const list=report.proposals.slice(0,5);
-  document.getElementById('proposal-tabs').innerHTML=list.map((p,i)=>`<button class="proposal-tab ${i===selectedProposal?'active':''}" role="tab" aria-selected="${i===selectedProposal}" data-index="${i}"><span class="proposal-tab-rank">0${i+1}</span><span>${esc(p.id)}</span></button>`).join('');
+  const limit = Math.max(5, selectedProposal + 1);
+  const list = report.proposals.slice(0, limit);
+  document.getElementById('proposals-range-note').textContent = `01 — 0${list.length}`;
+  document.getElementById('proposal-tabs').innerHTML=list.map((p,i)=>`<button class="proposal-tab ${i===selectedProposal?'active':''}" role="tab" aria-selected="${i===selectedProposal}" data-index="${i}"><span class="proposal-tab-rank">${String(i+1).padStart(2,'0')}</span><span>${esc(p.id)}</span></button>`).join('');
   document.querySelectorAll('.proposal-tab').forEach(n=>n.addEventListener('click',()=>{selectedProposal=Number(n.dataset.index);renderProposalTabs();renderProposalDetail();}));
 }
 
@@ -513,11 +690,11 @@ function renderProposalDetail() {
   const maxChannel=Math.max(...(p.channels||[]).map(c=>c.value||0),1);
   const channels=(p.channels||[]).map(c=>`<div><div class="channel-row-top"><span class="channel-name">${esc(c.name)}</span><span class="channel-value">${esc(c.display||formatNumber(c.value))}</span></div><div class="progress-track"><div class="progress-fill" style="width:${Math.max(2,c.value/maxChannel*100)}%"></div></div></div>`).join('')||'<p class="detail-subtitle">Dados de canal por proposta indisponíveis na base.</p>';
   const args=(p.arguments||[]).map((a,i)=>`<div class="argument-item"><div class="argument-top"><span class="argument-name">${i+1}. ${esc(a.name)}</span><span class="argument-value">${esc(a.count)} · ${percentage(a.share)}</span></div><div class="progress-track"><div class="progress-fill" style="width:${Math.min(a.share,100)}%"></div></div><p class="argument-description">${esc(a.description)}</p></div>`).join('')||'<p class="detail-subtitle">Análise qualitativa indisponível.</p>';
-  document.getElementById('proposal-detail').innerHTML=`<div class="detail-heading"><div><span class="detail-rank">PROPOSTA ${selectedProposal+1} DE ${Math.min(report.proposals.length,5)}</span><h3>${esc(p.id)}</h3><p class="detail-description">${esc(p.description||'')}</p></div>${p.status?`<span class="status-pill">${esc(p.status)}</span>`:''}</div><div class="detail-kpis">${kpis.map(k=>`<div class="detail-kpi"><small>${k[0]}</small><b>${k[1]}</b>${k[2]?`<span class="${k[2].up?'up':'down'}">${k[2].text}</span>`:''}</div>`).join('')}</div><div class="detail-grid"><article class="detail-panel"><h4>Engajamento por canal</h4><p class="detail-subtitle">Pontos registrados nesta semana</p><div class="channel-list">${channels}</div></article><article class="detail-panel"><h4>O que dizem</h4><p class="detail-subtitle">Argumentos mais frequentes · toque para expandir</p><div class="argument-list">${args}</div></article></div><div class="detail-story"><article class="detail-panel"><h4>O que mobilizou</h4>${esc(p.mobilization||p.summary||'Síntese qualitativa não informada na base para esta proposta.')}</article><article class="detail-panel"><h4>Publicação representativa</h4>${esc(p.sample||'Exemplo não informado na base.')}</article></div>`;
+  document.getElementById('proposal-detail').innerHTML=`<div class="detail-heading"><div><span class="detail-rank">PROPOSTA ${selectedProposal+1} DE ${report.proposals.length}</span><h3>${esc(p.id)}</h3><p class="detail-description">${esc(p.description||'')}</p></div>${p.status?`<span class="status-pill">${esc(p.status)}</span>`:''}</div><div class="detail-kpis">${kpis.map(k=>`<div class="detail-kpi"><small>${k[0]}</small><b>${k[1]}</b>${k[2]?`<span class="${k[2].up?'up':'down'}">${k[2].text}</span>`:''}</div>`).join('')}</div><div class="detail-grid"><article class="detail-panel"><h4>Engajamento por canal</h4><p class="detail-subtitle">Pontos registrados nesta semana</p><div class="channel-list">${channels}</div></article><article class="detail-panel"><h4>O que dizem</h4><p class="detail-subtitle">Argumentos mais frequentes · toque para expandir</p><div class="argument-list">${args}</div></article></div><div class="detail-story"><article class="detail-panel"><h4>O que mobilizou</h4>${esc(p.mobilization||p.summary||'Síntese qualitativa não informada na base para esta proposta.')}</article><article class="detail-panel"><h4>Publicação representativa</h4>${esc(p.sample||'Exemplo não informado na base.')}</article></div>`;
   document.querySelectorAll('.argument-item').forEach(n=>n.addEventListener('click',()=>n.classList.toggle('open')));
 }
 
-function openProposal(index){selectedProposal=Math.min(index,4);renderProposalTabs();renderProposalDetail();navigateToPage('propostas');}
+function openProposal(index){selectedProposal=index;renderProposalTabs();renderProposalDetail();navigateToPage('propostas');}
 
 function renderMethod() {
   const items=(report.methodology||rawPayload?.methodology)?.[activeMethod]||[];

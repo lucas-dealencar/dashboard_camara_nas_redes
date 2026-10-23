@@ -2,13 +2,12 @@ import argparse
 from datetime import datetime
 from pathlib import Path
 import shutil
+import socket
 import subprocess
 import sys
 import time
 import urllib.request
 import schedule
-import socket
-
 
 PASTA_SCRIPTS = Path(__file__).resolve().parent
 RAIZ = PASTA_SCRIPTS.parent
@@ -19,7 +18,7 @@ PASTA_DOCS_DADOS = RAIZ / "docs" / "dados"
 def aguardar_internet(tentativas: int = 5, intervalo: int = 2) -> bool:
     """Verifica se há conexão real de rede via socket e HTTP."""
     for i in range(tentativas):
-        # 1. Teste rápido de socket direto (funciona mesmo com proxy/firewall)
+        # 1. Teste de socket direto
         try:
             socket.create_connection(("8.8.8.8", 53), timeout=3)
             return True
@@ -51,14 +50,14 @@ def rodar_pipeline():
         return
 
     try:
-        # 1. Download do Drive
+        # 1. Download da planilha do Google Drive
         subprocess.run(
             [sys.executable, str(PASTA_SCRIPTS / "coletor.py")],
             cwd=str(PASTA_SCRIPTS),
             check=True,
         )
 
-        # 2. Processamento e cálculo de métricas
+        # 2. Processamento e cálculo das métricas analíticas
         subprocess.run(
             [sys.executable, str(PASTA_SCRIPTS / "analise.py")],
             cwd=str(PASTA_SCRIPTS),
@@ -75,10 +74,32 @@ def rodar_pipeline():
             PASTA_PAINEL / "dados_dashboard.js",
             PASTA_DOCS_DADOS / "dados_dashboard.js",
         )
-
         print(
             f"[{datetime.now().strftime('%H:%M:%S')}] Dados do dashboard e pasta docs/ atualizados com sucesso!"
         )
+
+        # 4. Automação do Git: staging, commit condicional e push
+        print("[GIT] Verificando alterações para deploy no GitHub Pages...")
+        subprocess.run(["git", "add", "docs/dados/"], cwd=str(RAIZ), check=True)
+
+        # Checa se os arquivos de dados realmente mudaram antes de gerar commit vazio
+        status = subprocess.run(
+            ["git", "diff", "--staged", "--name-only"],
+            cwd=str(RAIZ),
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
+        if "docs/dados" in status.stdout:
+            hora_commit = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+            msg_commit = f"data: atualizacao automatica {hora_commit}"
+            subprocess.run(["git", "commit", "-m", msg_commit], cwd=str(RAIZ), check=True)
+            subprocess.run(["git", "push", "origin", "main"], cwd=str(RAIZ), check=True)
+            print(f"[{datetime.now().strftime('%H:%M:%S')}] Deploy disparado no GitHub Pages com sucesso!")
+        else:
+            print("[GIT] Nenhuma alteração nos dados detectada. Deploy ignorado.")
+
     except subprocess.CalledProcessError as e:
         print(f"[ERRO] Falha na execução do pipeline (código {e.returncode}).")
 
