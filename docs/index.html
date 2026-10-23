@@ -110,14 +110,15 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
     </div>
 
     <section class="section overview active" id="destaques">
-      <!-- 1. Propostas em destaque no topo -->
+      
+      <!-- 1. Cartões de KPI no topo -->
+      <div class="kpi-grid" id="kpi-grid"></div>
+      
+      <!-- 2. Propostas em destaque no meio -->
       <div class="section-heading-lined">
         <h2>PROPOSTAS EM DESTAQUE</h2>
       </div>
       <div id="highlight-cards" class="proposal-list"></div>
-
-      <!-- 2. Cartões de KPI no meio -->
-      <div class="kpi-grid" id="kpi-grid"></div>
 
       <!-- 3. Gráfico de Evolução no final -->
       <article class="panel trend-panel">
@@ -134,6 +135,7 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
         </div>
         <div class="trend-detail" id="trend-detail" aria-live="polite"></div>
       </article>
+      
     </section>
 
     <section class="section analytics" id="analitico">
