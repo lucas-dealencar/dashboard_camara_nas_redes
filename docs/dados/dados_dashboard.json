@@ -130,34 +130,34 @@
     "42": {
       "edition": "42ª semana · 1ª edição",
       "period": "6 a 26 de outubro de 2026",
-      "summary": "O engajamento aumentou 182,0% em relação à semana anterior e ficou 178,9% acima da mediana do ano.",
+      "summary": "O engajamento diminuiu 43,6% em relação à semana anterior e ficou 43,6% abaixo da mediana do ano.",
       "kpis": [
         {
           "label": "ENGAJAMENTO GERAL",
-          "value": 3447390,
+          "value": 689478,
           "format": "compact",
-          "change": 182.0,
+          "change": -43.6,
           "foot": "Em relação à semana anterior"
         },
         {
           "label": "POSTAGENS",
-          "value": 2779220,
+          "value": 555844,
           "format": "integer",
-          "change": 4774.6,
+          "change": 874.9,
           "foot": "Publicações no período monitorado"
         },
         {
           "label": "AUTORES",
-          "value": 229905,
+          "value": 45981,
           "format": "integer",
-          "change": 475.9,
+          "change": 15.2,
           "foot": "Autores únicos nas publicações"
         },
         {
           "label": "ALCANCE ESTIMADO",
-          "value": 452782730,
+          "value": 90556546,
           "format": "integer",
-          "change": 348.9,
+          "change": -10.2,
           "foot": "Estimativa reportada pela fonte"
         }
       ],
@@ -187,34 +187,14 @@
           "week": 42,
           "label": "6–26 out",
           "range": "6 a 26 de outubro de 2026",
-          "value": 3447390,
-          "display": "3,4 mi"
+          "value": 689478,
+          "display": "689,5 mil"
         }
       ],
-      "median": 1235938,
+      "median": 1222405,
       "channels": [
         {
           "name": "Bluesky",
-          "value": 689478,
-          "display": "689,5 mil"
-        },
-        {
-          "name": "Facebook",
-          "value": 689478,
-          "display": "689,5 mil"
-        },
-        {
-          "name": "Instagram",
-          "value": 689478,
-          "display": "689,5 mil"
-        },
-        {
-          "name": "X (Twitter)",
-          "value": 689478,
-          "display": "689,5 mil"
-        },
-        {
-          "name": "YouTube",
           "value": 689478,
           "display": "689,5 mil"
         }
@@ -8244,34 +8224,34 @@
   },
   "edition": "42ª semana · 1ª edição",
   "period": "6 a 26 de outubro de 2026",
-  "summary": "O engajamento aumentou 182,0% em relação à semana anterior e ficou 178,9% acima da mediana do ano.",
+  "summary": "O engajamento diminuiu 43,6% em relação à semana anterior e ficou 43,6% abaixo da mediana do ano.",
   "kpis": [
     {
       "label": "ENGAJAMENTO GERAL",
-      "value": 3447390,
+      "value": 689478,
       "format": "compact",
-      "change": 182.0,
+      "change": -43.6,
       "foot": "Em relação à semana anterior"
     },
     {
       "label": "POSTAGENS",
-      "value": 2779220,
+      "value": 555844,
       "format": "integer",
-      "change": 4774.6,
+      "change": 874.9,
       "foot": "Publicações no período monitorado"
     },
     {
       "label": "AUTORES",
-      "value": 229905,
+      "value": 45981,
       "format": "integer",
-      "change": 475.9,
+      "change": 15.2,
       "foot": "Autores únicos nas publicações"
     },
     {
       "label": "ALCANCE ESTIMADO",
-      "value": 452782730,
+      "value": 90556546,
       "format": "integer",
-      "change": 348.9,
+      "change": -10.2,
       "foot": "Estimativa reportada pela fonte"
     }
   ],
@@ -8301,34 +8281,14 @@
       "week": 42,
       "label": "6–26 out",
       "range": "6 a 26 de outubro de 2026",
-      "value": 3447390,
-      "display": "3,4 mi"
+      "value": 689478,
+      "display": "689,5 mil"
     }
   ],
-  "median": 1235938,
+  "median": 1222405,
   "channels": [
     {
       "name": "Bluesky",
-      "value": 689478,
-      "display": "689,5 mil"
-    },
-    {
-      "name": "Facebook",
-      "value": 689478,
-      "display": "689,5 mil"
-    },
-    {
-      "name": "Instagram",
-      "value": 689478,
-      "display": "689,5 mil"
-    },
-    {
-      "name": "X (Twitter)",
-      "value": 689478,
-      "display": "689,5 mil"
-    },
-    {
-      "name": "YouTube",
       "value": 689478,
       "display": "689,5 mil"
     }
