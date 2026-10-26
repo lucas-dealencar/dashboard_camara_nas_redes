@@ -635,6 +635,11 @@
   object-fit: contain;
 }
 
+/* Oculta barras de rolagem nativas não essenciais mas preserva a funcionalidade */
+::-webkit-scrollbar {
+  display: none;
+}
+
 /* Responsividade geral */
 @media (max-width: 850px) {
   .main-nav .nav-inner {
