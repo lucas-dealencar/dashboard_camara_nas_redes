@@ -2,7 +2,7 @@
 
   python main.py                 executa uma vez agora (coleta, gera o JSON e publica)
   python main.py --sem-publicar  executa uma vez sem commit/push (teste local)
-  python main.py --agendar       fica em execução e roda todo dia às 11:30 (Brasília)
+  python main.py --agendar       fica em execução e roda todo dia às 11:30 
 """
 import argparse
 from pathlib import Path
@@ -11,7 +11,7 @@ from prefect import flow
 from prefect.schedules import Cron
 
 from src.carga import salvar_dados_json
-from src.coleta import extrair_dados_sheets
+from src.coleta import extrair_dados_qualitativos, extrair_dados_sheets
 from src.publicacao import publicar_dados_git
 from src.transformacao import transformar_dados
 
@@ -21,7 +21,12 @@ CRON_DIARIO = Cron("30 11 * * *", timezone="America/Sao_Paulo")
 @flow(name="Atualizar Dashboard Câmara nas Redes", log_prints=True)
 def atualizar_dashboard(publicar: bool = True) -> Path:
     dados = extrair_dados_sheets()
-    tabelas = transformar_dados(dados)
+    try:
+        qualitativo = extrair_dados_qualitativos()
+    except Exception as erro:  # sem a planilha qualitativa o painel segue com KPIs e evolução
+        print(f"Aviso: análise qualitativa indisponível ({erro}); seguindo sem ela.")
+        qualitativo = None
+    tabelas = transformar_dados(dados, qualitativo)
     arquivo = salvar_dados_json(tabelas)
     if publicar:
         publicar_dados_git(arquivo)

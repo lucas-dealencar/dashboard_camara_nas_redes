@@ -640,9 +640,15 @@ function renderProposalTabs() {
 
 function buildProposalKpis(p) {
   const ch = p.changes || {};
+  // changes_week = última semana em que a proposta apareceu (pode não ser a imediatamente anterior)
+  const currentWeek = Number(activeWeekId);
+  const refWeek = p.changes_week;
+  const ref = refWeek == null || refWeek === currentWeek - 1 ? 'à semana anterior' : `à ${refWeek}ª semana`;
   const make = (label, value, change) => {
     const hasChange = change != null;
-    const foot = !hasChange ? 'Sem comparativo com a semana anterior' : (change < 0 ? 'Inferior à semana anterior' : (change > 0 ? 'Superior à semana anterior' : 'Igual à semana anterior'));
+    const foot = !hasChange
+      ? (refWeek == null ? 'Sem aparição em semanas anteriores' : `Sem base de comparação na ${refWeek}ª semana`)
+      : (change < 0 ? `Inferior ${ref}` : (change > 0 ? `Superior ${ref}` : `Igual ${ref}`));
     return { label, value, change: hasChange ? change : null, foot, format: value >= 1e9 ? 'compact' : '' };
   };
   return [
@@ -671,20 +677,83 @@ function channelNarrative(list) {
   return out.join(' ');
 }
 
-function channelMiniChart(list) {
-  const W = 440, H = 210, base = 172, top = 28, pad = 26;
-  const slot = (W - pad * 2) / list.length;
-  const barW = Math.min(56, slot * 0.62);
-  const max = list[0].value || 1;
-  let out = `<line class="mini-base" x1="${pad - 10}" y1="${base}" x2="${W - pad + 10}" y2="${base}"/>`;
-  list.forEach((c, i) => {
-    const h = Math.max(4, (base - top) * c.value / max);
-    const cx = pad + slot * i + slot / 2;
-    out += `<rect class="mini-bar" x="${cx - barW / 2}" y="${base - h}" width="${barW}" height="${h}" rx="2"><title>${esc(c.name)}: ${esc(formatNumber(c.value))} pontos</title></rect>
-      <text class="axis-label" x="${cx}" y="${base - h - 7}" text-anchor="middle">${esc(formatNumber(c.value, true))}</text>
-      <text class="axis-label" x="${cx}" y="${base + 18}" text-anchor="middle">${esc(shortChannelName(c.name))}</text>`;
+/* Mesmas cores do gráfico "Engajamento por canal" da aba Analítico. */
+const CHANNEL_COLORS = {
+  'Instagram': '#C13584',
+  'X (Twitter)': '#101010',
+  'Facebook': '#1877F2',
+  'Bluesky': '#1185FE',
+  'YouTube': '#FF0000'
+};
+const DASH_BAR_COLOR = '#134e5e'; /* cor das colunas de evolução do dashboard */
+
+function niceCeil(value) {
+  const raw = Math.max(value, 1) * 1.05;
+  const order = Math.pow(10, Math.floor(Math.log10(raw)));
+  return ([1, 1.2, 1.6, 2, 2.4, 3, 4, 5, 6, 8, 10].map(m => m * order).find(v => v >= raw)) || raw;
+}
+
+/* Gráfico de colunas responsivo (Canais de Destaque / O que Dizem).
+   items: [{name, value, label, title}]; o rótulo fica dentro da coluna quando cabe. */
+function renderColumnChart(nodeId, items, { max, ticks, tickFormat, colorFor, ariaLabel, height = 250 }) {
+  const node = document.getElementById(nodeId);
+  if (!node) return;
+  if (!items.length) { node.innerHTML = '<div class="empty-state">Ainda não há dados para este gráfico.</div>'; return; }
+  const W = Math.max(300, Math.round(node.clientWidth || 640)), left = 50, right = 12, top = 22;
+  const slot = (W - left - right) / items.length;
+  const barW = Math.min(118, slot * 0.72);
+  const maxChars = Math.max(8, Math.floor(slot / 6.6));
+  const labelLines = items.map(d => chartLabelLines(d.name, maxChars));
+  const bottom = 14 + Math.max(...labelLines.map(l => l.length)) * 13;
+  const H = height + bottom - 30, base = H - bottom;
+  const y = v => top + (base - top) * (1 - v / max);
+  let out = '';
+  ticks.forEach(t => {
+    out += `<line class="gridline" x1="${left}" y1="${y(t)}" x2="${W - right}" y2="${y(t)}"/><text class="axis-label" x="${left - 8}" y="${y(t) + 4}" text-anchor="end">${esc(tickFormat(t))}</text>`;
   });
-  return svgWrap(`${W} ${H}`, out, 'Engajamento por canal: ' + list.map(c => `${c.name}, ${formatNumber(c.value)}`).join('; '));
+  out += `<line class="mini-base" x1="${left}" y1="${base}" x2="${W - right}" y2="${base}"/>`;
+  items.forEach((d, i) => {
+    const cx = left + slot * i + slot / 2;
+    const h = Math.max(2, base - y(Math.min(d.value, max)));
+    const color = colorFor(d, i);
+    const inside = h >= 26;
+    out += `<rect x="${cx - barW / 2}" y="${base - h}" width="${barW}" height="${h}" rx="2" style="fill:${color}"><title>${esc(d.title || `${d.name}: ${d.label}`)}</title></rect>
+      <text class="col-value" x="${cx}" y="${inside ? base - h + 17 : base - h - 7}" text-anchor="middle" style="fill:${inside ? '#fff' : color}">${esc(d.label)}</text>
+      <text class="axis-label col-category" x="${cx}" y="${base + 16}" text-anchor="middle">${labelLines[i].map((l, j) => `<tspan x="${cx}" dy="${j ? 13 : 0}">${esc(l)}</tspan>`).join('')}</text>`;
+  });
+  node.innerHTML = svgWrap(`${W} ${H}`, out, ariaLabel);
+}
+
+function renderProposalCharts(p) {
+  if (!p) return;
+  const channels = (p.channels || []).filter(c => c.value > 0).sort((a, b) => b.value - a.value);
+  if (channels.length) {
+    const max = niceCeil(channels[0].value);
+    renderColumnChart('proposal-channel-chart', channels.map(c => ({
+      name: c.name,
+      value: c.value,
+      label: formatNumber(c.value, true),
+      title: `${c.name}: ${formatNumber(c.value)} pontos`,
+      color: CHANNEL_COLORS[c.name]
+    })), {
+      max, ticks: [0, .25, .5, .75, 1].map(t => max * t), tickFormat: v => formatNumber(v, true),
+      colorFor: d => d.color || DASH_BAR_COLOR,
+      ariaLabel: 'Canais de destaque: ' + channels.map(c => `${c.name}, ${formatNumber(c.value)} pontos`).join('; ')
+    });
+  }
+  const args = p.arguments || [];
+  if (args.length) {
+    renderColumnChart('proposal-args-chart', args.map(a => ({
+      name: a.name,
+      value: a.share || 0,
+      label: percentage1(a.share || 0),
+      title: `${a.name}: ${percentage1(a.share || 0)} (${countLabel(a.count, 'ocorrência', 'ocorrências')})`
+    })), {
+      max: 100, ticks: [0, 20, 40, 60, 80, 100], tickFormat: v => `${v}%`,
+      colorFor: () => DASH_BAR_COLOR,
+      ariaLabel: 'Argumentos mais citados: ' + args.map(a => `${a.name}, ${percentage1(a.share || 0)}`).join('; ')
+    });
+  }
 }
 
 /* Gráfico "Evolução nas últimas 4 semanas" da proposta selecionada. */
@@ -728,9 +797,10 @@ function renderProposalDetail() {
   const args = p.arguments || [];
 
   const channelBlock = channels.length ? `
-    <article class="panel prop-block channel-block">
-      <div class="channel-mini chart">${channelMiniChart(channels)}</div>
-      <div class="channel-text"><h3>Engajamento por Canal</h3><p>${esc(channelNarrative(channels))}</p></div>
+    <article class="panel prop-block">
+      <h3>Canais de Destaque</h3>
+      <p class="block-copy">${esc(channelNarrative(channels))}</p>
+      <div id="proposal-channel-chart" class="chart col-chart" aria-label="Gráfico de engajamento por canal da proposta"></div>
     </article>` : '';
 
   const mobilizationBlock = p.mobilization ? `
@@ -746,6 +816,7 @@ function renderProposalDetail() {
     sayBlock = `
     <article class="panel prop-block">
       <div class="say-head"><h3>O que Dizem</h3><span class="say-chip">${esc(chip)}</span></div>
+      <div id="proposal-args-chart" class="chart col-chart" aria-label="Gráfico dos argumentos mais citados"></div>
       ${args.map((arg, i) => `
         <section class="say-item">
           <h4>${i + 1} - ${esc(String(arg.name).toLocaleUpperCase('pt-BR'))} | ${countLabel(arg.count, 'ocorrência', 'ocorrências')} (${percentage1(arg.share)})</h4>
@@ -772,6 +843,7 @@ function renderProposalDetail() {
 
   renderKpis(buildProposalKpis(p), 'proposal-kpis');
   renderProposalTrend(p);
+  renderProposalCharts(p);
 }
 
 function openProposal(index){selectedProposal=index;renderProposalTabs();renderProposalDetail();navigateToPage('propostas');}
@@ -787,7 +859,7 @@ const pageIds=['destaques','analitico','propostas','metodologia'];
 function renderVisibleCharts(page){
   if(!report)return;
   if(page==='destaques')renderTrend();
-  if(page==='propostas')renderProposalTrend(report.proposals[selectedProposal]);
+  if(page==='propostas'){const p=report.proposals[selectedProposal];renderProposalTrend(p);renderProposalCharts(p);}
   if(page==='analitico'){renderChannelChart();renderShareChart();renderTopics();}
 }
 

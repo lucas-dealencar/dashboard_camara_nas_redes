@@ -115,6 +115,15 @@ def _variacoes(atual: Any, anterior: Any) -> dict[str, float | None]:
     return saida
 
 
+def _aparicao_anterior(chave: str, semana: int, ctx: dict[str, Any]) -> tuple[int | None, Any]:
+    """(semana, linha) da aparição mais recente da proposta antes de `semana` (None se nunca apareceu)."""
+    for s in range(semana - 1, ctx["semana_min"] - 1, -1):
+        linha = ctx["indice"].get(s, {}).get(chave)
+        if linha is not None:
+            return s, linha
+    return None, None
+
+
 def _historico_proposta(chave: str, semana: int, ctx: dict[str, Any]) -> list[dict]:
     """Engajamento da proposta nas últimas N semanas até `semana`.
 
@@ -140,7 +149,8 @@ def _propostas_da_semana(df_semana: pd.DataFrame, eng_total: int, semana: int, c
     for p in df_semana.itertuples(index=False):
         chave = chave_proposta(p.proposta)
         qual = ctx["analise"].get((semana, chave))
-        anterior = ctx["indice"].get(semana - 1, {}).get(chave)
+        # compara com a última semana em que a proposta apareceu (não só a imediatamente anterior)
+        semana_anterior, anterior = _aparicao_anterior(chave, semana, ctx)
         propostas.append(
             {
                 "id": str(p.proposta),
@@ -155,6 +165,7 @@ def _propostas_da_semana(df_semana: pd.DataFrame, eng_total: int, semana: int, c
                 "mobilization": (qual or {}).get("mobilizacao") or _texto(p.o_que_mobilizou),
                 "sample": _texto(p.publicacao_representativa),
                 "changes": _variacoes(p, anterior),
+                "changes_week": semana_anterior,
                 "history": _historico_proposta(chave, semana, ctx),
                 "channels": ctx["canais"].get((semana, chave), []),
                 "analysis": None if qual is None else {"posts": qual["posts"], "comments": qual["comments"]},
