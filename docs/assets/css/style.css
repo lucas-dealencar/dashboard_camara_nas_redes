@@ -934,3 +934,75 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
   /* Menu fixo mais compacto */
   .proposal-subnav { padding: 10px 12px 0; }
 }
+/* ==========================================================================
+   Aba "Propostas" — layout do wireframe
+   ========================================================================== */
+.heading-rule { margin: 0 0 20px; border-bottom: 1px solid var(--line); }
+.heading-rule h2,
+.heading-rule .proposal-title {
+  display: inline-block;
+  margin-bottom: -1px;
+  padding-bottom: 4px;
+  border-bottom: 2px solid var(--ink);
+}
+.proposal-title-block { margin-top: 6px; margin-bottom: 8px; }
+.proposal-title {
+  font-size: 22px !important;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+.proposal-title-desc { margin: 0 0 16px; color: #54747a; font-size: 12.5px; line-height: 1.5; }
+
+/* Barra de abas: faixa cinza, abas centralizadas, selo escuro e traço verde na ativa */
+.proposals-section .proposal-subnav {
+  margin: 0 0 30px;
+  padding: 0 12px;
+  background: #e3ecee;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: none;
+}
+.proposals-section .proposal-subnav .proposal-tabs { padding: 0; gap: 4px; }
+.proposals-section .proposal-subnav .proposal-tab { padding: 14px 16px 11px; color: var(--ink); font-size: 13.5px; font-weight: 500; }
+.proposals-section .proposal-subnav .proposal-tab.active { font-weight: 600; }
+.proposals-section .proposal-tab-rank { width: 18px; height: 18px; border-radius: 3px; background: var(--ink); color: #fff; font-size: 9.5px; }
+@media (min-width: 851px) {
+  .proposals-section .proposal-subnav .proposal-tabs { justify-content: center; }
+}
+
+/* O detalhe agora é uma pilha de painéis independentes (sem caixa externa) */
+.proposals-section .proposal-detail { padding: 0; background: none; border: 0; border-radius: 0; box-shadow: none; }
+.proposals-section .kpi-grid-compact { margin: 18px 0 26px; }
+.proposals-section .kpi-grid-compact .kpi-foot { align-items: center; gap: 8px; line-height: 1.15; }
+.proposals-section .kpi-grid-compact .kpi-foot > span:not(.kpi-change) { font-size: 9.5px; font-weight: 700; }
+
+.prop-block { margin-bottom: 26px; padding: 26px 30px 28px; }
+.prop-block h3 { font-size: 24px; letter-spacing: -0.045em; }
+.prop-block .panel-heading { margin-bottom: 8px; }
+.prop-block .chart-trend { min-height: 260px; }
+.chart .axis-label.muted { fill: #8aa1a5; font-style: italic; }
+
+.channel-block { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 30px; }
+.channel-mini { min-height: 0; }
+.mini-base { stroke: #48696f; stroke-width: 1.5; }
+.mini-bar { fill: var(--ink); }
+.channel-text h3 { margin-bottom: 10px; }
+.channel-text p,
+.block-copy { margin: 0; color: #2f5258; font-size: 13px; line-height: 1.5; }
+.block-copy { margin-top: 8px; }
+
+.say-head { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-bottom: 22px; }
+.say-chip { padding: 6px 16px; border-radius: 999px; background: #bccdd1; color: var(--ink); font-size: 10.5px; font-weight: 800; }
+.say-item + .say-item { margin-top: 22px; padding-top: 22px; border-top: 1px solid #48696f; }
+.say-item h4 { margin: 0 0 6px; color: var(--ink); font-size: 13.5px; font-weight: 800; }
+.say-item p { margin: 0 0 8px; color: #2f5258; font-size: 12.5px; line-height: 1.45; white-space: pre-line; }
+.say-item p.say-label { margin: 12px 0 2px; color: var(--ink); font-weight: 800; }
+
+@media (max-width: 850px) {
+  .channel-block { grid-template-columns: 1fr; gap: 18px; }
+  .prop-block { padding: 20px 18px 22px; }
+  .prop-block h3 { font-size: 21px; }
+  .proposals-section .proposal-subnav { padding: 0 8px; }
+  .proposals-section .proposal-subnav .proposal-tab { padding: 12px 10px 9px; font-size: 12.5px; }
+}

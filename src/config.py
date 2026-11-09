@@ -10,6 +10,14 @@ CAMINHO_CREDENCIAIS = BASE_DIR / "src" / "credentials.json"
 SPREADSHEET_ID = os.getenv("SPREADSHEET_ID", "1GD0nSyJbQQkikWKcAxAU-HK8D8xH2goPRsX7u6vx738")
 ABA_ORIGEM = "dados"
 
+# Planilha "texto_camara_nas_redes": análise qualitativa por proposta (aba `propostas`)
+# e engajamento por canal de cada proposta em destaque (aba `canal_destaque`).
+SPREADSHEET_ID_QUALITATIVO = os.getenv(
+    "SPREADSHEET_ID_QUALITATIVO", "19hJ8uTpIOruCK9KcvyJq492B3VLW8IRrBz_41AAjhFI"
+)
+ABA_ANALISE_PROPOSTAS = "propostas"
+ABA_CANAL_DESTAQUE = "canal_destaque"
+
 # --- Front-end (GitHub Pages: branch main, pasta /docs) ---------------------- #
 PASTA_SITE = BASE_DIR / "docs"
 ARQUIVO_JSON_SAIDA = PASTA_SITE / "dados" / "dados_dashboard.json"

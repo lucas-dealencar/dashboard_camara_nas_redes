@@ -626,28 +626,152 @@ function renderShareChart() {
   node.innerHTML=svgWrap(`${W} ${H}`,out,'Participação percentual das cinco propostas no engajamento total');
 }
 
+/* ===== Aba "Propostas" (layout do wireframe) ===== */
+function percentage1(value) { return `${Number(value).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}%`; }
+function countLabel(n, singular, plural) { return `${formatNumber(n)} ${n === 1 ? singular : plural}`; }
+function shortChannelName(name) { return String(name).replace(/\s*\(.*\)\s*$/, ''); }
+
 function renderProposalTabs() {
   const limit = Math.max(5, selectedProposal + 1);
   const list = report.proposals.slice(0, limit);
-  document.getElementById('proposals-range-note').textContent = `01 — 0${list.length}`;
   document.getElementById('proposal-tabs').innerHTML=list.map((p,i)=>`<button class="proposal-tab ${i===selectedProposal?'active':''}" role="tab" aria-selected="${i===selectedProposal}" data-index="${i}"><span class="proposal-tab-rank">${String(i+1).padStart(2,'0')}</span><span>${esc(p.id)}</span></button>`).join('');
   document.querySelectorAll('.proposal-tab').forEach(n=>n.addEventListener('click',()=>{selectedProposal=Number(n.dataset.index);renderProposalTabs();renderProposalDetail();}));
 }
 
-function renderProposalDetail() {
-  const p=report.proposals[selectedProposal];if(!p){document.getElementById('proposal-detail').innerHTML='<div class="empty-state">Selecione uma proposta para ver o detalhamento.</div>';return;}
-  const isUp = Number(p.change) >= 0;
-  const kpis=[
-    ['Engajamento',formatNumber(p.engagement),p.change!=null?{text:`${isUp?'↑':'↓'} ${percentage(Math.abs(p.change))} vs. semana anterior`,up:isUp}:null],
-    ['Postagens',formatNumber(p.posts),null],
-    ['Autores',formatNumber(p.authors),null],
-    ['Alcance estimado',formatNumber(p.reach),null]
+function buildProposalKpis(p) {
+  const ch = p.changes || {};
+  const make = (label, value, change) => {
+    const hasChange = change != null;
+    const foot = !hasChange ? 'Sem comparativo com a semana anterior' : (change < 0 ? 'Inferior à semana anterior' : (change > 0 ? 'Superior à semana anterior' : 'Igual à semana anterior'));
+    return { label, value, change: hasChange ? change : null, foot, format: value >= 1e9 ? 'compact' : '' };
+  };
+  return [
+    make('ENGAJAMENTO GERAL', p.engagement, ch.engagement),
+    make('POSTAGEM', p.posts, ch.posts),
+    make('AUTORES', p.authors, ch.authors),
+    make('ALCANCE ESTIMADO', p.reach, ch.reach)
   ];
-  const maxChannel=Math.max(...(p.channels||[]).map(c=>c.value||0),1);
-  const channels=(p.channels||[]).map(c=>`<div><div class="channel-row-top"><span class="channel-name">${esc(c.name)}</span><span class="channel-value">${esc(c.display||formatNumber(c.value))}</span></div><div class="progress-track"><div class="progress-fill" style="width:${Math.max(2,c.value/maxChannel*100)}%"></div></div></div>`).join('')||'<p class="detail-subtitle">Dados de canal por proposta indisponíveis na base.</p>';
-  const args=(p.arguments||[]).map((a,i)=>`<div class="argument-item"><div class="argument-top"><span class="argument-name">${i+1}. ${esc(a.name)}</span><span class="argument-value">${esc(a.count)} · ${percentage(a.share)}</span></div><div class="progress-track"><div class="progress-fill" style="width:${Math.min(a.share,100)}%"></div></div><p class="argument-description">${esc(a.description)}</p></div>`).join('')||'<p class="detail-subtitle">Análise qualitativa indisponível.</p>';
-  document.getElementById('proposal-detail').innerHTML=`<div class="detail-heading"><div><span class="detail-rank">PROPOSTA ${selectedProposal+1} DE ${report.proposals.length}</span><h3>${esc(p.id)}</h3><p class="detail-description">${esc(p.description||'')}</p></div>${p.status?`<span class="status-pill">${esc(p.status)}</span>`:''}</div><div class="detail-kpis">${kpis.map(k=>`<div class="detail-kpi"><small>${k[0]}</small><b>${k[1]}</b>${k[2]?`<span class="${k[2].up?'up':'down'}">${k[2].text}</span>`:''}</div>`).join('')}</div><div class="detail-grid"><article class="detail-panel"><h4>Engajamento por canal</h4><p class="detail-subtitle">Pontos registrados nesta semana</p><div class="channel-list">${channels}</div></article><article class="detail-panel"><h4>O que dizem</h4><p class="detail-subtitle">Argumentos mais frequentes · toque para expandir</p><div class="argument-list">${args}</div></article></div><div class="detail-story"><article class="detail-panel"><h4>O que mobilizou</h4>${esc(p.mobilization||p.summary||'Síntese qualitativa não informada na base para esta proposta.')}</article><article class="detail-panel"><h4>Publicação representativa</h4>${esc(p.sample||'Exemplo não informado na base.')}</article></div>`;
-  document.querySelectorAll('.argument-item').forEach(n=>n.addEventListener('click',()=>n.classList.toggle('open')));
+}
+
+/* Texto do bloco "Engajamento por Canal", gerado a partir dos pontos de cada rede. */
+function channelNarrative(list) {
+  const total = list.reduce((sum, c) => sum + c.value, 0) || 1;
+  const pct = c => percentage1(c.value / total * 100);
+  const name = c => shortChannelName(c.name);
+  const [first, second, ...rest] = list;
+  const out = [`O ${name(first)} teve destaque com ${formatNumber(first.value)} pontos (${pct(first)}).`];
+  if (second) out.push(`O ${name(second)} também teve participação relevante, com ${formatNumber(second.value)} (${pct(second)}).`);
+  if (rest.length === 1) {
+    out.push(`${name(rest[0])} somou ${formatNumber(rest[0].value)} (${pct(rest[0])}).`);
+  } else if (rest.length > 1) {
+    const last = rest[rest.length - 1];
+    const init = rest.slice(0, -1).map(c => `${name(c)} somou ${formatNumber(c.value)} (${pct(c)})`);
+    out.push(`${init.join(', ')} e ${name(last)}, ${formatNumber(last.value)} pontos.`);
+  }
+  return out.join(' ');
+}
+
+function channelMiniChart(list) {
+  const W = 440, H = 210, base = 172, top = 28, pad = 26;
+  const slot = (W - pad * 2) / list.length;
+  const barW = Math.min(56, slot * 0.62);
+  const max = list[0].value || 1;
+  let out = `<line class="mini-base" x1="${pad - 10}" y1="${base}" x2="${W - pad + 10}" y2="${base}"/>`;
+  list.forEach((c, i) => {
+    const h = Math.max(4, (base - top) * c.value / max);
+    const cx = pad + slot * i + slot / 2;
+    out += `<rect class="mini-bar" x="${cx - barW / 2}" y="${base - h}" width="${barW}" height="${h}" rx="2"><title>${esc(c.name)}: ${esc(formatNumber(c.value))} pontos</title></rect>
+      <text class="axis-label" x="${cx}" y="${base - h - 7}" text-anchor="middle">${esc(formatNumber(c.value, true))}</text>
+      <text class="axis-label" x="${cx}" y="${base + 18}" text-anchor="middle">${esc(shortChannelName(c.name))}</text>`;
+  });
+  return svgWrap(`${W} ${H}`, out, 'Engajamento por canal: ' + list.map(c => `${c.name}, ${formatNumber(c.value)}`).join('; '));
+}
+
+/* Gráfico "Evolução nas últimas 4 semanas" da proposta selecionada. */
+function renderProposalTrend(p) {
+  const node = document.getElementById('proposal-trend-chart');
+  if (!node || !p) return;
+  const values = p.history || [];
+  if (!values.some(v => v.value != null)) { node.innerHTML = '<div class="empty-state">Ainda não há histórico semanal para esta proposta.</div>'; return; }
+  const W = Math.max(320, Math.round(node.clientWidth || 900)), H = 260, left = 56, right = 20, top = 32, bottom = 46;
+  const rawMax = Math.max(...values.map(v => v.value || 0), 1) * 1.05;
+  const order = Math.pow(10, Math.floor(Math.log10(rawMax)));
+  const ceilMax = ([1, 1.2, 1.6, 2, 2.4, 2.8, 3.2, 4, 6, 8, 10].map(m => m * order).find(v => v >= rawMax)) || rawMax;
+  const y = v => top + (H - bottom - top) * (1 - v / ceilMax);
+  const plotW = W - left - right, colStep = plotW / values.length, barW = Math.min(64, colStep * 0.55);
+  const x = i => left + colStep * i + colStep / 2;
+  let parts = '';
+  [0, 0.25, 0.5, 0.75, 1].forEach(t => {
+    const yy = top + (H - bottom - top) * t;
+    parts += `<line class="gridline" x1="${left}" y1="${yy}" x2="${W - right}" y2="${yy}"/><text class="axis-label" x="${left - 12}" y="${yy + 4}" text-anchor="end">${formatNumber(ceilMax * (1 - t), true)}</text>`;
+  });
+  values.forEach((d, i) => {
+    const current = i === values.length - 1;
+    const weekLabel = `<text class="axis-label" x="${x(i)}" y="${H - 10}" text-anchor="middle">Semana ${d.week}</text>${W < 480 ? '' : `<text class="axis-label" x="${x(i)}" y="${H - 24}" text-anchor="middle" font-weight="700">${esc(d.label)}</text>`}`;
+    if (d.value == null) {
+      parts += `<text class="axis-label muted" x="${x(i)}" y="${H - bottom - 8}" text-anchor="middle"><title>Fora das propostas mais engajadas desta semana</title>${W < 480 ? '—' : 'sem dados'}</text>${weekLabel}`;
+      return;
+    }
+    const yy = y(d.value);
+    parts += `<rect class="bar-trend" style="fill:#134e5e;opacity:${current ? 1 : 0.55}" x="${x(i) - barW / 2}" y="${yy}" width="${barW}" height="${Math.max(0, H - bottom - yy)}" rx="4"><title>Semana ${d.week}: ${esc(formatNumber(d.value))}</title></rect>
+      <text class="value-label" x="${x(i)}" y="${yy - 8}" text-anchor="middle">${esc(formatNumber(d.value, true))}</text>${weekLabel}`;
+  });
+  node.innerHTML = svgWrap(`${W} ${H}`, parts, `Evolução do engajamento de ${p.id} nas últimas semanas.`);
+}
+
+function renderProposalDetail() {
+  const host = document.getElementById('proposal-detail');
+  const p = report.proposals[selectedProposal];
+  if (!p) { host.innerHTML = '<div class="empty-state">Selecione uma proposta para ver o detalhamento.</div>'; return; }
+
+  const channels = (p.channels || []).filter(c => c.value > 0).sort((a, b) => b.value - a.value);
+  const args = p.arguments || [];
+
+  const channelBlock = channels.length ? `
+    <article class="panel prop-block channel-block">
+      <div class="channel-mini chart">${channelMiniChart(channels)}</div>
+      <div class="channel-text"><h3>Engajamento por Canal</h3><p>${esc(channelNarrative(channels))}</p></div>
+    </article>` : '';
+
+  const mobilizationBlock = p.mobilization ? `
+    <article class="panel prop-block"><h3>O que Mobilizou</h3><p class="block-copy">${esc(p.mobilization)}</p></article>` : '';
+
+  let sayBlock = '';
+  if (args.length) {
+    const a = p.analysis || {};
+    const counts = [];
+    if (a.posts) counts.push(countLabel(a.posts, 'post', 'posts'));
+    if (a.comments) counts.push(countLabel(a.comments, 'comentário', 'comentários'));
+    const chip = [counts.join(' + '), 'Análise das postagens por IA com supervisão humana'].filter(Boolean).join(' | ');
+    sayBlock = `
+    <article class="panel prop-block">
+      <div class="say-head"><h3>O que Dizem</h3><span class="say-chip">${esc(chip)}</span></div>
+      ${args.map((arg, i) => `
+        <section class="say-item">
+          <h4>${i + 1} - ${esc(String(arg.name).toLocaleUpperCase('pt-BR'))} | ${countLabel(arg.count, 'ocorrência', 'ocorrências')} (${percentage1(arg.share)})</h4>
+          ${arg.description ? `<p>${esc(arg.description)}</p>` : ''}
+          ${arg.sample ? `<p class="say-label">Postagem representativa:</p><p>${esc(arg.sample)}</p>` : ''}
+        </section>`).join('')}
+    </article>`;
+  }
+
+  const emptyNote = (!channelBlock && !mobilizationBlock && !sayBlock)
+    ? '<article class="panel prop-block"><p class="empty-state">A análise qualitativa e o engajamento por canal ainda não foram coletados para esta proposta.</p></article>' : '';
+
+  host.innerHTML = `
+    <div class="proposal-title-block heading-rule">
+      <h3 class="proposal-title">${esc(p.id)}</h3>
+    </div>
+    ${p.description && p.description !== p.id ? `<p class="proposal-title-desc">${esc(p.description)}</p>` : ''}
+    <div class="kpi-grid kpi-grid-compact" id="proposal-kpis"></div>
+    <article class="panel prop-block">
+      <div class="panel-heading"><h2 class="panel-title-sm">EVOLUÇÃO NAS ÚLTIMAS 4 SEMANAS</h2><span class="panel-note">Semana ${esc(String(report.edition || '').split('ª')[0])} em destaque</span></div>
+      <div id="proposal-trend-chart" class="chart chart-trend" aria-label="Gráfico de evolução semanal da proposta"></div>
+    </article>
+    ${channelBlock}${mobilizationBlock}${sayBlock}${emptyNote}`;
+
+  renderKpis(buildProposalKpis(p), 'proposal-kpis');
+  renderProposalTrend(p);
 }
 
 function openProposal(index){selectedProposal=index;renderProposalTabs();renderProposalDetail();navigateToPage('propostas');}
@@ -663,6 +787,7 @@ const pageIds=['destaques','analitico','propostas','metodologia'];
 function renderVisibleCharts(page){
   if(!report)return;
   if(page==='destaques')renderTrend();
+  if(page==='propostas')renderProposalTrend(report.proposals[selectedProposal]);
   if(page==='analitico'){renderChannelChart();renderShareChart();renderTopics();}
 }
 

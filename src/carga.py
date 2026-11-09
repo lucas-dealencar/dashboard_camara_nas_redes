@@ -8,8 +8,17 @@ import pandas as pd
 from prefect import task
 
 from src.config import ARQUIVO_JSON_SAIDA, REDES
+from src.transformacao import chave_proposta
 
 JANELA_HISTORICO = 4  # semanas exibidas no gráfico "Evolução nas últimas 4 semanas"
+
+# campo do JSON -> coluna da tabela `propostas` (usado na variação vs. semana anterior)
+CAMPOS_VARIACAO = {
+    "engagement": "engagement_score",
+    "posts": "mencoes",
+    "authors": "autores_unicos",
+    "reach": "alcance",
+}
 
 
 # --------------------------------------------------------------------------- #
@@ -48,25 +57,111 @@ def _canais_por_semana(tabelas: dict[str, pd.DataFrame]) -> dict[int, list[dict]
     return canais
 
 
-def _propostas_da_semana(df_semana: pd.DataFrame, eng_total: int) -> list[dict]:
-    return [
-        {
-            "id": str(p.proposta),
-            "description": _texto(p.ementa, padrao=str(p.proposta)),
-            "status": _texto(p.situacao, padrao=""),
-            "engagement": _inteiro(p.engagement_score),
-            "posts": _inteiro(p.mencoes),
-            "authors": _inteiro(p.autores_unicos),
-            "reach": _inteiro(p.alcance),
-            "share": round(_inteiro(p.engagement_score) / eng_total * 100, 1) if eng_total else 0.0,
-            "summary": _texto(p.o_que_dizem),
-            "mobilization": _texto(p.o_que_mobilizou),
-            "sample": _texto(p.publicacao_representativa),
-            "channels": [],
-            "arguments": [],
-        }
-        for p in df_semana.itertuples(index=False)
-    ]
+def _indice_propostas(propostas: pd.DataFrame) -> dict[int, dict[str, Any]]:
+    """{semana: {chave_da_proposta: linha}} para comparar semanas e montar o histórico."""
+    indice: dict[int, dict[str, Any]] = {}
+    for linha in propostas.itertuples(index=False):
+        indice.setdefault(int(linha.semana), {}).setdefault(chave_proposta(linha.proposta), linha)
+    return indice
+
+
+def _indice_analise(tabelas: dict[str, pd.DataFrame]) -> dict[tuple[int, str], dict]:
+    """{(semana, chave): {mobilizacao, posts, comments, arguments[]}} a partir de `analise_propostas`."""
+    analise = tabelas.get("analise_propostas")
+    indice: dict[tuple[int, str], dict] = {}
+    if analise is None:
+        return indice
+    for linha in analise.itertuples(index=False):
+        registro = indice.setdefault(
+            (int(linha.semana), chave_proposta(linha.proposta)),
+            {
+                "mobilizacao": _texto(linha.o_que_mobilizou),
+                "posts": _inteiro(linha.posts_analisados),
+                "comments": _inteiro(linha.comentarios_analisados),
+                "arguments": [],
+            },
+        )
+        registro["arguments"].append(
+            {
+                "name": str(linha.argumento),
+                "count": _inteiro(linha.ocorrencias),
+                "share": 0.0 if pd.isna(linha.percentual) else round(float(linha.percentual), 1),
+                "description": _texto(linha.descricao, padrao=""),
+                "sample": _texto(linha.postagem_representativa, padrao=""),
+            }
+        )
+    return indice
+
+
+def _indice_canais(tabelas: dict[str, pd.DataFrame]) -> dict[tuple[int, str], list[dict]]:
+    """{(semana, chave): [{name, value}, ...]} a partir de `canal_destaque` (ordem de REDES)."""
+    canal = tabelas.get("canal_destaque")
+    indice: dict[tuple[int, str], list[dict]] = {}
+    if canal is None:
+        return indice
+    for linha in canal.itertuples(index=False):
+        indice.setdefault((int(linha.semana), chave_proposta(linha.proposta)), []).append(
+            {"name": linha.rede_social, "value": _inteiro(linha.engagement_score)}
+        )
+    return indice
+
+
+def _variacoes(atual: Any, anterior: Any) -> dict[str, float | None]:
+    """Variação % de cada indicador contra a mesma proposta na semana anterior (None = sem base)."""
+    saida: dict[str, float | None] = {}
+    for campo, coluna in CAMPOS_VARIACAO.items():
+        base = _inteiro(getattr(anterior, coluna)) if anterior is not None else 0
+        saida[campo] = round((_inteiro(getattr(atual, coluna)) - base) / base * 100, 1) if base > 0 else None
+    return saida
+
+
+def _historico_proposta(chave: str, semana: int, ctx: dict[str, Any]) -> list[dict]:
+    """Engajamento da proposta nas últimas N semanas até `semana`.
+
+    `value` é None quando a proposta não estava entre as mais engajadas naquela semana.
+    """
+    primeira = max(semana - JANELA_HISTORICO + 1, ctx["semana_min"])
+    historico = []
+    for s in range(primeira, semana + 1):
+        linha = ctx["indice"].get(s, {}).get(chave)
+        historico.append(
+            {
+                "week": s,
+                "value": None if linha is None else _inteiro(linha.engagement_score),
+                "label": ctx["periodo_curto"].get(s, f"{s}ª semana"),
+                "range": ctx["periodo"].get(s, ""),
+            }
+        )
+    return historico
+
+
+def _propostas_da_semana(df_semana: pd.DataFrame, eng_total: int, semana: int, ctx: dict[str, Any]) -> list[dict]:
+    propostas = []
+    for p in df_semana.itertuples(index=False):
+        chave = chave_proposta(p.proposta)
+        qual = ctx["analise"].get((semana, chave))
+        anterior = ctx["indice"].get(semana - 1, {}).get(chave)
+        propostas.append(
+            {
+                "id": str(p.proposta),
+                "description": _texto(p.ementa, padrao=str(p.proposta)),
+                "status": _texto(p.situacao, padrao=""),
+                "engagement": _inteiro(p.engagement_score),
+                "posts": _inteiro(p.mencoes),
+                "authors": _inteiro(p.autores_unicos),
+                "reach": _inteiro(p.alcance),
+                "share": round(_inteiro(p.engagement_score) / eng_total * 100, 1) if eng_total else 0.0,
+                "summary": _texto(p.o_que_dizem),
+                "mobilization": (qual or {}).get("mobilizacao") or _texto(p.o_que_mobilizou),
+                "sample": _texto(p.publicacao_representativa),
+                "changes": _variacoes(p, anterior),
+                "history": _historico_proposta(chave, semana, ctx),
+                "channels": ctx["canais"].get((semana, chave), []),
+                "analysis": None if qual is None else {"posts": qual["posts"], "comments": qual["comments"]},
+                "arguments": [] if qual is None else qual["arguments"],
+            }
+        )
+    return propostas
 
 
 def _montar_payload(tabelas: dict[str, pd.DataFrame]) -> dict[str, Any]:
@@ -84,6 +179,15 @@ def _montar_payload(tabelas: dict[str, pd.DataFrame]) -> dict[str, Any]:
     periodos = propostas.groupby("semana").agg(ini=("data_inicio", "min"), fim=("data_fim", "max"))
     periodo = {int(s): _periodo(r.ini, r.fim) for s, r in periodos.iterrows()}
     periodo_curto = {int(s): _periodo(r.ini, r.fim, curto=True) for s, r in periodos.iterrows()}
+
+    ctx = {
+        "indice": _indice_propostas(propostas),
+        "analise": _indice_analise(tabelas),
+        "canais": _indice_canais(tabelas),
+        "periodo": periodo,
+        "periodo_curto": periodo_curto,
+        "semana_min": int(propostas["semana"].min()),
+    }
 
     dados_semanas: dict[str, Any] = {}
     for semana, df_semana in propostas.groupby("semana"):
@@ -117,7 +221,7 @@ def _montar_payload(tabelas: dict[str, pd.DataFrame]) -> dict[str, Any]:
             "median": mediana,
             "channels": canais.get(semana, []),
             "topics": [],
-            "proposals": _propostas_da_semana(df_semana, eng),
+            "proposals": _propostas_da_semana(df_semana, eng, semana, ctx),
         }
 
     semanas = sorted(map(int, dados_semanas))
