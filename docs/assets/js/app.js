@@ -714,11 +714,11 @@ function renderColumnChart(nodeId, items, { max, ticks, tickFormat, colorFor, ar
   out += `<line class="mini-base" x1="${left}" y1="${base}" x2="${W - right}" y2="${base}"/>`;
   items.forEach((d, i) => {
     const cx = left + slot * i + slot / 2;
-    // altura mínima para o número sempre caber dentro da coluna (valor exato fica no tooltip)
-    const h = Math.max(24, base - y(Math.min(d.value, max)));
+    const h = Math.max(2, base - y(Math.min(d.value, max)));
     const color = colorFor(d, i);
+    // número sempre acima da coluna, na cor da própria coluna
     out += `<rect x="${cx - barW / 2}" y="${base - h}" width="${barW}" height="${h}" rx="2" style="fill:${color}"><title>${esc(d.title || `${d.name}: ${d.label}`)}</title></rect>
-      <text class="col-value" x="${cx}" y="${base - h + 17}" text-anchor="middle" style="fill:#fff">${esc(d.label)}</text>
+      <text class="col-value" x="${cx}" y="${base - h - 7}" text-anchor="middle" style="fill:${color}">${esc(d.label)}</text>
       <text class="axis-label col-category" x="${cx}" y="${base + 16}" text-anchor="middle">${labelLines[i].map((l, j) => `<tspan x="${cx}" dy="${j ? 13 : 0}">${esc(l)}</tspan>`).join('')}</text>`;
   });
   node.innerHTML = svgWrap(`${W} ${H}`, out, ariaLabel);
