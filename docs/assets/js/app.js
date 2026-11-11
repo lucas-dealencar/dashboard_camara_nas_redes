@@ -684,7 +684,8 @@ function renderProposalTabs() {
   const limit = Math.max(5, selectedProposal + 1);
   const list = report.proposals.slice(0, limit);
   document.getElementById('proposal-tabs').innerHTML=list.map((p,i)=>`<button class="proposal-tab ${i===selectedProposal?'active':''}" role="tab" aria-selected="${i===selectedProposal}" data-index="${i}"><span class="proposal-tab-rank">${String(i+1).padStart(2,'0')}</span><span>${esc(p.id)}</span></button>`).join('');
-  document.querySelectorAll('.proposal-tab').forEach(n=>n.addEventListener('click',()=>{selectedProposal=Number(n.dataset.index);renderProposalTabs();renderProposalDetail();}));
+  // só as abas do menu da aba Propostas (a linha do Analítico usa a mesma classe e tem seu próprio clique)
+  document.querySelectorAll('#proposal-tabs .proposal-tab').forEach(n=>n.addEventListener('click',()=>{selectedProposal=Number(n.dataset.index);renderProposalTabs();renderProposalDetail();}));
 }
 
 function buildProposalKpis(p) {

@@ -1187,3 +1187,10 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
 .proposal-ext-link { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; margin-left: 10px; vertical-align: 3px; border: 1.5px solid var(--ink); border-radius: 7px; color: var(--ink); transition: background .15s, color .15s; }
 .proposal-ext-link svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .proposal-ext-link:hover, .proposal-ext-link:focus-visible { background: var(--ink); color: #fff; }
+
+/* Analítico: linha de propostas como botões separados (padrão dos botões do menu de paginação) */
+.analytic-subnav { padding: 10px 12px; }
+.analytic-subnav .proposal-tabs { gap: 10px; }
+.analytic-subnav .proposal-tab { border: 1px solid #4a6c71; border-radius: 6px; background: rgba(255, 255, 255, .55); padding: 8px 14px; font-weight: 600; transition: background .18s, color .18s, border-color .18s, transform .18s; }
+.analytic-subnav .proposal-tab:hover,
+.analytic-subnav .proposal-tab:focus-visible { background: var(--ink); border-color: var(--ink); color: #fff; transform: translateY(-1px); }
