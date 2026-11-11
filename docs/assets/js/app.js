@@ -108,7 +108,7 @@ function renderProposalSuggestions(query = '') {
   const q = normText(query).trim();
   const allProposals = [];
   
-  Object.entries(rawPayload.dados_semanas).forEach(([weekId, weekData]) => {
+  Object.entries(rawPayload.dados_semanas).sort((a, b) => Number(b[0]) - Number(a[0])).forEach(([weekId, weekData]) => {
     if(weekData.proposals) {
        weekData.proposals.forEach((p, index) => {
          allProposals.push({ 
@@ -605,7 +605,11 @@ function renderAnnualTrend() {
     if (keep.has(i)) {
       out += `<text class="axis-label${isCur ? ' annual-cur-label' : ''}" x="${x(i)}" y="${H - 14}" text-anchor="middle">${v.week}ª</text>`;
     }
-    out += `<circle class="annual-dot${isCur ? ' current' : ''}" cx="${x(i)}" cy="${y(v.value)}" r="${isCur ? 6 : 3.5}"><title>${v.week}ª semana (${esc(v.label)}): ${esc(formatNumber(v.value))} pontos</title></circle>`;
+    out += `<circle class="annual-dot${isCur ? ' current' : ''}" cx="${x(i)}" cy="${y(v.value)}" r="${isCur ? 6 : 3.5}"/>`;
+  });
+  // áreas de captura (maiores que os pontos): tooltip ao passar o mouse e seleção da semana ao clicar
+  values.forEach((v, i) => {
+    out += `<circle class="annual-hit" data-week="${v.week}" data-label="${esc(v.label)}" data-value="${v.value}" cx="${x(i)}" cy="${y(v.value)}" r="11"/>`;
   });
   if (current >= 0) {
     const v = values[current];
@@ -613,6 +617,33 @@ function renderAnnualTrend() {
     out += `<text class="value-label" x="${x(current)}" y="${y(v.value) - 12}" text-anchor="${anchor}">${esc(formatNumber(v.value, true))}</text>`;
   }
   node.innerHTML = svgWrap(`${W} ${H}`, out, `Evolução anual do engajamento: ${values.length} semanas, de ${values[0].week}ª a ${values[values.length - 1].week}ª.`);
+  wireAnnualInteractions(node);
+}
+
+/* Tooltip e clique dos pontos do gráfico anual (listeners delegados: registrados uma única vez). */
+function wireAnnualInteractions(node) {
+  let tip = node.querySelector('.annual-tip');
+  if (!tip) { tip = document.createElement('div'); tip.className = 'annual-tip'; tip.setAttribute('role', 'tooltip'); }
+  node.appendChild(tip); // innerHTML recria o SVG; o tooltip é reanexado
+  tip.classList.remove('show');
+  if (node.dataset.wired) return;
+  node.dataset.wired = '1';
+  const hitOf = e => e.target.closest?.('.annual-hit');
+  const show = hit => {
+    const nodeBox = node.getBoundingClientRect(), box = hit.getBoundingClientRect();
+    const week = hit.dataset.week, isActive = String(week) === String(activeWeekId);
+    const t = node.querySelector('.annual-tip');
+    t.innerHTML = `<strong>${esc(week)}ª semana</strong><span>${esc(hit.dataset.label)}</span><span>${esc(formatNumber(Number(hit.dataset.value)))} pontos</span><em>${isActive ? 'Semana selecionada' : 'Clique para ver esta semana'}</em>`;
+    const cx = box.left + box.width / 2 - nodeBox.left, cy = box.top + box.height / 2 - nodeBox.top;
+    const below = cy < 110; // perto do topo: mostra abaixo do ponto
+    t.style.left = `${Math.min(Math.max(cx, 90), nodeBox.width - 90)}px`;
+    t.style.top = `${cy + (below ? 16 : -16)}px`;
+    t.classList.toggle('below', below);
+    t.classList.add('show');
+  };
+  node.addEventListener('pointerover', e => { const h = hitOf(e); if (h) show(h); });
+  node.addEventListener('pointerout', e => { if (hitOf(e)) node.querySelector('.annual-tip')?.classList.remove('show'); });
+  node.addEventListener('click', e => { const h = hitOf(e); if (h) selectWeek(String(h.dataset.week)); });
 }
 
 function renderShareChart() {
