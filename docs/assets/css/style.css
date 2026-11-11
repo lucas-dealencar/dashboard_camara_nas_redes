@@ -1256,3 +1256,9 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
   .main-nav .proposta-busca-wrapper { width: 190px; }
   .main-nav .nav-inner { gap: 12px; }
 }
+
+/* Aba Propostas: Autor | Situação entre o título e o descritivo */
+.proposal-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: 0 0 6px; color: var(--ink-2); font-size: 14px; line-height: 1.5; }
+.proposal-meta b { font-weight: 800; color: var(--ink); }
+.proposal-meta-sep { color: var(--line); }
+@media (max-width: 850px) { .proposal-meta { font-size: 13px; } }

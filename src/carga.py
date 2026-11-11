@@ -189,6 +189,7 @@ def _propostas_da_semana(df_semana: pd.DataFrame, eng_total: int, semana: int, c
             {
                 "id": str(p.proposta),
                 "description": _texto(p.ementa, padrao=str(p.proposta)),
+                "author": _texto(p.autor, padrao=""),
                 "status": _texto(p.situacao, padrao=""),
                 "link": _link(p.link),
                 "engagement": _inteiro(p.engagement_score),

@@ -102,6 +102,13 @@ function initProposalSearch() {
   });
 }
 
+const MESES = ['janeiro', 'fevereiro', 'marco', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+/* Meses (1-12) cobertos por um período "dd/mm a dd/mm/aaaa". */
+function mesesDoPeriodo(periodo) {
+  const m = String(periodo || '').match(/\d{2}\/(\d{2}).*?\d{2}\/(\d{2})/);
+  return m ? [Number(m[1]), Number(m[2])] : [];
+}
+
 function renderProposalSuggestions(query = '') {
   const list = document.getElementById('lista-sugestoes-proposta');
   if (!list || !rawPayload || !rawPayload.dados_semanas) return;
@@ -123,8 +130,12 @@ function renderProposalSuggestions(query = '') {
     }
   });
 
+  // mês por extenso (ex.: "outubro"): traz todas as propostas das semanas que tocam aquele mês
+  const mes = MESES.indexOf(q) + 1;
   const matches = allProposals.filter(({ p, weekLabel, weekPeriod }) =>
-    !q || normText(`${p.id} ${p.description} ${p.status || ''} ${weekLabel} ${weekPeriod}`).includes(q)
+    !q
+    || (mes > 0 && mesesDoPeriodo(weekPeriod).includes(mes))
+    || normText(`${p.id} ${p.description} ${p.author || ''} ${p.status || ''} ${weekLabel} ${weekPeriod}`).includes(q)
   );
 
   if (!matches.length) {
@@ -945,6 +956,7 @@ function renderProposalDetail() {
     <div class="proposal-title-block heading-rule">
       <h3 class="proposal-title">${esc(p.id)}${p.link ? `<a class="proposal-ext-link" href="${esc(p.link)}" target="_blank" rel="noopener noreferrer" title="Abrir a página da proposta no site da Câmara" aria-label="Abrir a página de ${esc(p.id)} no site da Câmara (nova aba)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>` : ''}</h3>
     </div>
+    ${p.author || p.status ? `<p class="proposal-meta">${[p.author ? `<span><b>Autor:</b> ${esc(p.author)}</span>` : '', p.status ? `<span><b>Situação:</b> ${esc(p.status)}</span>` : ''].filter(Boolean).join('<span class="proposal-meta-sep" aria-hidden="true">|</span>')}</p>` : ''}
     ${p.description && p.description !== p.id ? `<p class="proposal-title-desc">${esc(p.description)}</p>` : ''}
     <div class="kpi-grid kpi-grid-compact" id="proposal-kpis"></div>
     <article class="panel prop-block">
