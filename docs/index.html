@@ -39,6 +39,26 @@
         </a>
       </div>
 
+    <div class="periodo-filtro" id="filtro-semana">
+      <button type="button" class="periodo-btn" id="btn-semana-atual" aria-haspopup="listbox" aria-expanded="false" aria-controls="lista-semanas">
+        <svg class="periodo-seta" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4.5 6 8.5 10 4.5"/></svg>
+        <span class="periodo-btn-texto">
+          <span id="texto-semana-ativa">Selecione a Semana</span>
+        </span>
+      </button>
+      <div class="periodo-painel" id="painel-semana">
+        <label class="periodo-busca">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3.5 3.5"/></svg>
+          <input id="busca-semana" type="search" placeholder="Pesquisar semana ou mês" autocomplete="off" aria-label="Pesquisar semana ou mês" aria-controls="lista-semanas">
+        </label>
+        <ul class="periodo-lista" id="lista-semanas" role="listbox" aria-label="Semanas monitoradas"></ul>
+        <div class="periodo-rodape">
+          <span id="contagem-semanas"></span>
+          <button type="button" id="limpar-semana">Ir para a mais recente</button>
+        </div>
+      </div>
+    </div>
+
       <div class="proposta-busca-wrapper" id="proposta-busca-wrapper">
         <label class="proposta-busca-box" for="busca-proposta-global">
           <svg class="proposta-busca-icon" viewBox="0 0 16 16" aria-hidden="true">
@@ -54,27 +74,6 @@
   </nav>
 
   <main>
-    <div class="top-filter-bar">
-      <div class="periodo-filtro" id="filtro-semana">
-        <button type="button" class="periodo-btn" id="btn-semana-atual" aria-haspopup="listbox" aria-expanded="false" aria-controls="lista-semanas">
-          <svg class="periodo-seta" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4.5 6 8.5 10 4.5"/></svg>
-          <span class="periodo-btn-texto">
-            <span id="texto-semana-ativa">Selecione a Semana</span>
-          </span>
-        </button>
-        <div class="periodo-painel" id="painel-semana">
-          <label class="periodo-busca">
-            <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3.5 3.5"/></svg>
-            <input id="busca-semana" type="search" placeholder="Pesquisar semana ou mês" autocomplete="off" aria-label="Pesquisar semana ou mês" aria-controls="lista-semanas">
-          </label>
-          <ul class="periodo-lista" id="lista-semanas" role="listbox" aria-label="Semanas monitoradas"></ul>
-          <div class="periodo-rodape">
-            <span id="contagem-semanas"></span>
-            <button type="button" id="limpar-semana">Ir para a mais recente</button>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <section class="section overview active" id="destaques">
       

@@ -1222,16 +1222,21 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
 .analytics.is-annual .kpi-grid-compact .kpi-foot { display: none; }
 
 /* Barra de rolagem lateral com setas */
-.page-scroller { position: fixed; z-index: 40; right: 10px; top: 50%; transform: translateY(-50%); height: min(56vh, 420px); display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.page-scroller { position: fixed; z-index: 40; right: 10px; top: 50%; transform: translateY(-50%); height: min(56vh, 420px); display: flex; align-items: stretch; }
 .page-scroller.hidden { display: none; }
 .ps-track { position: relative; flex: 1; width: 8px; border-radius: 999px; background: rgba(7, 51, 58, .14); cursor: pointer; }
 .ps-thumb { position: absolute; left: 0; top: 0; width: 100%; border-radius: 999px; background: var(--ink); cursor: grab; touch-action: none; }
 .ps-thumb:active { cursor: grabbing; }
-.ps-arrow { width: 28px; height: 28px; padding: 0; display: flex; align-items: center; justify-content: center; border: 1.5px solid var(--ink); border-radius: 50%; background: #fff; color: var(--ink); cursor: pointer; opacity: .25; pointer-events: none; transition: opacity .2s, background .15s, color .15s; box-shadow: 0 2px 8px rgba(7, 51, 58, .18); }
-.ps-arrow svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.ps-arrow.on { opacity: 1; pointer-events: auto; }
-.ps-arrow.on:hover, .ps-arrow.on:focus-visible { background: var(--ink); color: #fff; }
-.ps-arrow.on.ps-down { animation: ps-bounce 1.6s ease-in-out infinite; }
-@keyframes ps-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
-@media (max-width: 850px) { .page-scroller { right: 4px; height: min(44vh, 300px); } .ps-track { width: 6px; } .ps-arrow { width: 26px; height: 26px; } }
-@media (prefers-reduced-motion: reduce) { .ps-arrow.on.ps-down { animation: none; } }
+@media (max-width: 850px) { .page-scroller { right: 4px; height: min(44vh, 300px); } .ps-track { width: 6px; }  }
+
+/* Filtro semanal dentro da barra de navegação, com a cor dos botões à esquerda */
+.main-nav .periodo-filtro { width: 190px; flex: none; margin-left: auto; }
+.main-nav .proposta-busca-wrapper { margin-left: 0; }
+.main-nav .periodo-btn { min-height: 36px; padding: 7px 11px; gap: 7px; background: transparent; border: 1px solid #4a6c71; border-radius: 5px; color: var(--ink-2); font-size: 13.5px; font-weight: 600; transition: background .2s, color .2s, border-color .2s, transform .18s; }
+.main-nav .periodo-btn:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--ink); }
+.main-nav .periodo-seta { stroke: currentColor; width: 12px; height: 12px; }
+.main-nav #texto-semana-ativa { font-size: 12.5px; font-weight: 600; color: inherit; }
+.main-nav .periodo-painel { left: auto; right: 0; color: var(--ink); }
+.main-nav.is-stuck .periodo-btn { color: #e6f1f2; background: rgba(255, 255, 255, .06); border-color: rgba(255, 255, 255, .45); }
+.main-nav.is-stuck .periodo-btn:hover:not(:disabled) { background: rgba(255, 255, 255, .16); border-color: #fff; }
+@media (max-width: 850px) { .main-nav .periodo-filtro { width: 160px; } }
