@@ -513,15 +513,16 @@ function renderCards() {
   wireProposalCards(container);
 }
 
-/* Analítico: as 5 propostas em destaque da semana selecionada (abaixo do gráfico de evolução anual). */
+/* Analítico: linha com as 5 propostas em destaque da semana selecionada (abaixo do gráfico anual). */
 function renderAnalyticCards() {
   const container = document.getElementById('analytic-cards');
   if (!container || !report?.proposals) return;
   const opt = weekOptions.find(o => o.id === activeWeekId);
   const label = document.getElementById('analytic-cards-week');
   if (label) label.textContent = opt ? `${opt.title} · ${opt.range}` : '';
-  container.innerHTML = report.proposals.slice(0, 5).map((p, idx) => proposalCardMarkup(p, idx)).join('');
-  wireProposalCards(container);
+  // linha no mesmo padrão do menu da aba Propostas; clicar abre a proposta
+  container.innerHTML = report.proposals.slice(0, 5).map((p, idx) => `<button type="button" class="proposal-tab" data-open="${idx}" aria-label="Abrir ${esc(p.id)} na aba Propostas"><span class="proposal-tab-rank">${String(idx + 1).padStart(2, '0')}</span><span>${esc(p.id)}</span></button>`).join('');
+  container.querySelectorAll('[data-open]').forEach(b => b.addEventListener('click', () => openProposal(Number(b.dataset.open))));
 }
 
 function chartLabelLines(value,maxChars){
@@ -886,7 +887,7 @@ function renderProposalDetail() {
 
   host.innerHTML = `
     <div class="proposal-title-block heading-rule">
-      <h3 class="proposal-title">${esc(p.id)}</h3>
+      <h3 class="proposal-title">${esc(p.id)}${p.link ? `<a class="proposal-ext-link" href="${esc(p.link)}" target="_blank" rel="noopener noreferrer" title="Abrir a página da proposta no site da Câmara" aria-label="Abrir a página de ${esc(p.id)} no site da Câmara (nova aba)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>` : ''}</h3>
     </div>
     ${p.description && p.description !== p.id ? `<p class="proposal-title-desc">${esc(p.description)}</p>` : ''}
     <div class="kpi-grid kpi-grid-compact" id="proposal-kpis"></div>

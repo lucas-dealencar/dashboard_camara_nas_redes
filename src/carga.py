@@ -33,6 +33,13 @@ def _texto(valor: Any, padrao: str | None = None) -> str | None:
     return padrao if pd.isna(valor) else str(valor)
 
 
+def _link(valor: Any) -> str | None:
+    """URL da página da proposta (só http/https; qualquer outra coisa vira None)."""
+    texto = _texto(valor)
+    texto = texto.strip() if texto else ""
+    return texto if texto.lower().startswith(("http://", "https://")) else None
+
+
 def _periodo(inicio: pd.Timestamp, fim: pd.Timestamp, curto: bool = False) -> str:
     """'16/03 a 22/03/2026' (completo) ou '16/03 a 22/03' (curto, para rótulos)."""
     return f"{inicio:%d/%m} a {fim:%d/%m}" if curto else f"{inicio:%d/%m} a {fim:%d/%m/%Y}"
@@ -182,6 +189,7 @@ def _propostas_da_semana(df_semana: pd.DataFrame, eng_total: int, semana: int, c
                 "id": str(p.proposta),
                 "description": _texto(p.ementa, padrao=str(p.proposta)),
                 "status": _texto(p.situacao, padrao=""),
+                "link": _link(p.link),
                 "engagement": _inteiro(p.engagement_score),
                 "posts": _inteiro(p.mencoes),
                 "authors": _inteiro(p.autores_unicos),
