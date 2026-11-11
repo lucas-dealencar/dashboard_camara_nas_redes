@@ -1249,3 +1249,10 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
 .main-nav.is-stuck .periodo-btn:hover:not(:disabled) { background: #fff; border-color: var(--ink); }
 .main-nav #texto-semana-ativa { overflow: visible; text-overflow: clip; }
 @media (max-width: 850px) { .main-nav .periodo-filtro { width: 230px; } }
+
+/* Menu: pesquisa menor, terminando rente à borda direita do conteúdo */
+@media (min-width: 851px) {
+  .main-nav .periodo-filtro { width: 215px; }
+  .main-nav .proposta-busca-wrapper { width: 190px; }
+  .main-nav .nav-inner { gap: 12px; }
+}

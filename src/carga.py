@@ -10,7 +10,8 @@ from prefect import task
 from src.config import ARQUIVO_JSON_SAIDA, REDES
 from src.transformacao import chave_proposta
 
-JANELA_HISTORICO = 4  # semanas exibidas no gráfico "Evolução nas últimas 4 semanas"
+JANELA_HISTORICO = 4  # semanas exibidas no gráfico "Evolução nas últimas 4 semanas" (aba Propostas)
+JANELA_DESTAQUES = 6  # semanas exibidas no gráfico "Evolução nas últimas 6 semanas" (aba Destaques)
 TOP_PROPOSTAS = 5     # propostas em destaque por semana (base da mediana na aba Propostas)
 
 # campo do JSON -> coluna da tabela `propostas` (usado na variação vs. semana anterior)
@@ -258,7 +259,7 @@ def _montar_payload(tabelas: dict[str, pd.DataFrame]) -> dict[str, Any]:
                 "label": periodo_curto.get(int(s), f"{s}ª semana"),  # eixo do gráfico e seletor
                 "range": periodo.get(int(s), ""),                    # detalhe da semana
             }
-            for s in semanas_totais[max(0, fim_janela - JANELA_HISTORICO):fim_janela]
+            for s in semanas_totais[max(0, fim_janela - JANELA_DESTAQUES):fim_janela]
         ]
 
         dados_semanas[str(semana)] = {
