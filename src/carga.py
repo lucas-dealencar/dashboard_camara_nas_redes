@@ -272,8 +272,23 @@ def _montar_payload(tabelas: dict[str, pd.DataFrame]) -> dict[str, Any]:
         }
 
     semanas = sorted(map(int, dados_semanas))
+
+    # evolução anual: engajamento total de todas as semanas do ano da semana mais recente
+    ano = int(periodos["fim"].max().year)
+    evolucao_anual = [
+        {
+            "week": int(s),
+            "value": _inteiro(totais.at[s, "engagement_score"]),
+            "label": periodo_curto.get(int(s), f"{s}ª semana"),
+        }
+        for s in semanas_totais
+        if int(s) in periodos.index and periodos.at[int(s), "ini"].year == ano
+    ]
+
     return {
         "semana_padrao": str(semanas[-1]),
+        "ano": ano,
+        "evolucao_anual": evolucao_anual,
         "opcoes_semanas": [
             {"id": str(s), "rotulo": f"{s}ª semana", "periodo": periodo[s]} for s in reversed(semanas)
         ],

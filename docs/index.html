@@ -103,14 +103,12 @@
     <section class="section analytics" id="analitico">
       <div class="section-heading"><div><p class="eyebrow">LEITURA DOS DADOS</p><h2>Analítico</h2></div></div>
       <div class="kpi-grid kpi-grid-compact" id="analytic-kpis"></div>
-      <article class="panel merged-panel">
-        <div class="panel-heading"><div><p class="eyebrow">DISTRIBUIÇÃO E CONCENTRAÇÃO</p><h3>Engajamento por canal e por proposta</h3></div></div>
-        <div class="merged-grid">
-          <div class="merged-col"><h4 class="merged-title">Por canal</h4><div id="channel-chart" class="chart chart-bars"></div></div>
-          <div class="merged-col"><h4 class="merged-title">Participação das propostas <span class="panel-note">Top 5</span></h4><div id="share-chart" class="chart chart-share"></div></div>
-        </div>
-      </article>
-      <article class="panel topics-panel"><div class="panel-heading"><div><p class="eyebrow">ASSUNTOS EM PAUTA</p><h3>Engajamento por categoria</h3></div><span class="panel-note">Pontos de engajamento</span></div><div id="topic-chart" class="chart chart-bars topic-bars"></div></article>
+      <div class="analytics-trio">
+        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">DISTRIBUIÇÃO</p><h3>Engajamento por canal</h3></div></div><div id="channel-chart" class="chart chart-bars"></div></article>
+        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">CONCENTRAÇÃO · TOP 5</p><h3>Engajamento por proposta</h3></div></div><div id="share-chart" class="chart chart-share"></div></article>
+        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">ASSUNTOS EM PAUTA</p><h3>Engajamento por categoria</h3></div></div><div id="topic-chart" class="chart chart-bars topic-bars"></div></article>
+      </div>
+      <article class="panel annual-panel"><div class="panel-heading"><div><p class="eyebrow">VISÃO DO ANO</p><h3>Evolução anual do engajamento</h3></div><span class="panel-note" id="annual-year"></span></div><div id="annual-chart" class="chart chart-annual" aria-label="Gráfico de linhas da evolução anual do engajamento"></div></article>
     </section>
 
     <section class="section proposals-section" id="propostas">

@@ -311,14 +311,14 @@ function renderCurrentWeek() {
     
     // Variação em relação à mediana
     let medianDelta = report.median ? ((curr.value - report.median) / report.median) * 100 : null;
-    let medianText = medianDelta != null ? `ficou ${percentage(Math.abs(medianDelta))} ${medianDelta >= 0 ? 'acima' : 'abaixo'} da mediana do ano` : 'sem dados de mediana do ano';
+    let medianText = medianDelta != null ? `ficou <strong>${esc(percentage(Math.abs(medianDelta)))} ${medianDelta >= 0 ? 'acima' : 'abaixo'}</strong> da mediana do ano` : 'sem dados de mediana do ano';
     
     // Proposta destaque
     const topP = report.proposals[0];
     const topPName = topP.id;
     const topPShare = percentage(topP.share || 0);
     
-    dynSummary = `O engajamento <strong>${esc(changeText)}</strong> em relação à semana anterior e ${esc(medianText)}. O destaque fica para <strong>${esc(topPName)}</strong>, que concentrou <strong>${esc(topPShare)}</strong> dos pontos de engajamento da semana.`;
+    dynSummary = `O engajamento <strong>${esc(changeText)}</strong> em relação à semana anterior e ${medianText}. O destaque fica para <strong>${esc(topPName)}</strong>, que concentrou <strong>${esc(topPShare)}</strong> dos pontos de engajamento da semana.`;
   }
   document.getElementById('cover-summary').innerHTML = dynSummary;
   // -------------------------
@@ -349,6 +349,7 @@ function renderCurrentWeek() {
   renderChannelChart();
   renderShareChart();
   renderTopics();
+  renderAnnualTrend();
   renderProposalTabs();
   renderProposalDetail();
   renderMethod();
@@ -509,29 +510,29 @@ function chartLabelLines(value,maxChars){
   if(line)lines.push(line);return lines;
 }
 
-function renderBarChart(target, data, {max=null, labels=true, compact=true, colorMap=null}={}) {
+/* Barras horizontais compactas: nome acima da barra, barra na largura toda (cabe em colunas estreitas). */
+function renderBarChart(target, data, {max=null, compact=true, colorMap=null, tickFormat=null}={}) {
   const node=document.getElementById(target);
   if(!node) return;
   if(!data.length){node.innerHTML='<div class="empty-state">Ainda não há dados suficientes para este gráfico.</div>';return;}
-  const W=Math.max(320,Math.round(node.clientWidth||420)),top=12,bottom=30,topic=target==='topic-chart',left=topic?Math.max(145,Math.min(176,Math.round(W*.39))):(labels?Math.max(96,Math.min(122,Math.round(W*.29))):34),right=62,rowHeight=topic?44:48,H=Math.max(215,data.length*rowHeight+top+bottom),maxVal=max||Math.max(...data.map(d=>d.value||0))*1.18||1,row=(H-top-bottom)/Math.max(data.length,1),barH=Math.min(19,row*.42),plotW=W-left-right;let out='';
-  (W<380?[0,.5,1]:[0,.25,.5,.75,1]).forEach(p=>{const xx=left+plotW*p;out+=`<line class="gridline" x1="${xx}" y1="${top}" x2="${xx}" y2="${H-bottom}"/><text class="axis-label" x="${xx}" y="${H-7}" text-anchor="middle">${formatNumber(maxVal*p,compact)}</text>`;});
-  
+  const W=Math.max(220,Math.round(node.clientWidth||320)), left=2, right=58, top=4, bottom=24, rowH=44, barH=14;
+  const H=data.length*rowH+top+bottom, plotW=W-left-right;
+  const maxVal=max||Math.max(...data.map(d=>d.value||0))*1.08||1;
+  const fmtTick=tickFormat||(v=>formatNumber(v,compact));
+  const maxChars=Math.max(14,Math.floor(W/6.9));
+  let out='';
+  [0,.5,1].forEach(t=>{const xx=left+plotW*t;out+=`<line class="gridline" x1="${xx}" y1="${top}" x2="${xx}" y2="${H-bottom}"/><text class="axis-label" x="${xx}" y="${H-6}" text-anchor="${t===0?'start':(t===1?'end':'middle')}">${esc(fmtTick(maxVal*t))}</text>`;});
   data.forEach((d,i)=>{
-    const yy = top + row*i + (row-barH)/2;
-    const bw = plotW * Math.max(d.value||0,0) / maxVal;
-    const lines = chartLabelLines(d.name,topic ? Math.max(16,Math.floor((left-18)/5.4)) : 24);
-    const labelY = yy + barH/2 - ((lines.length-1)*5.5);
-    const label = lines.map((line,j)=>`<tspan x="${left-8}" dy="${j?11:0}">${esc(line)}</tspan>`).join('');
-    
-    // Injeção de cor via colorMap
-    const fillAttr = (colorMap && colorMap[d.name]) ? `style="fill: ${colorMap[d.name]} !important;"` : '';
-    
-    out+=`<text class="axis-label chart-category" x="${left-8}" y="${labelY}" text-anchor="end">${label}</text>
-          <rect class="bar ${i%2?'bar-secondary':''}" x="${left}" y="${yy}" width="${Math.max(bw,1.5)}" height="${barH}" rx="4" ${fillAttr}><title>${esc(d.name)}: ${esc(d.display||formatNumber(d.value))}</title></rect>
-          <text class="value-label" x="${Math.min(W-right+2,left+bw+6)}" y="${yy+barH*.78}">${esc(d.display||formatNumber(d.value,compact))}</text>`;
+    const y0=top+rowH*i, name=String(d.name);
+    const shown=name.length>maxChars?name.slice(0,maxChars-1).trimEnd()+'…':name;
+    const bw=Math.max(1.5,plotW*Math.max(d.value||0,0)/maxVal);
+    const fill=(colorMap&&colorMap[d.name])?`style="fill:${colorMap[d.name]}"`:'';
+    const label=d.display||formatNumber(d.value,compact);
+    out+=`<text class="axis-label chart-category" x="${left}" y="${y0+13}">${esc(shown)}<title>${esc(name)}</title></text>
+      <rect class="bar" x="${left}" y="${y0+19}" width="${bw}" height="${barH}" rx="3" ${fill}><title>${esc(name)}: ${esc(d.display||formatNumber(d.value))}</title></rect>
+      <text class="value-label" x="${left+bw+6}" y="${y0+30}">${esc(label)}</text>`;
   });
-  
-  node.innerHTML=svgWrap(`${W} ${H}`,out,'Gráfico de barras em pontos de engajamento: '+data.map(d=>`${d.name}, ${d.display||formatNumber(d.value)}`).join('; '));
+  node.innerHTML=svgWrap(`${W} ${H}`,out,'Gráfico de barras: '+data.map(d=>`${d.name}, ${d.display||formatNumber(d.value)}`).join('; '));
 }
 
 function renderChannelChart(){
@@ -550,14 +551,52 @@ function renderChannelChart(){
 }
 function renderTopics(){renderBarChart('topic-chart',report.topics||[],{labels:true,compact:true});}
 
+/* ===== Evolução anual (linhas): todas as semanas do ano na base; semana selecionada em destaque ===== */
+function renderAnnualTrend() {
+  const node = document.getElementById('annual-chart');
+  if (!node) return;
+  const values = rawPayload?.evolucao_anual || [];
+  const yearNode = document.getElementById('annual-year');
+  if (yearNode) yearNode.textContent = rawPayload?.ano ? `Semanas de ${rawPayload.ano}` : '';
+  if (values.length < 2) { node.innerHTML = '<div class="empty-state">Ainda não há semanas suficientes para a evolução anual.</div>'; return; }
+  const median = report?.median || null;
+  const W = Math.max(320, Math.round(node.clientWidth || 900)), H = 290;
+  const left = 56, right = median ? MEDIAN_GUTTER : 20, top = 30, bottom = 40;
+  const max = niceCeil(Math.max(...values.map(v => v.value), median || 0));
+  const plotW = W - left - right, base = H - bottom;
+  const x = i => left + plotW * i / (values.length - 1);
+  const y = v => top + (base - top) * (1 - v / max);
+  const step = Math.max(1, Math.ceil(values.length / Math.max(4, Math.floor(plotW / 60))));
+  const current = values.findIndex(v => String(v.week) === String(activeWeekId));
+  let out = '';
+  [0, .25, .5, .75, 1].forEach(t => {
+    const v = max * t;
+    out += `<line class="gridline" x1="${left}" y1="${y(v)}" x2="${W - right}" y2="${y(v)}"/><text class="axis-label" x="${left - 10}" y="${y(v) + 4}" text-anchor="end">${formatNumber(v, true)}</text>`;
+  });
+  const pts = values.map((v, i) => `${x(i).toFixed(1)},${y(v.value).toFixed(1)}`);
+  out += `<path class="annual-area" d="M${x(0)},${base} L${pts.join(' L')} L${x(values.length - 1)},${base} Z"/>`;
+  out += `<path class="annual-line" d="M${pts.join(' L')}"/>`;
+  if (median) {
+    out += `<line class="median" x1="${left}" y1="${y(median)}" x2="${W - right}" y2="${y(median)}"/>${medianLabel(W - right, y(median), 'Mediana anual', median)}`;
+  }
+  values.forEach((v, i) => {
+    const isCur = i === current;
+    if (i % step === 0 || isCur || i === values.length - 1) {
+      out += `<text class="axis-label${isCur ? ' annual-cur-label' : ''}" x="${x(i)}" y="${H - 14}" text-anchor="middle">${v.week}ª</text>`;
+    }
+    out += `<circle class="annual-dot${isCur ? ' current' : ''}" cx="${x(i)}" cy="${y(v.value)}" r="${isCur ? 6 : 3.5}"><title>${v.week}ª semana (${esc(v.label)}): ${esc(formatNumber(v.value))} pontos</title></circle>`;
+  });
+  if (current >= 0) {
+    const v = values[current];
+    const anchor = current === 0 ? 'start' : (current === values.length - 1 ? 'end' : 'middle');
+    out += `<text class="value-label" x="${x(current)}" y="${y(v.value) - 12}" text-anchor="${anchor}">${esc(formatNumber(v.value, true))}</text>`;
+  }
+  node.innerHTML = svgWrap(`${W} ${H}`, out, `Evolução anual do engajamento: ${values.length} semanas, de ${values[0].week}ª a ${values[values.length - 1].week}ª.`);
+}
+
 function renderShareChart() {
-  const node=document.getElementById('share-chart'),data=report.proposals.slice(0,5);
-  if(!node) return;
-  if(!data.length){node.innerHTML='<div class="empty-state">Ainda não há propostas para comparar.</div>';return;}
-  const W=Math.max(320,Math.round(node.clientWidth||420)),H=260,left=Math.max(98,Math.min(132,Math.round(W*.31))),right=48,top=12,bottom=30,row=(H-top-bottom)/data.length,plotW=W-left-right;let out='';
-  (W<380?[0,.5,1]:[0,.25,.5,.75,1]).forEach(p=>{const xx=left+plotW*p;out+=`<line class="gridline" x1="${xx}" y1="${top}" x2="${xx}" y2="${H-bottom}"/><text class="axis-label" x="${xx}" y="${H-7}" text-anchor="middle">${percentage(p*100)}</text>`;});
-  data.forEach((d,i)=>{const yy=top+row*i+(row-18)/2,bw=plotW*Math.min(Math.max(d.share||0,0),100)/100;out+=`<text class="axis-label chart-category" x="${left-8}" y="${yy+12}" text-anchor="end">${esc(d.id)}</text><rect class="bar ${i%2?'bar-secondary':''}" x="${left}" y="${yy}" width="${Math.max(bw,1.5)}" height="18" rx="4"><title>${esc(d.id)} · ${percentage(d.share||0)} do engajamento</title></rect><text class="value-label" x="${Math.min(W-right+2,left+bw+6)}" y="${yy+12}">${percentage(d.share||0)}</text>`;});
-  node.innerHTML=svgWrap(`${W} ${H}`,out,'Participação percentual das cinco propostas no engajamento total');
+  const data=(report.proposals||[]).slice(0,5).map(p=>({name:p.id,value:p.share||0,display:percentage(p.share||0)}));
+  renderBarChart('share-chart',data,{max:100,tickFormat:v=>percentage(v)});
 }
 
 /* ===== Aba "Propostas" (layout do wireframe) ===== */
@@ -801,7 +840,7 @@ function renderVisibleCharts(page){
   if(!report)return;
   if(page==='destaques')renderTrend();
   if(page==='propostas'){const p=report.proposals[selectedProposal];renderProposalTrend(p);renderProposalCharts(p);}
-  if(page==='analitico'){renderChannelChart();renderShareChart();renderTopics();}
+  if(page==='analitico'){renderChannelChart();renderShareChart();renderTopics();renderAnnualTrend();}
 }
 
 function navigateToPage(page,updateHistory=true) {
@@ -812,10 +851,8 @@ function navigateToPage(page,updateHistory=true) {
   if(updateHistory&&location.hash!==`#${page}`)history.pushState({page},'',`#${page}`);
   requestAnimationFrame(()=>renderVisibleCharts(page));
   
-  const navTop = document.querySelector('.main-nav').offsetTop;
-  if (window.scrollY > navTop) {
-      window.scrollTo({top: navTop, behavior:'smooth'});
-  }
+  // ao trocar de aba, volta ao topo da página
+  if (updateHistory && window.scrollY > 0) window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 document.querySelectorAll('a[href^="#"]').forEach(link=>link.addEventListener('click',event=>{const page=link.getAttribute('href').slice(1);if(pageIds.includes(page)){event.preventDefault();navigateToPage(page);}}));
