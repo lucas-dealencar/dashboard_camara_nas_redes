@@ -350,6 +350,7 @@ function renderCurrentWeek() {
   renderShareChart();
   renderTopics();
   renderAnnualTrend();
+  renderAnalyticCards();
   renderProposalTabs();
   renderProposalDetail();
   renderMethod();
@@ -448,25 +449,8 @@ function buildFallbackSummary(p, withStatus = true) {
   return [sentence1, sentence2].filter(Boolean).join(' ') || 'Consulte os dados disponíveis para esta proposta no detalhamento.';
 }
 
-function renderCards() {
-  const container = document.getElementById('highlight-cards');
-  if (!container || !report?.proposals) return;
-
-  const q = normText(proposalSearchQuery).trim();
-  const indexedProposals = report.proposals.map((p, idx) => ({ p, idx }));
-
-  const filtered = q
-    ? indexedProposals.filter(({ p }) =>
-        normText(`${p.id} ${p.description} ${p.status || ''} ${buildFallbackSummary(p)}`).includes(q)
-      )
-    : indexedProposals.slice(0, 5);
-
-  if (!filtered.length) {
-    container.innerHTML = `<div class="empty-state">Nenhuma proposta encontrada para "<strong>${esc(proposalSearchQuery)}</strong>".</div>`;
-    return;
-  }
-
-  container.innerHTML = filtered.map(({ p, idx }) => `
+function proposalCardMarkup(p, idx) {
+  return `
     <article class="proposal-card" data-open="${idx}" tabindex="0" role="button" aria-label="Ver detalhes de ${esc(p.id)}">
       <div class="proposal-card-left">
         <div class="proposal-title-row">
@@ -489,9 +473,10 @@ function renderCards() {
         <p class="card-copy">${esc(p.mobilization || buildFallbackSummary(p, false))}</p>
         <span class="saiba-mais" aria-hidden="true">Saiba mais <svg viewBox="0 0 12 12"><path d="M3 9 9 3M4.5 3H9v4.5"/></svg></span>
       </div>
-    </article>
-  `).join('');
+    </article>`;
+}
 
+function wireProposalCards(container) {
   container.querySelectorAll('[data-open]').forEach(n => {
     n.addEventListener('click', e => {
       e.stopPropagation();
@@ -504,6 +489,39 @@ function renderCards() {
       }
     });
   });
+}
+
+function renderCards() {
+  const container = document.getElementById('highlight-cards');
+  if (!container || !report?.proposals) return;
+
+  const q = normText(proposalSearchQuery).trim();
+  const indexedProposals = report.proposals.map((p, idx) => ({ p, idx }));
+
+  const filtered = q
+    ? indexedProposals.filter(({ p }) =>
+        normText(`${p.id} ${p.description} ${p.status || ''} ${buildFallbackSummary(p)}`).includes(q)
+      )
+    : indexedProposals.slice(0, 5);
+
+  if (!filtered.length) {
+    container.innerHTML = `<div class="empty-state">Nenhuma proposta encontrada para "<strong>${esc(proposalSearchQuery)}</strong>".</div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map(({ p, idx }) => proposalCardMarkup(p, idx)).join('');
+  wireProposalCards(container);
+}
+
+/* Analítico: as 5 propostas em destaque da semana selecionada (abaixo do gráfico de evolução anual). */
+function renderAnalyticCards() {
+  const container = document.getElementById('analytic-cards');
+  if (!container || !report?.proposals) return;
+  const opt = weekOptions.find(o => o.id === activeWeekId);
+  const label = document.getElementById('analytic-cards-week');
+  if (label) label.textContent = opt ? `${opt.title} · ${opt.range}` : '';
+  container.innerHTML = report.proposals.slice(0, 5).map((p, idx) => proposalCardMarkup(p, idx)).join('');
+  wireProposalCards(container);
 }
 
 function chartLabelLines(value,maxChars){
@@ -643,7 +661,12 @@ function wireAnnualInteractions(node) {
   };
   node.addEventListener('pointerover', e => { const h = hitOf(e); if (h) show(h); });
   node.addEventListener('pointerout', e => { if (hitOf(e)) node.querySelector('.annual-tip')?.classList.remove('show'); });
-  node.addEventListener('click', e => { const h = hitOf(e); if (h) selectWeek(String(h.dataset.week)); });
+  node.addEventListener('click', e => {
+    const h = hitOf(e);
+    if (!h) return;
+    selectWeek(String(h.dataset.week));
+    document.getElementById('analytic-cards-head')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 }
 
 function renderShareChart() {
@@ -903,8 +926,10 @@ function navigateToPage(page,updateHistory=true) {
   if(updateHistory&&location.hash!==`#${page}`)history.pushState({page},'',`#${page}`);
   requestAnimationFrame(()=>renderVisibleCharts(page));
   
-  // ao trocar de aba, volta ao topo da página
-  if (updateHistory && window.scrollY > 0) window.scrollTo({ top: 0, behavior: 'smooth' });
+  // ao trocar de aba, sobe apenas até o menu de paginação (a capa fica de fora)
+  const navTop = document.querySelector('.cover')?.offsetHeight || 0;
+  if (updateHistory && window.scrollY > navTop) window.scrollTo({ top: navTop, behavior: 'smooth' });
+  requestAnimationFrame(() => updateNavStuck());
 }
 
 document.querySelectorAll('a[href^="#"]').forEach(link=>link.addEventListener('click',event=>{const page=link.getAttribute('href').slice(1);if(pageIds.includes(page)){event.preventDefault();navigateToPage(page);}}));
@@ -915,7 +940,12 @@ window.addEventListener('resize',()=>{if(chartResizeFrame)return;chartResizeFram
 const navEl=document.querySelector('.main-nav');
 const setNavH=()=>document.documentElement.style.setProperty('--nav-h',`${navEl.offsetHeight}px`);
 // barra de navegação escura enquanto fixa no topo (página rolada)
-const updateNavStuck=()=>navEl.classList.toggle('is-stuck',navEl.getBoundingClientRect().top<=0.5&&window.scrollY>0);
+const subNavEl=document.querySelector('.proposal-subnav');
+const updateNavStuck=()=>{
+  navEl.classList.toggle('is-stuck',navEl.getBoundingClientRect().top<=0.5&&window.scrollY>0);
+  // submenu de propostas: escuro (igual ao menu principal) quando está fixo sob ele
+  if(subNavEl)subNavEl.classList.toggle('is-stuck',subNavEl.offsetParent!==null&&window.scrollY>0&&subNavEl.getBoundingClientRect().top<=navEl.offsetHeight+1);
+};
 window.addEventListener('scroll',updateNavStuck,{passive:true});
 updateNavStuck();
 setNavH();
