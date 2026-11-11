@@ -297,11 +297,8 @@ function renderCurrentWeek() {
   const previousProposalId = report?.proposals?.[selectedProposal]?.id;
   report = candidate;
 
-  document.getElementById('edition-label').textContent = report.edition || 'Relatório semanal';
-  document.getElementById('period-label').textContent = report.period || '';
-  
-  // --- SUBTÍTULO DINÂMICO ---
-  let dynSummary = report.summary || '';
+  // --- SUBTÍTULO DINÂMICO (ao lado do cartão "Engajamento Geral"; trechos-chave em negrito) ---
+  let dynSummary = esc(report.summary || '');
   if (report.history && report.history.length > 0 && report.proposals && report.proposals.length > 0) {
     const vals = report.history;
     const curr = vals[vals.length - 1];
@@ -321,15 +318,20 @@ function renderCurrentWeek() {
     const topPName = topP.id;
     const topPShare = percentage(topP.share || 0);
     
-    dynSummary = `O engajamento ${changeText} em relação à semana anterior e ${medianText}. O destaque fica para ${topPName}, que concentrou ${topPShare} dos pontos de engajamento da semana.`;
+    dynSummary = `O engajamento <strong>${esc(changeText)}</strong> em relação à semana anterior e ${esc(medianText)}. O destaque fica para <strong>${esc(topPName)}</strong>, que concentrou <strong>${esc(topPShare)}</strong> dos pontos de engajamento da semana.`;
   }
-  document.getElementById('cover-summary').textContent = dynSummary;
+  document.getElementById('cover-summary').innerHTML = dynSummary;
   // -------------------------
 
   document.title = `Câmara nas Redes — ${String(report.edition || 'Relatório semanal').split(' · ')[0]}`;
 
-  const headlineKpis = ['ENGAJAMENTO GERAL', 'POSTAGENS', 'POSTAGEM', 'ALCANCE ESTIMADO'];
-  renderKpis(report.kpis.filter(k => headlineKpis.includes(String(k.label).toUpperCase())), 'kpi-grid');
+  // Destaques: só o cartão de Engajamento Geral, em formato compacto e com a comparação no rodapé
+  const engKpi = report.kpis.find(k => String(k.label).toUpperCase() === 'ENGAJAMENTO GERAL');
+  if (engKpi) {
+    const ch = engKpi.change;
+    const foot = ch == null ? 'Sem comparativo com a semana anterior' : (ch < 0 ? 'Inferior à semana anterior' : (ch > 0 ? 'Superior à semana anterior' : 'Igual à semana anterior'));
+    renderKpis([{ ...engKpi, foot, format: 'compact' }], 'kpi-grid');
+  }
   renderKpis(report.kpis, 'analytic-kpis');
 
   if (forceProposalIdx !== null) {
@@ -481,8 +483,8 @@ function renderCards() {
       </div>
       <div class="proposal-card-right">
         <div class="proposal-summary">${esc(p.description)}</div>
-        <p class="card-copy">${esc(buildFallbackSummary(p, false))}</p>
-        ${p.status ? `<p class="card-copy proposal-status"><strong>Situação atual:</strong> ${esc(p.status)}</p>` : ''}
+        <p class="card-copy">${esc(p.mobilization || buildFallbackSummary(p, false))}</p>
+        <span class="saiba-mais" aria-hidden="true">Saiba mais <svg viewBox="0 0 12 12"><path d="M3 9 9 3M4.5 3H9v4.5"/></svg></span>
       </div>
     </article>
   `).join('');

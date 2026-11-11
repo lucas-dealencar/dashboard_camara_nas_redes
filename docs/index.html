@@ -18,10 +18,7 @@
   <header class="cover" id="inicio" aria-label="Câmara nas Redes, destaques da semana">
     <img class="cover-art" src="assets/img/capa.svg" alt="" aria-hidden="true">
     <div class="cover-content">
-      <h1>Destaques da Semana:<br>5 Propostas com maior engajamento.</h1>
-      <div class="cover-divider"></div>
-      <p class="cover-summary" id="cover-summary">Carregando síntese da semana...</p>
-      <p class="cover-meta"><span id="edition-label">—</span><span id="period-label">—</span></p>
+      <h1><strong>Destaques da Semana:</strong><br><span class="cover-sub">5 Propostas com maior engajamento.</span></h1>
     </div>
   </header>
 
@@ -82,7 +79,10 @@
     <section class="section overview active" id="destaques">
       
       <!-- 1. Cartões de KPI no topo -->
-      <div class="kpi-grid" id="kpi-grid"></div>
+      <div class="hero-row">
+        <div class="kpi-grid" id="kpi-grid"></div>
+        <p class="week-summary" id="cover-summary" aria-live="polite">Carregando síntese da semana...</p>
+      </div>
 
       <!-- 2. Gráfico de Evolução (Colunas) no meio -->
       <article class="panel trend-panel">
