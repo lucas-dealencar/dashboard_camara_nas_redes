@@ -30,6 +30,7 @@ async function loadReport() {
     activeWeekId = weekOptions.some(o => o.id === wanted) ? wanted : fallback;
     initSlicer();
     initProposalSearch();
+    initAnnualToggle();
     renderCurrentWeek();
     syncUrl();
   } catch (error) {
@@ -332,8 +333,6 @@ function renderCurrentWeek() {
     const foot = ch == null ? 'Sem comparativo com a semana anterior' : (ch < 0 ? 'Inferior à semana anterior' : (ch > 0 ? 'Superior à semana anterior' : 'Igual à semana anterior'));
     renderKpis([{ ...engKpi, foot, format: 'compact' }], 'kpi-grid');
   }
-  renderKpis(report.kpis, 'analytic-kpis');
-
   if (forceProposalIdx !== null) {
     selectedProposal = forceProposalIdx;
     forceProposalIdx = null;
@@ -346,9 +345,7 @@ function renderCurrentWeek() {
   renderTrend();
   renderCards();
   renderProposalSuggestions(proposalSearchQuery);
-  renderChannelChart();
-  renderShareChart();
-  renderTopics();
+  renderAnalyticOverview();
   renderAnnualTrend();
   renderAnalyticCards();
   renderProposalTabs();
@@ -569,8 +566,66 @@ function renderBarChart(target, data, {max=null, compact=true, colorMap=null, ti
   node.innerHTML=svgWrap(`${W} ${H}`,out,'Gráfico de barras: '+data.map(d=>`${d.name}, ${d.display||formatNumber(d.value)}`).join('; '));
 }
 
-function renderChannelChart(){
-  const sortedChannels = [...(report.channels || [])].sort((a, b) => b.value - a.value);
+/* ===== Analítico: interruptor "Total Anual" =====
+   Ligado: cartões, canais, propostas (top 5) e categorias passam a somar todas as semanas do ano.
+   Sem base do ano anterior, os cartões perdem a variação % e a legenda. */
+let annualMode = false;
+
+function annualWeekReports() {
+  const weeks = (rawPayload?.evolucao_anual || []).map(v => String(v.week));
+  const ids = weeks.length ? weeks : Object.keys(rawPayload?.dados_semanas || {});
+  return ids.map(id => rawPayload?.dados_semanas?.[id]).filter(Boolean);
+}
+
+function sumByName(lists) {
+  const acc = new Map();
+  lists.flat().forEach(d => { if (d && d.name != null) acc.set(d.name, (acc.get(d.name) || 0) + (Number(d.value) || 0)); });
+  return [...acc].map(([name, value]) => ({ name, value }));
+}
+
+function annualAggregate() {
+  const weeks = annualWeekReports();
+  const kpis = (report.kpis || []).map(k => ({
+    label: k.label,
+    value: weeks.reduce((s, w) => s + (Number(w.kpis?.find(x => x.label === k.label)?.value) || 0), 0),
+    change: null,
+    foot: '',
+  }));
+  const engTotal = kpis.find(k => String(k.label).toUpperCase() === 'ENGAJAMENTO GERAL')?.value || 0;
+  const byProposal = new Map();
+  weeks.forEach(w => (w.proposals || []).forEach(p => byProposal.set(p.id, (byProposal.get(p.id) || 0) + (Number(p.engagement) || 0))));
+  const proposals = [...byProposal].map(([id, engagement]) => ({ id, engagement, share: engTotal ? engagement / engTotal * 100 : 0 }))
+    .sort((a, b) => b.engagement - a.engagement);
+  return {
+    kpis,
+    channels: sumByName(weeks.map(w => w.channels || [])),
+    topics: sumByName(weeks.map(w => w.topics || [])).sort((a, b) => b.value - a.value),
+    proposals,
+  };
+}
+
+function renderAnalyticOverview() {
+  const src = annualMode && isMultiWeek() ? annualAggregate() : report;
+  document.getElementById('analitico')?.classList.toggle('is-annual', annualMode);
+  renderKpis(src.kpis, 'analytic-kpis');
+  renderChannelChart(src.channels);
+  renderShareChart(src.proposals);
+  renderTopics(src.topics);
+}
+
+function initAnnualToggle() {
+  const input = document.getElementById('toggle-total-anual');
+  if (!input) return;
+  if (!isMultiWeek()) { input.closest('.annual-toggle').hidden = true; return; }
+  input.addEventListener('change', () => {
+    annualMode = input.checked;
+    input.setAttribute('aria-checked', String(annualMode));
+    renderAnalyticOverview();
+  });
+}
+
+function renderChannelChart(channels = report.channels){
+  const sortedChannels = [...(channels || [])].sort((a, b) => b.value - a.value);
   
   renderBarChart('channel-chart', sortedChannels, {
     labels: true, 
@@ -583,7 +638,7 @@ function renderChannelChart(){
     }
   });
 }
-function renderTopics(){renderBarChart('topic-chart',report.topics||[],{labels:true,compact:true});}
+function renderTopics(topics = report.topics){renderBarChart('topic-chart',topics||[],{labels:true,compact:true});}
 
 /* ===== Evolução anual (linhas): todas as semanas do ano na base; semana selecionada em destaque ===== */
 function renderAnnualTrend() {
@@ -670,8 +725,8 @@ function wireAnnualInteractions(node) {
   });
 }
 
-function renderShareChart() {
-  const data=(report.proposals||[]).slice(0,5).map(p=>({name:p.id,value:p.share||0,display:percentage(p.share||0)}));
+function renderShareChart(proposals = report.proposals) {
+  const data=(proposals||[]).slice(0,5).map(p=>({name:p.id,value:p.share||0,display:percentage(p.share||0)}));
   renderBarChart('share-chart',data,{max:100,tickFormat:v=>percentage(v)});
 }
 
@@ -917,7 +972,7 @@ function renderVisibleCharts(page){
   if(!report)return;
   if(page==='destaques')renderTrend();
   if(page==='propostas'){const p=report.proposals[selectedProposal];renderProposalTrend(p);renderProposalCharts(p);}
-  if(page==='analitico'){renderChannelChart();renderShareChart();renderTopics();renderAnnualTrend();}
+  if(page==='analitico'){renderAnalyticOverview();renderAnnualTrend();}
 }
 
 function navigateToPage(page,updateHistory=true) {

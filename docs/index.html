@@ -101,7 +101,13 @@
     </section>
 
     <section class="section analytics" id="analitico">
-      <div class="section-heading"><div><p class="eyebrow">LEITURA DOS DADOS</p><h2>Analítico</h2></div></div>
+      <div class="section-heading"><div><p class="eyebrow">LEITURA DOS DADOS</p><h2>Analítico</h2></div>
+        <label class="annual-toggle" for="toggle-total-anual">
+          <span class="annual-toggle-text">Total Anual</span>
+          <input type="checkbox" id="toggle-total-anual" role="switch" aria-checked="false">
+          <span class="annual-toggle-track" aria-hidden="true"><span class="annual-toggle-thumb"></span></span>
+        </label>
+      </div>
       <div class="kpi-grid kpi-grid-compact" id="analytic-kpis"></div>
       <div class="analytics-duo">
         <article class="panel"><div class="panel-heading"><div><p class="eyebrow">DISTRIBUIÇÃO</p><h3>Engajamento por canal</h3></div></div><div id="channel-chart" class="chart chart-bars"></div></article>
