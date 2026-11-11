@@ -1010,3 +1010,58 @@ if(window.ResizeObserver)new ResizeObserver(setNavH).observe(navEl);else window.
 
 loadReport();
 navigateToPage(location.hash.slice(1)||'destaques',false);
+/* Barra de rolagem lateral com setas que indicam conteúdo acima/abaixo. */
+(function initPageScroller() {
+  const root = document.documentElement;
+  const el = document.createElement('div');
+  el.className = 'page-scroller';
+  el.innerHTML = `
+    <button type="button" class="ps-arrow ps-up" aria-label="Rolar para cima"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 10 8 5.5 12.5 10"/></svg></button>
+    <div class="ps-track"><div class="ps-thumb"></div></div>
+    <button type="button" class="ps-arrow ps-down" aria-label="Rolar para baixo"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 6 8 10.5 12.5 6"/></svg></button>`;
+  document.body.appendChild(el);
+  const up = el.querySelector('.ps-up'), down = el.querySelector('.ps-down');
+  const track = el.querySelector('.ps-track'), thumb = el.querySelector('.ps-thumb');
+
+  function update() {
+    const max = root.scrollHeight - root.clientHeight;
+    el.classList.toggle('hidden', max <= 4);
+    if (max <= 4) return;
+    const tH = track.clientHeight;
+    const thH = Math.max(36, tH * root.clientHeight / root.scrollHeight);
+    thumb.style.height = thH + 'px';
+    thumb.style.transform = `translateY(${(tH - thH) * (root.scrollTop / max)}px)`;
+    up.classList.toggle('on', root.scrollTop > 4);
+    down.classList.toggle('on', root.scrollTop < max - 4);
+  }
+  const step = () => Math.round(root.clientHeight * 0.8);
+  up.addEventListener('click', () => window.scrollBy({ top: -step(), behavior: 'smooth' }));
+  down.addEventListener('click', () => window.scrollBy({ top: step(), behavior: 'smooth' }));
+
+  let drag = null;
+  thumb.addEventListener('pointerdown', e => {
+    drag = { y: e.clientY, top: root.scrollTop };
+    thumb.setPointerCapture(e.pointerId);
+    root.style.scrollBehavior = 'auto';
+    e.preventDefault();
+  });
+  thumb.addEventListener('pointermove', e => {
+    if (!drag) return;
+    const max = root.scrollHeight - root.clientHeight;
+    const room = track.clientHeight - thumb.offsetHeight;
+    if (room > 0) root.scrollTop = drag.top + (e.clientY - drag.y) * max / room;
+  });
+  const end = () => { drag = null; root.style.scrollBehavior = ''; };
+  thumb.addEventListener('pointerup', end);
+  thumb.addEventListener('pointercancel', end);
+  track.addEventListener('pointerdown', e => {
+    if (e.target !== track) return;
+    const r = thumb.getBoundingClientRect();
+    window.scrollBy({ top: e.clientY < r.top ? -step() : step(), behavior: 'smooth' });
+  });
+
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  if ('ResizeObserver' in window) new ResizeObserver(update).observe(document.body);
+  update();
+})();
