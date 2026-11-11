@@ -948,7 +948,7 @@ function renderProposalDetail() {
         <section class="say-item">
           <h4>${i + 1} - ${esc(String(arg.name).toLocaleUpperCase('pt-BR'))} | ${countLabel(arg.count, 'ocorrência', 'ocorrências')} (${percentage1(arg.share)})</h4>
           ${arg.description ? `<p>${esc(arg.description)}</p>` : ''}
-          ${arg.sample ? `<p class="say-label">Postagem representativa:</p><p>${esc(arg.sample)}</p>` : ''}
+          ${arg.sample ? `<p class="say-label">Postagem representativa:</p><p class="say-sample">${esc(arg.sample)}</p>` : ''}
         </section>`).join('')}
     </article>`;
   }

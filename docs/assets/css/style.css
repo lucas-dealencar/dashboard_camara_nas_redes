@@ -1262,3 +1262,5 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
 .proposal-meta b { font-weight: 800; color: var(--ink); }
 .proposal-meta-sep { color: var(--line); }
 @media (max-width: 850px) { .proposal-meta { font-size: 13px; } }
+
+.say-sample { font-style: italic; }
