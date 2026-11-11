@@ -752,7 +752,7 @@ function buildProposalKpis(p) {
   const make = (label, value, change) => {
     const hasChange = change != null;
     const foot = !hasChange
-      ? (refWeek == null ? 'Sem aparição em semanas anteriores' : `Sem base de comparação na ${refWeek}ª semana`)
+      ? (refWeek == null ? 'Sem registros anteriores' : `Sem base de comparação na ${refWeek}ª semana`)
       : (change < 0 ? `Inferior ${ref}` : (change > 0 ? `Superior ${ref}` : `Igual ${ref}`));
     return { label, value, change: hasChange ? change : null, foot, format: value >= 1e9 ? 'compact' : '' };
   };

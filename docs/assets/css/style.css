@@ -980,7 +980,8 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
 .prop-block { margin-bottom: 26px; padding: 26px 30px 28px; }
 .prop-block h3 { font-size: 24px; letter-spacing: -0.045em; }
 .prop-block .panel-heading { margin-bottom: 8px; }
-.prop-block .chart-trend { min-height: 260px; }
+.prop-block .chart-trend { min-height: 260px; background: #fff; border-radius: 10px; padding: 16px 12px 6px; }
+.prop-block .chart-trend .median-label { stroke: #fff; }
 .chart .axis-label.muted { fill: #8aa1a5; font-style: italic; }
 
 .channel-block { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 30px; }
