@@ -1203,3 +1203,11 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
   .main-nav .nav-links { grid-column: 2; justify-content: center; }
   .main-nav .proposta-busca-wrapper { grid-column: 3; justify-self: end; }
 }
+
+/* Menu de paginação alinhado à estrutura da página (mesma coluna do conteúdo) e texto no topo do cartão */
+@media (min-width: 851px) {
+  .main-nav .nav-inner { width: min(100%, 1000px); max-width: 1000px; grid-template-columns: minmax(0, 1fr) auto minmax(210px, 1fr); }
+  .main-nav .nav-links { gap: 8px; }
+  .main-nav .proposta-busca-wrapper { width: 210px; }
+  .hero-row { align-items: start; }
+}
