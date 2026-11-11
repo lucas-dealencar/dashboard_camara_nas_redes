@@ -1070,11 +1070,12 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
    Ajustes 11/2026 (2): analítico em 3 colunas, evolução anual e fontes maiores
    ========================================================================== */
 /* Analítico: três gráficos lado a lado + evolução anual em largura total */
-.analytics-trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; align-items: start; }
-.analytics-trio .panel { padding: 20px 18px 18px; }
-.analytics-trio .panel-heading { margin-bottom: 10px; }
-.analytics-trio h3 { font-size: 17px; }
-.analytics-trio .chart { min-height: 0; padding-top: 0; }
+.analytics-duo { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; align-items: stretch; margin-bottom: 18px; }
+.analytics-duo .panel { padding: 22px 22px 20px; }
+.analytics-duo .panel-heading { margin-bottom: 10px; }
+.analytics-duo h3 { font-size: 17px; }
+.analytics-duo .chart { min-height: 0; padding-top: 0; }
+.topics-panel { margin-top: 0; }
 .annual-panel { margin-top: 18px; }
 .chart-annual { min-height: 290px; }
 .annual-line { fill: none; stroke: #134e5e; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
@@ -1082,12 +1083,8 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
 .annual-dot { fill: #134e5e; stroke: var(--pale); stroke-width: 1.5; }
 .annual-dot.current { fill: var(--mint); stroke: #134e5e; stroke-width: 2.5; }
 .chart .annual-cur-label { fill: var(--ink); font-weight: 800; }
-@media (max-width: 1000px) and (min-width: 851px) {
-  .analytics-trio { grid-template-columns: 1fr 1fr; }
-  .analytics-trio .panel:last-child { grid-column: 1 / -1; }
-}
 @media (max-width: 850px) {
-  .analytics-trio { grid-template-columns: 1fr; }
+  .analytics-duo { grid-template-columns: 1fr; }
 }
 
 /* Fontes: textos pequenos um pouco maiores em todas as abas */
@@ -1124,3 +1121,16 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
 .chart .median-label { font-size: 12.5px; }
 .chart-annual .median-label { fill: #000; font-weight: 800; }
 .chart-annual .median { stroke: #F5A623; stroke-width: 2; stroke-dasharray: 6 4; }
+
+/* ==========================================================================
+   Ajustes 11/2026 (3): barra de navegação mais larga e escura ao rolar
+   ========================================================================== */
+.main-nav .nav-inner { width: min(100%, 1180px); max-width: 1180px; }
+.main-nav { transition: background .25s ease, box-shadow .25s ease; }
+.main-nav .nav-link { transition: background .2s, color .2s, border-color .2s, transform .18s; }
+
+/* Ao descer a página: fundo azul-escuro do tema e botões claros */
+.main-nav.is-stuck { background: rgba(7, 51, 58, .97); box-shadow: 0 6px 22px rgba(7, 51, 58, .28); }
+.main-nav.is-stuck .nav-link { color: #e6f1f2; background: rgba(255, 255, 255, .06); border-color: rgba(255, 255, 255, .45); }
+.main-nav.is-stuck .nav-link:hover { background: rgba(255, 255, 255, .16); border-color: #fff; }
+.main-nav.is-stuck .nav-link.active { background: var(--pale); border-color: var(--pale); color: var(--ink); }

@@ -372,8 +372,10 @@ function renderKpis(items,target) {
 
 /* Rótulo da mediana na margem direita do gráfico (fora das colunas), em duas linhas. */
 const MEDIAN_GUTTER = 96;
-function medianLabel(x, y, title, value) {
-  return `<text class="axis-label median-label" x="${x + 8}" y="${y - 3}" text-anchor="start"><tspan x="${x + 8}">${esc(title)}</tspan><tspan x="${x + 8}" dy="13">${esc(formatNumber(value, true))}</tspan></text>`;
+const ANNUAL_GUTTER = 118; // margem direita do gráfico anual (rótulo da mediana afastado da linha)
+const ANNUAL_MAX = 35e6;  // teto fixo do eixo Y do gráfico anual (35 mi)
+function medianLabel(x, y, title, value, dx = 8) {
+  return `<text class="axis-label median-label" x="${x + dx}" y="${y - 3}" text-anchor="start"><tspan x="${x + dx}">${esc(title)}</tspan><tspan x="${x + dx}" dy="13">${esc(formatNumber(value, true))}</tspan></text>`;
 }
 
 function svgWrap(viewBox,content,label) { return `<svg viewBox="0 0 ${viewBox}" role="img" aria-label="${esc(label)}" xmlns="http://www.w3.org/2000/svg">${content}</svg>`; }
@@ -510,27 +512,40 @@ function chartLabelLines(value,maxChars){
   if(line)lines.push(line);return lines;
 }
 
-/* Barras horizontais compactas: nome acima da barra, barra na largura toda (cabe em colunas estreitas). */
+/* Barras horizontais. Em colunas estreitas: nome acima da barra. Em largura total: nome à esquerda. */
+/* Teto de eixo com passos redondos: `divisions` intervalos iguais cobrindo o maior valor. */
+function niceMax(value, divisions) {
+  const raw = Math.max(value, 1) * 1.04 / divisions;
+  const order = Math.pow(10, Math.floor(Math.log10(raw)));
+  const step = ([1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].map(m => m * order).find(v => v >= raw)) || raw;
+  return step * divisions;
+}
 function renderBarChart(target, data, {max=null, compact=true, colorMap=null, tickFormat=null}={}) {
   const node=document.getElementById(target);
   if(!node) return;
   if(!data.length){node.innerHTML='<div class="empty-state">Ainda não há dados suficientes para este gráfico.</div>';return;}
-  const W=Math.max(220,Math.round(node.clientWidth||320)), left=2, right=58, top=4, bottom=24, rowH=44, barH=14;
+  const W=Math.max(220,Math.round(node.clientWidth||320)), wide=W>=560;
+  const right=wide?70:58, top=4, bottom=24, rowH=wide?36:44, barH=wide?18:14;
+  const left=wide?Math.min(270,Math.round(W*.3)):2;
   const H=data.length*rowH+top+bottom, plotW=W-left-right;
-  const maxVal=max||Math.max(...data.map(d=>d.value||0))*1.08||1;
+  const maxVal=max||niceMax(Math.max(...data.map(d=>d.value||0)),wide?4:2);
   const fmtTick=tickFormat||(v=>formatNumber(v,compact));
-  const maxChars=Math.max(14,Math.floor(W/6.9));
+  const maxChars=wide?Math.floor((left-12)/6.0):Math.max(14,Math.floor(W/6.9));
   let out='';
-  [0,.5,1].forEach(t=>{const xx=left+plotW*t;out+=`<line class="gridline" x1="${xx}" y1="${top}" x2="${xx}" y2="${H-bottom}"/><text class="axis-label" x="${xx}" y="${H-6}" text-anchor="${t===0?'start':(t===1?'end':'middle')}">${esc(fmtTick(maxVal*t))}</text>`;});
+  (wide?[0,.25,.5,.75,1]:[0,.5,1]).forEach(t=>{const xx=left+plotW*t;out+=`<line class="gridline" x1="${xx}" y1="${top}" x2="${xx}" y2="${H-bottom}"/><text class="axis-label" x="${xx}" y="${H-6}" text-anchor="${t===0&&!wide?'start':(t===1?'end':'middle')}">${esc(fmtTick(maxVal*t))}</text>`;});
   data.forEach((d,i)=>{
     const y0=top+rowH*i, name=String(d.name);
     const shown=name.length>maxChars?name.slice(0,maxChars-1).trimEnd()+'…':name;
     const bw=Math.max(1.5,plotW*Math.max(d.value||0,0)/maxVal);
     const fill=(colorMap&&colorMap[d.name])?`style="fill:${colorMap[d.name]}"`:'';
     const label=d.display||formatNumber(d.value,compact);
-    out+=`<text class="axis-label chart-category" x="${left}" y="${y0+13}">${esc(shown)}<title>${esc(name)}</title></text>
-      <rect class="bar" x="${left}" y="${y0+19}" width="${bw}" height="${barH}" rx="3" ${fill}><title>${esc(name)}: ${esc(d.display||formatNumber(d.value))}</title></rect>
-      <text class="value-label" x="${left+bw+6}" y="${y0+30}">${esc(label)}</text>`;
+    const by=wide?y0+(rowH-barH)/2:y0+19;
+    const nameEl=wide
+      ?`<text class="axis-label chart-category" x="${left-10}" y="${by+barH*.72}" text-anchor="end">${esc(shown)}<title>${esc(name)}</title></text>`
+      :`<text class="axis-label chart-category" x="${left}" y="${y0+13}">${esc(shown)}<title>${esc(name)}</title></text>`;
+    out+=`${nameEl}
+      <rect class="bar" x="${left}" y="${by}" width="${bw}" height="${barH}" rx="3" ${fill}><title>${esc(name)}: ${esc(d.display||formatNumber(d.value))}</title></rect>
+      <text class="value-label" x="${left+bw+6}" y="${by+barH*.75}">${esc(label)}</text>`;
   });
   node.innerHTML=svgWrap(`${W} ${H}`,out,'Gráfico de barras: '+data.map(d=>`${d.name}, ${d.display||formatNumber(d.value)}`).join('; '));
 }
@@ -560,28 +575,34 @@ function renderAnnualTrend() {
   if (yearNode) yearNode.textContent = rawPayload?.ano ? `Semanas de ${rawPayload.ano}` : '';
   if (values.length < 2) { node.innerHTML = '<div class="empty-state">Ainda não há semanas suficientes para a evolução anual.</div>'; return; }
   const median = report?.median || null;
-  const W = Math.max(320, Math.round(node.clientWidth || 900)), H = 290;
-  const left = 56, right = median ? MEDIAN_GUTTER : 20, top = 30, bottom = 40;
-  const max = niceCeil(Math.max(...values.map(v => v.value), median || 0));
+  const W = Math.max(320, Math.round(node.clientWidth || 900)), H = 400;
+  const left = 56, right = median ? ANNUAL_GUTTER : 20, top = 30, bottom = 40;
+  // eixo Y fixo em 35 mi (cresce só se algum valor passar disso)
+  const dataMax = Math.max(...values.map(v => v.value), median || 0);
+  const max = dataMax <= ANNUAL_MAX ? ANNUAL_MAX : niceCeil(dataMax);
   const plotW = W - left - right, base = H - bottom;
   const x = i => left + plotW * i / (values.length - 1);
   const y = v => top + (base - top) * (1 - v / max);
   const step = Math.max(1, Math.ceil(values.length / Math.max(4, Math.floor(plotW / 60))));
   const current = values.findIndex(v => String(v.week) === String(activeWeekId));
   let out = '';
-  [0, .25, .5, .75, 1].forEach(t => {
-    const v = max * t;
+  for (let v = 0; v <= max + 1; v += max <= ANNUAL_MAX ? 5e6 : max / 4) {
     out += `<line class="gridline" x1="${left}" y1="${y(v)}" x2="${W - right}" y2="${y(v)}"/><text class="axis-label" x="${left - 10}" y="${y(v) + 4}" text-anchor="end">${formatNumber(v, true)}</text>`;
-  });
+  }
   const pts = values.map((v, i) => `${x(i).toFixed(1)},${y(v.value).toFixed(1)}`);
   out += `<path class="annual-area" d="M${x(0)},${base} L${pts.join(' L')} L${x(values.length - 1)},${base} Z"/>`;
   out += `<path class="annual-line" d="M${pts.join(' L')}"/>`;
   if (median) {
-    out += `<line class="median" x1="${left}" y1="${y(median)}" x2="${W - right}" y2="${y(median)}"/>${medianLabel(W - right, y(median), 'Mediana anual', median)}`;
+    out += `<line class="median" x1="${left}" y1="${y(median)}" x2="${W - right}" y2="${y(median)}"/>${medianLabel(W - right, y(median), 'Mediana anual', median, 22)}`;
   }
+  // rótulos do eixo X: de step em step, mais a semana atual e a última (sem encostar uns nos outros)
+  const keep = new Set([...values.keys()].filter(i => i === current || i === values.length - 1));
+  values.forEach((_, i) => {
+    if (i % step === 0 && [...keep].every(k => Math.abs(x(i) - x(k)) >= 40)) keep.add(i);
+  });
   values.forEach((v, i) => {
     const isCur = i === current;
-    if (i % step === 0 || isCur || i === values.length - 1) {
+    if (keep.has(i)) {
       out += `<text class="axis-label${isCur ? ' annual-cur-label' : ''}" x="${x(i)}" y="${H - 14}" text-anchor="middle">${v.week}ª</text>`;
     }
     out += `<circle class="annual-dot${isCur ? ' current' : ''}" cx="${x(i)}" cy="${y(v.value)}" r="${isCur ? 6 : 3.5}"><title>${v.week}ª semana (${esc(v.label)}): ${esc(formatNumber(v.value))} pontos</title></circle>`;
@@ -862,6 +883,10 @@ window.addEventListener('resize',()=>{if(chartResizeFrame)return;chartResizeFram
 
 const navEl=document.querySelector('.main-nav');
 const setNavH=()=>document.documentElement.style.setProperty('--nav-h',`${navEl.offsetHeight}px`);
+// barra de navegação escura enquanto fixa no topo (página rolada)
+const updateNavStuck=()=>navEl.classList.toggle('is-stuck',navEl.getBoundingClientRect().top<=0.5&&window.scrollY>0);
+window.addEventListener('scroll',updateNavStuck,{passive:true});
+updateNavStuck();
 setNavH();
 if(window.ResizeObserver)new ResizeObserver(setNavH).observe(navEl);else window.addEventListener('resize',setNavH);
 
