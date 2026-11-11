@@ -11,6 +11,7 @@ from src.config import ARQUIVO_JSON_SAIDA, REDES
 from src.transformacao import chave_proposta
 
 JANELA_HISTORICO = 4  # semanas exibidas no gráfico "Evolução nas últimas 4 semanas"
+TOP_PROPOSTAS = 5     # propostas em destaque por semana (base da mediana na aba Propostas)
 
 # campo do JSON -> coluna da tabela `propostas` (usado na variação vs. semana anterior)
 CAMPOS_VARIACAO = {
@@ -55,6 +56,31 @@ def _canais_por_semana(tabelas: dict[str, pd.DataFrame]) -> dict[int, list[dict]
                 {"name": linha.rede_social, "value": _inteiro(linha.engagement_score)}
             )
     return canais
+
+
+def _temas_por_semana(tabelas: dict[str, pd.DataFrame]) -> dict[int, list[dict]]:
+    """{semana: [{name, value}, ...]} por categoria temática, do maior para o menor (sem zeros)."""
+    temas = tabelas.get("temas")
+    saida: dict[int, list[dict]] = {}
+    if temas is None:
+        return saida
+    for linha in temas.itertuples(index=False):
+        valor = _inteiro(linha.engagement_score)
+        if valor > 0:
+            saida.setdefault(int(linha.semana), []).append({"name": str(linha.tema), "value": valor})
+    for lista in saida.values():
+        lista.sort(key=lambda t: t["value"], reverse=True)
+    return saida
+
+
+def _mediana_top_propostas(propostas: pd.DataFrame, n: int = TOP_PROPOSTAS) -> int:
+    """Mediana do engajamento das propostas que ficaram entre as `n` maiores de cada semana."""
+    top = (
+        propostas.sort_values(["semana", "engagement_score"], ascending=[True, False])
+        .groupby("semana")
+        .head(n)
+    )
+    return int(top["engagement_score"].median()) if not top.empty else 0
 
 
 def _indice_propostas(propostas: pd.DataFrame) -> dict[int, dict[str, Any]]:
@@ -185,6 +211,8 @@ def _montar_payload(tabelas: dict[str, pd.DataFrame]) -> dict[str, Any]:
     semanas_totais = list(totais.index)
     # "Mediana anual": mediana do engajamento semanal de todas as semanas da base
     mediana = int(totais["engagement_score"].median())
+    mediana_propostas = _mediana_top_propostas(propostas)
+    temas = _temas_por_semana(tabelas)
 
     # período de cada semana (menor início / maior fim entre as propostas)
     periodos = propostas.groupby("semana").agg(ini=("data_inicio", "min"), fim=("data_fim", "max"))
@@ -206,6 +234,13 @@ def _montar_payload(tabelas: dict[str, pd.DataFrame]) -> dict[str, Any]:
         t = totais.loc[semana] if semana in totais.index else None
         eng, posts, autores, alcance = (0, 0, 0, 0) if t is None else map(_inteiro, t)
 
+        # variação % de cada total contra a semana anterior (None se ela não existir na base)
+        ant = totais.loc[semana - 1] if (semana - 1) in totais.index else None
+
+        def variacao(coluna: str, atual: int) -> float | None:
+            base = 0 if ant is None else _inteiro(ant[coluna])
+            return round((atual - base) / base * 100, 1) if base > 0 else None
+
         # gráfico: as últimas N semanas até a semana selecionada (inclusive)
         fim_janela = bisect_right(semanas_totais, semana)
         historico = [
@@ -223,15 +258,16 @@ def _montar_payload(tabelas: dict[str, pd.DataFrame]) -> dict[str, Any]:
             "period": periodo[semana],
             "summary": f"Relatório das 5 propostas em maior destaque nas redes na {semana}ª semana.",
             "kpis": [
-                {"label": "ENGAJAMENTO GERAL", "value": eng, "change": None, "foot": "Pontos na semana"},
-                {"label": "POSTAGENS", "value": posts, "change": None, "foot": "Total coletado"},
-                {"label": "AUTORES ÚNICOS", "value": autores, "change": None, "foot": "Perfis distintos"},
-                {"label": "ALCANCE ESTIMADO", "value": alcance, "change": None, "foot": "Pessoas impactadas"},
+                {"label": "ENGAJAMENTO GERAL", "value": eng, "change": variacao("engagement_score", eng), "foot": "Pontos na semana"},
+                {"label": "POSTAGENS", "value": posts, "change": variacao("mencoes", posts), "foot": "Total coletado"},
+                {"label": "AUTORES ÚNICOS", "value": autores, "change": variacao("autores_unicos", autores), "foot": "Perfis distintos"},
+                {"label": "ALCANCE ESTIMADO", "value": alcance, "change": variacao("alcance", alcance), "foot": "Pessoas impactadas"},
             ],
             "history": historico,
             "median": mediana,
+            "proposal_median": mediana_propostas,
             "channels": canais.get(semana, []),
-            "topics": [],
+            "topics": temas.get(semana, []),
             "proposals": _propostas_da_semana(df_semana, eng, semana, ctx),
         }
 

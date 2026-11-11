@@ -1011,3 +1011,46 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
   .proposals-section .proposal-subnav { padding: 0 8px; }
   .proposals-section .proposal-subnav .proposal-tab { padding: 12px 10px 9px; font-size: 12.5px; }
 }
+/* ==========================================================================
+   Ajustes 11/2026: capa ampliada (~125%), destaques, analítico e propostas
+   ========================================================================== */
+/* Capa: conteúdo em fluxo (cresce se o texto precisar) e edição abaixo do subtítulo */
+.cover-meta { margin: 0; }
+.cover-meta #edition-label { font-weight: 800; }
+@media (min-width: 851px) {
+  .cover { aspect-ratio: auto; min-height: 39.44vw; line-height: normal; }
+  .cover-content { position: relative; inset: auto; display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 24px); padding: 16.5vw 6% 3vw 10%; }
+  .cover-content h1,
+  .cover-divider,
+  .cover-summary,
+  .cover-meta { position: static; left: auto; top: auto; right: auto; bottom: auto; margin: 0; }
+  .cover-content h1 { width: auto; font-size: clamp(37px, 4.75vw, 80px); }
+  .cover-divider { width: 85%; max-width: 1075px; }
+  .cover-summary { width: 85%; max-width: 1000px; font-size: clamp(18px, 1.69vw, 22.5px); }
+  .cover-meta { align-self: flex-start; gap: .55em; font-size: clamp(16px, 1.55vw, 24px); padding: .55em .9em; border-radius: 10px; }
+  .cover-meta span + span:before { margin-right: .55em; }
+}
+@media (max-width: 850px) {
+  .cover-meta { margin: 4px 0 12px; max-width: 100%; font-size: 15px; padding: 9px 12px; }
+}
+
+/* Destaques: % do cartão "Engajamento Geral" maior; gráfico mais próximo do título seguinte */
+#kpi-grid .kpi-change { font-size: 17px; padding: 6px 11px; border-radius: 7px; }
+.trend-panel { margin-bottom: 30px; min-height: 0; }
+@media (max-width: 850px) { .trend-panel { margin-bottom: 24px; } }
+
+/* Analítico: "Engajamento por canal" e "Participação das propostas" no mesmo painel */
+.merged-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.merged-col { min-width: 0; }
+.merged-col + .merged-col { border-left: 1px solid var(--line); padding-left: 28px; }
+.merged-title { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 0 0 6px; color: var(--ink); font-size: 13px; font-weight: 800; }
+@media (max-width: 850px) {
+  .merged-grid { grid-template-columns: 1fr; gap: 18px; }
+  .merged-col + .merged-col { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: 18px; }
+}
+
+/* Propostas: comparativo, título e subtítulo maiores */
+.proposals-section .kpi-grid-compact .kpi-change { font-size: 14.5px; padding: 5px 9px; border-radius: 6px; }
+.proposal-title { font-size: 30px !important; }
+.proposal-title-desc { font-size: 15px; }
+@media (max-width: 850px) { .proposal-title { font-size: 24px !important; } .proposal-title-desc { font-size: 14px; } }

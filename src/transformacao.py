@@ -130,6 +130,20 @@ def _montar_redes(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
     return {aba: o[o["rede_social"] == rede].reset_index(drop=True) for rede, aba in REDES.items()}
 
 
+COLUNAS_TEMAS = ["semana", "tema", *METRICAS]
+
+
+def _montar_temas(df: pd.DataFrame) -> pd.DataFrame:
+    """Linhas com Categoria = 'Tema': engajamento de cada categoria temática por semana."""
+    t = df[df["Categoria"] == "Tema"].rename(columns=RENOMEAR).rename(columns={"Nome": "tema"})
+    t = t[t["tema"].notna()].copy()
+    t[METRICAS] = t[METRICAS].fillna(0).astype("int64")
+    # soma caso a mesma categoria apareça duas vezes na semana (ex.: ' Saúde' e 'Saúde')
+    t = t.groupby(["semana", "tema"], as_index=False, sort=False)[METRICAS].sum()
+    t = t.sort_values(["semana", "engagement_score"], ascending=[True, False], kind="stable")
+    return t[COLUNAS_TEMAS].reset_index(drop=True)
+
+
 def _montar_metricas(semanas: pd.Series) -> pd.DataFrame:
     m = pd.DataFrame({"semana": sorted(semanas.unique())})
     m["contexto"] = pd.Series(CONTEXTO_PADRAO, index=m.index, dtype="string")
@@ -380,6 +394,7 @@ def transformar_dados(
         "propostas": _montar_propostas(df),
         "métricas_da_semana": _montar_metricas(df["Semana"]),
         **_montar_redes(df),
+        "temas": _montar_temas(df),
     }
     _validar(tabelas)
 

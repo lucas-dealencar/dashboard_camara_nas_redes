@@ -21,8 +21,8 @@
       <h1>Destaques da Semana:<br>5 Propostas com maior engajamento.</h1>
       <div class="cover-divider"></div>
       <p class="cover-summary" id="cover-summary">Carregando síntese da semana...</p>
+      <p class="cover-meta"><span id="edition-label">—</span><span id="period-label">—</span></p>
     </div>
-    <div class="cover-meta"><span id="edition-label">—</span><span id="period-label">—</span></div>
   </header>
 
   <nav class="main-nav" aria-label="Navegação do relatório">
@@ -88,19 +88,8 @@
       <article class="panel trend-panel">
         <div class="panel-heading">
           <h2 class="panel-title-sm">EVOLUÇÃO NAS ÚLTIMAS 4 SEMANAS</h2>
-          <span class="panel-note">Últimas 4 semanas</span>
         </div>
-        
-        <div class="trend-detail" id="trend-detail" aria-live="polite"></div>
-
         <div id="trend-chart" class="chart chart-trend" aria-label="Gráfico de evolução semanal"></div>
-        
-        <div class="trend-controls">
-          <span class="trend-hint">Passe pelas colunas ou selecione uma semana para ver o detalhamento acima</span>
-          <button class="median-toggle" id="median-toggle" type="button" aria-pressed="true">
-            <span class="legend-line"></span>Mediana anual <span class="median-toggle-state">Visível</span>
-          </button>
-        </div>
       </article>
 
       <!-- 3. Propostas em destaque no final -->
@@ -114,11 +103,14 @@
     <section class="section analytics" id="analitico">
       <div class="section-heading"><div><p class="eyebrow">LEITURA DOS DADOS</p><h2>Analítico</h2></div></div>
       <div class="kpi-grid kpi-grid-compact" id="analytic-kpis"></div>
-      <div class="analytics-grid">
-        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">DISTRIBUIÇÃO</p><h3>Engajamento por canal</h3></div></div><div id="channel-chart" class="chart chart-bars"></div></article>
-        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">CONCENTRAÇÃO</p><h3>Participação das propostas</h3></div><span class="panel-note">Top 5 propostas</span></div><div id="share-chart" class="chart chart-share"></div></article>
-      </div>
-      <article class="panel topics-panel"><div class="panel-heading"><div><p class="eyebrow">ASSUNTOS EM PAUTA</p><h3>Temas com maior engajamento</h3></div><span class="panel-note">Pontos de engajamento</span></div><div id="topic-chart" class="chart chart-bars topic-bars"></div></article>
+      <article class="panel merged-panel">
+        <div class="panel-heading"><div><p class="eyebrow">DISTRIBUIÇÃO E CONCENTRAÇÃO</p><h3>Engajamento por canal e por proposta</h3></div></div>
+        <div class="merged-grid">
+          <div class="merged-col"><h4 class="merged-title">Por canal</h4><div id="channel-chart" class="chart chart-bars"></div></div>
+          <div class="merged-col"><h4 class="merged-title">Participação das propostas <span class="panel-note">Top 5</span></h4><div id="share-chart" class="chart chart-share"></div></div>
+        </div>
+      </article>
+      <article class="panel topics-panel"><div class="panel-heading"><div><p class="eyebrow">ASSUNTOS EM PAUTA</p><h3>Engajamento por categoria</h3></div><span class="panel-note">Pontos de engajamento</span></div><div id="topic-chart" class="chart chart-bars topic-bars"></div></article>
     </section>
 
     <section class="section proposals-section" id="propostas">

@@ -4,8 +4,6 @@ let rawPayload = null;
 let report = null;
 let selectedProposal = 0;
 let activeMethod = 'gerais';
-let selectedWeek = 0;
-let showMedian = true;
 let activeWeekId = null;
 let proposalSearchQuery = '';
 let forceProposalIdx = null;
@@ -342,7 +340,6 @@ function renderCurrentWeek() {
     selectedProposal = foundIdx >= 0 ? foundIdx : 0;
   }
   
-  selectedWeek = Math.max(0, (report.history?.length || 1) - 1);
 
   renderTrend();
   renderCards();
@@ -370,17 +367,22 @@ function renderKpis(items,target) {
   }).join('');
 }
 
+/* Rótulo da mediana na margem direita do gráfico (fora das colunas), em duas linhas. */
+const MEDIAN_GUTTER = 96;
+function medianLabel(x, y, title, value) {
+  return `<text class="axis-label median-label" x="${x + 8}" y="${y - 3}" text-anchor="start"><tspan x="${x + 8}">${esc(title)}</tspan><tspan x="${x + 8}" dy="13">${esc(formatNumber(value, true))}</tspan></text>`;
+}
+
 function svgWrap(viewBox,content,label) { return `<svg viewBox="0 0 ${viewBox}" role="img" aria-label="${esc(label)}" xmlns="http://www.w3.org/2000/svg">${content}</svg>`; }
 
 /* ===== Gráfico de Evolução (Colunas) ===== */
 function renderTrend() {
   const chartNode=document.getElementById('trend-chart');
   if(!chartNode) return;
-  const W=Math.max(320,Math.round(chartNode.clientWidth||900)), H=260, left=56, right=20, top=32, bottom=46;
+  const W=Math.max(320,Math.round(chartNode.clientWidth||900)), H=260, left=56, right=report.median?MEDIAN_GUTTER:20, top=32, bottom=46;
   const values=report.history||[];
   if(!values.length){chartNode.innerHTML='<div class="empty-state">Ainda não há histórico semanal na base.</div>';return;}
-  selectedWeek=Math.min(selectedWeek,values.length-1);
-  
+
   const rawMax = Math.max(...values.map(x=>x.value||0), report.median||0);
   const order = Math.pow(10, Math.floor(Math.log10(rawMax || 1)));
   let ceilMax = Math.ceil(rawMax / order) * order;
@@ -394,9 +396,9 @@ function renderTrend() {
   const y = v => top + (H - bottom - top) * (1 - (v / ceilMax));
   const plotW = W - left - right;
   const colStep = plotW / values.length;
-  const barW = Math.min(64, colStep * 0.55);
+  const barW = Math.min(180, colStep * 0.8);
   const x = i => left + colStep * i + (colStep / 2);
-  
+
   let parts='';
   
   [0, 0.25, 0.5, 0.75, 1].forEach(p => {
@@ -406,15 +408,11 @@ function renderTrend() {
   });
   
   values.forEach((d,i) => {
-    const selected = i === selectedWeek;
     const yy = y(d.value);
     const bh = (H - bottom) - yy;
     const xx = x(i) - barW/2;
-    
-    parts += `<g class="trend-point ${selected?'selected':''}" data-index="${i}" role="button" tabindex="0" aria-pressed="${selected}" aria-label="Semana ${d.week}, ${esc(d.display||formatNumber(d.value,true))} pontos">
-      <rect class="bar-trend" style="fill: #134e5e !important; cursor: pointer;" x="${xx}" y="${yy}" width="${barW}" height="${Math.max(0, bh)}" rx="4"/>
-      <title>Semana ${d.week}: ${esc(d.display||formatNumber(d.value))}</title>
-    </g>
+
+    parts += `<rect class="bar-trend" style="fill:#134e5e" x="${xx}" y="${yy}" width="${barW}" height="${Math.max(0, bh)}" rx="4"><title>Semana ${d.week}: ${esc(d.display||formatNumber(d.value))}</title></rect>
     <text class="value-label" x="${x(i)}" y="${yy-8}" text-anchor="middle" fill="#000">${esc(d.display||formatNumber(d.value,true))}</text>
     ${W<480?'':`<text class="axis-label" x="${x(i)}" y="${H-24}" text-anchor="middle" font-weight="700" fill="#000">${esc(d.label)}</text>`}
     <text class="axis-label" x="${x(i)}" y="${H-10}" text-anchor="middle" fill="#000">Semana ${d.week}</text>`;
@@ -422,77 +420,11 @@ function renderTrend() {
 
   if (report.median) {
     const yy = y(report.median);
-    parts += `<line class="median" x1="${left}" y1="${yy}" x2="${W-right}" y2="${yy}" style="${showMedian?'':'display:none'}"/>
-              <text class="axis-label median-label" x="${W-right}" y="${yy-7}" text-anchor="end" fill="#000" style="${showMedian?'':'display:none'}">Mediana: ${formatNumber(report.median,true)}</text>`;
+    parts += `<line class="median" x1="${left}" y1="${yy}" x2="${W-right}" y2="${yy}"/>
+              ${medianLabel(W-right, yy, 'Mediana anual', report.median)}`;
   }
-  
+
   chartNode.innerHTML=svgWrap(`${W} ${H}`,parts,'Evolução semanal do engajamento.');
-  wireTrendInteractions(values,{W,H,x,y});
-  renderTrendDetail(values,selectedWeek);
-  
-  const toggle=document.getElementById('median-toggle');
-  toggle.setAttribute('aria-pressed',String(showMedian));
-  toggle.querySelector('.median-toggle-state').textContent=showMedian?'Visível':'Oculta';
-  toggle.onclick=()=>{showMedian=!showMedian;document.querySelectorAll('.median,.median-label').forEach(n=>n.style.display=showMedian?'':'none');toggle.setAttribute('aria-pressed',String(showMedian));toggle.querySelector('.median-toggle-state').textContent=showMedian?'Visível':'Oculta';};
-}
-
-function getWeekRangeLabel(d){ return d?.range || d?.label || ''; }
-
-function renderTrendDetail(values,index){
-  const d=values[index];if(!d)return;
-  const previous=values[index-1];
-  const reportedChange=index===values.length-1?report.kpis?.[0]?.change:null;
-  const change=reportedChange!=null?reportedChange:(previous?.value?((d.value-previous.value)/previous.value)*100:null);
-  const medianDelta=report.median?((d.value-report.median)/report.median)*100:null;
-  
-  const compareBadge = change==null 
-    ? `<span class="comparison-change">Sem base anterior</span>` 
-    : `<span class="comparison-change ${change<0?'down':'up'}">${change<0?'↓':'↑'} ${percentage(Math.abs(change))} vs. semana anterior</span>`;
-    
-  const medianText = medianDelta==null
-    ? ''
-    : `<span class="comparison-median">${medianDelta>=0?'Acima':'Abaixo'} da mediana anual em ${percentage(Math.abs(medianDelta))}</span>`;
-    
-  document.getElementById('trend-detail').innerHTML=`
-    <div class="trend-detail-left">
-      <div class="trend-detail-period">
-        <span class="trend-detail-index">Semana ${d.week}</span>
-        <span>${esc(getWeekRangeLabel(d))}</span>
-      </div>
-      <div class="trend-detail-value">
-        <strong>${esc(d.display||formatNumber(d.value,true))}</strong>
-        <span>Pontos de Engajamento</span>
-      </div>
-    </div>
-    <div class="trend-detail-comparison">
-      ${compareBadge}
-      ${medianText}
-    </div>
-    <div class="trend-steps">
-      <button type="button" data-step="-1" ${index===0?'disabled':''} aria-label="Semana anterior">←</button>
-      <span>${index+1} de ${values.length}</span>
-      <button type="button" data-step="1" ${index===values.length-1?'disabled':''} aria-label="Próxima semana">→</button>
-    </div>
-  `;
-  document.querySelectorAll('.trend-steps button').forEach(button=>button.addEventListener('click',()=>selectTrendWeek(Math.max(0,Math.min(values.length-1,index+Number(button.dataset.step))))));
-}
-
-function selectTrendWeek(index){
-  selectedWeek=index;
-  document.querySelectorAll('.trend-point').forEach(point=>{const selected=Number(point.dataset.index)===index;point.classList.toggle('selected',selected);point.setAttribute('aria-pressed',String(selected));});
-  renderTrendDetail(report.history,index);
-}
-
-function wireTrendInteractions(values,geometry){
-  const points=[...document.querySelectorAll('.trend-point')];
-  points.forEach(point=>{
-    const index=Number(point.dataset.index);
-    point.addEventListener('click',()=>selectTrendWeek(index));
-    point.addEventListener('keydown',event=>{
-      if(event.key==='Enter'||event.key===' '){event.preventDefault();selectTrendWeek(index);}
-      if(event.key==='ArrowRight'||event.key==='ArrowLeft'){event.preventDefault();const next=Math.max(0,Math.min(values.length-1,index+(event.key==='ArrowRight'?1:-1)));points[next].focus();selectTrendWeek(next);}
-    });
-  });
 }
 
 function buildFallbackSummary(p, withStatus = true) {
@@ -762,8 +694,10 @@ function renderProposalTrend(p) {
   if (!node || !p) return;
   const values = p.history || [];
   if (!values.some(v => v.value != null)) { node.innerHTML = '<div class="empty-state">Ainda não há histórico semanal para esta proposta.</div>'; return; }
-  const W = Math.max(320, Math.round(node.clientWidth || 900)), H = 260, left = 56, right = 20, top = 32, bottom = 46;
-  const rawMax = Math.max(...values.map(v => v.value || 0), 1) * 1.05;
+  // mediana anual do engajamento das propostas que ficaram no top 5 de cada semana
+  const median = report.proposal_median || null;
+  const W = Math.max(320, Math.round(node.clientWidth || 900)), H = 260, left = 56, right = median ? MEDIAN_GUTTER : 20, top = 32, bottom = 46;
+  const rawMax = Math.max(...values.map(v => v.value || 0), median || 0, 1) * 1.05;
   const order = Math.pow(10, Math.floor(Math.log10(rawMax)));
   const ceilMax = ([1, 1.2, 1.6, 2, 2.4, 2.8, 3.2, 4, 6, 8, 10].map(m => m * order).find(v => v >= rawMax)) || rawMax;
   const y = v => top + (H - bottom - top) * (1 - v / ceilMax);
@@ -785,6 +719,11 @@ function renderProposalTrend(p) {
     parts += `<rect class="bar-trend" style="fill:#134e5e;opacity:${current ? 1 : 0.55}" x="${x(i) - barW / 2}" y="${yy}" width="${barW}" height="${Math.max(0, H - bottom - yy)}" rx="4"><title>Semana ${d.week}: ${esc(formatNumber(d.value))}</title></rect>
       <text class="value-label" x="${x(i)}" y="${yy - 8}" text-anchor="middle">${esc(formatNumber(d.value, true))}</text>${weekLabel}`;
   });
+  if (median) {
+    const yy = y(median);
+    parts += `<line class="median" x1="${left}" y1="${yy}" x2="${W - right}" y2="${yy}"/>
+      ${medianLabel(W - right, yy, 'Mediana top 5', median)}`;
+  }
   node.innerHTML = svgWrap(`${W} ${H}`, parts, `Evolução do engajamento de ${p.id} nas últimas semanas.`);
 }
 
