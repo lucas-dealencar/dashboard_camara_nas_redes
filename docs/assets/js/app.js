@@ -238,7 +238,11 @@ function closeSlicer(returnFocus) {
 function renderSlicerList(query = '') {
   const q = normText(query).trim();
   const list = document.getElementById('lista-semanas');
-  slicerItems = weekOptions.filter(o => !q || normText(`${o.title} ${o.range}`).includes(q));
+  // mês por extenso (ex.: "outubro"): lista as semanas que tocam aquele mês
+  const mes = MESES.indexOf(q) + 1;
+  slicerItems = weekOptions.filter(o => !q
+    || (mes > 0 && mesesDoPeriodo(o.range).includes(mes))
+    || normText(`${o.title} ${o.range}`).includes(q));
   const latest = weekOptions[0] && weekOptions[0].id;
   if (!slicerItems.length) {
     list.innerHTML = '<li class="periodo-vazio" role="presentation">Nenhuma semana encontrada</li>';
