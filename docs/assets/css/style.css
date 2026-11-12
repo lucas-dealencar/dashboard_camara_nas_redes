@@ -1019,9 +1019,9 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
 .cover-content h1 strong { font-weight: 800; }
 .cover-content h1 .cover-sub { font-weight: 400; }
 @media (min-width: 851px) {
-  .cover { aspect-ratio: 1440 / 310; min-height: 0; }
-  .cover > img.cover-art { object-position: center 25%; }
-  .cover-content h1 { top: 12.6vw; width: 80%; font-size: clamp(30px, 3.3vw, 56px); line-height: 1.02; }
+  .cover { aspect-ratio: 1440 / 263; min-height: 0; }
+  .cover > img.cover-art { object-position: center 32%; }
+  .cover-content h1 { top: 8.4vw; width: 80%; font-size: clamp(26px, 2.9vw, 50px); line-height: 1.02; }
 }
 @media (max-width: 850px) {
   .cover-content { padding: 96px 20px 28px; }
