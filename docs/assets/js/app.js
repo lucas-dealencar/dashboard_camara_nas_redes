@@ -1017,7 +1017,7 @@ const subNavEl=document.querySelector('.proposal-subnav');
 const updateNavStuck=()=>{
   navEl.classList.toggle('is-stuck',navEl.getBoundingClientRect().top<=0.5&&window.scrollY>0);
   // submenu de propostas: escuro (igual ao menu principal) quando está fixo sob ele
-  if(subNavEl)subNavEl.classList.toggle('is-stuck',subNavEl.offsetParent!==null&&window.scrollY>0&&subNavEl.getBoundingClientRect().top<=navEl.getBoundingClientRect().bottom+1);  // getBoundingClientRect nas duas pontas: vale com zoom
+  if(subNavEl)navEl.classList.toggle('has-subnav-stuck',subNavEl.classList.toggle('is-stuck',subNavEl.offsetParent!==null&&window.scrollY>0&&subNavEl.getBoundingClientRect().top<=navEl.getBoundingClientRect().bottom+1));  // getBoundingClientRect nas duas pontas: vale com zoom
 };
 window.addEventListener('scroll',updateNavStuck,{passive:true});
 updateNavStuck();
