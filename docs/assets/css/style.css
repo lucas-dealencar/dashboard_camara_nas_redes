@@ -1021,7 +1021,8 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
 @media (min-width: 851px) {
   .cover { aspect-ratio: 1440 / 213; min-height: 0; background: #092e36; }  /* mesma cor da arte, para não haver emenda */
   /* arte inteira (sem corte): dimensionada pela altura e ancorada à direita; o lado esquerdo da arte é liso e se funde ao fundo */
-  .cover > img.cover-art { object-fit: contain; object-position: right bottom; clip-path: inset(0 0 0.7% 0); }  /* corta a linha verde de 3px da arte: a do menu já faz o fecho e só a arte ocupava parte da largura */
+  /* height: 125% = desenho do Congresso 25% maior, ancorado à direita/base (o excesso do topo é cortado pelo cabeçalho) */
+  .cover > img.cover-art { inset: auto 0 0 auto; width: auto; height: 125%; object-fit: fill; clip-path: inset(0 0 0.7% 0); }  /* corta a linha verde de 3px da arte: a do menu já faz o fecho e só a arte ocupava parte da largura */
   /* título alinhado à coluna do menu (940px) e centrado na faixa entre o selo e o menu */
   .cover-content h1 { left: max(5%, calc(50% - 470px)); top: 67%; width: 940px; max-width: 90%; transform: translateY(-50%); font-size: clamp(26px, 2.9vw, 50px); line-height: 1.02; }
   /* selo separado da arte: o texto do selo (30/415 da largura) começa na mesma linha do título */
