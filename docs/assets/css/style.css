@@ -1020,8 +1020,9 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
 .cover-content h1 .cover-sub { font-weight: 400; }
 @media (min-width: 851px) {
   .cover { aspect-ratio: 1440 / 263; min-height: 0; }
-  .cover > img.cover-art { object-position: center 32%; }
-  .cover-content h1 { top: 8.4vw; width: 80%; font-size: clamp(26px, 2.9vw, 50px); line-height: 1.02; }
+  .cover > img.cover-art { object-position: center 40%; }
+  /* título alinhado à coluna do menu (940px) e centrado na faixa entre o selo e o menu */
+  .cover-content h1 { left: calc(50% - 470px); top: 62.5%; width: 940px; max-width: 90%; transform: translateY(-50%); font-size: clamp(26px, 2.9vw, 50px); line-height: 1.02; }
 }
 @media (max-width: 850px) {
   .cover-content { padding: 96px 20px 28px; }
@@ -1269,3 +1270,5 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
 @media (min-width: 1100px) {
   body { zoom: 1.2; }
 }
+
+.proposals-section .proposal-subnav.is-stuck { border-top: 1px solid rgba(255, 255, 255, .22); }
