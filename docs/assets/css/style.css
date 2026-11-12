@@ -1271,4 +1271,4 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
   body { zoom: 1.2; }
 }
 
-.proposals-section .proposal-subnav.is-stuck { border-top: 1px solid rgba(255, 255, 255, .22); }
+.proposals-section .proposal-subnav.is-stuck { border-top: 1px solid #8fa8ac; }
