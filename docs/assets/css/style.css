@@ -1015,17 +1015,21 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
 /* ==========================================================================
    Ajustes 11/2026: capa ampliada (~125%), destaques, analítico e propostas
    ========================================================================== */
-/* Capa compacta: só selo (da arte) + título. A arte é deslocada para o selo ficar no topo. */
+/* Capa compacta: arte de fundo (capa.svg, sem selo) + selo separado (capa-selo.svg) + título. */
 .cover-content h1 strong { font-weight: 800; }
 .cover-content h1 .cover-sub { font-weight: 400; }
 @media (min-width: 851px) {
   .cover { aspect-ratio: 1440 / 263; min-height: 0; }
-  .cover > img.cover-art { object-position: center 40%; }
+  /* arte sem o selo: ancora na base, onde ficam o prédio e a linha verde */
+  .cover > img.cover-art { object-position: center bottom; }
   /* título alinhado à coluna do menu (940px) e centrado na faixa entre o selo e o menu */
-  .cover-content h1 { left: calc(50% - 470px); top: 62.5%; width: 940px; max-width: 90%; transform: translateY(-50%); font-size: clamp(26px, 2.9vw, 50px); line-height: 1.02; }
+  .cover-content h1 { left: max(5%, calc(50% - 470px)); top: 62.5%; width: 940px; max-width: 90%; transform: translateY(-50%); font-size: clamp(26px, 2.9vw, 50px); line-height: 1.02; }
+  /* selo separado da arte: o texto do selo (30/415 da largura) começa na mesma linha do título */
+  .cover-selo { position: absolute; top: 1.5%; left: max(5%, calc(50% - 470px)); width: 28.8%; height: auto; transform: translateX(-7.23%); }
 }
 @media (max-width: 850px) {
   .cover-content { padding: 96px 20px 28px; }
+  .cover-selo { position: absolute; top: 6px; left: 20px; width: min(260px, 70%); height: auto; transform: translateX(-7.23%); }
 }
 
 /* Destaques: cartão de Engajamento Geral com a síntese da semana ao lado */
