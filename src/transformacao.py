@@ -249,8 +249,12 @@ def _para_percentual(valor) -> float:
     """Converte um valor da coluna `percentual` para pontos percentuais (45.6 = 45,6%).
 
     Formatos aceitos, valor a valor:
-    - número ou texto SEM '%' e <= 1 -> fração:  0.456 / '0.456' / '0,456' -> 45.6
-    - número ou texto SEM '%' e  > 1 -> já em pontos: 45.6 / '45,6' -> 45.6
+    - número INTEIRO > 1 -> vírgula decimal perdida na digitação: 208 -> 20.8,
+      78 -> 7.8, 4324 -> 43.24 (divide por 10 e segue dividindo enquanto passar de 100)
+      (a planilha grava '20,8' como 208; conferido contra ocorrências/base:
+      198 de 952 = 20,8%, 586 de 708 = 82,8%, 8 de 102 = 7,8%)
+    - número ou texto SEM '%' e <= 1 -> fração:  0.456 / '0.456' / '0,02' -> 45.6 / 2.0
+    - número com casas decimais ou texto SEM '%' e > 1 -> já em pontos: 45.6 / '45,6' -> 45.6
     - texto COM '%' -> já em pontos: '45,6%' / '45.6%' -> 45.6
 
     Diferente de `_para_float`, o ponto é sempre separador decimal: percentual não tem
@@ -261,6 +265,10 @@ def _para_percentual(valor) -> float:
 
     if isinstance(valor, (int, float)) and not isinstance(valor, bool):
         numero, tinha_simbolo = float(valor), False
+        if numero > 1 and numero.is_integer():
+            numero /= 10
+            while numero > 100:  # 4324 -> 43.24 (duas casas perdidas)
+                numero /= 10
     else:
         texto = str(valor).strip().replace(" ", "").replace(" ", "")
         tinha_simbolo = "%" in texto
