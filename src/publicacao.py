@@ -1,4 +1,3 @@
-"""Publicação: commita e envia ao GitHub apenas o JSON do dashboard (o Pages atualiza sozinho)."""
 import subprocess
 from datetime import datetime
 from pathlib import Path

@@ -245,18 +245,45 @@ def _semana_inteira(serie: pd.Series) -> pd.Series:
     return numeros.astype("int64")
 
 
-def _percentuais(serie: pd.Series) -> pd.Series:
-    """Percentual em pontos (51.0 = 51%).
+def _para_percentual(valor) -> float:
+    """Converte um valor da coluna `percentual` para pontos percentuais (45.6 = 45,6%).
 
-    Células formatadas como % chegam como fração (0.51) em UNFORMATTED_VALUE;
-    textos como '51%' ou '3,5%' já vêm em pontos.
+    Formatos aceitos, valor a valor:
+    - número ou texto SEM '%' e <= 1 -> fração:  0.456 / '0.456' / '0,456' -> 45.6
+    - número ou texto SEM '%' e  > 1 -> já em pontos: 45.6 / '45,6' -> 45.6
+    - texto COM '%' -> já em pontos: '45,6%' / '45.6%' -> 45.6
+
+    Diferente de `_para_float`, o ponto é sempre separador decimal: percentual não tem
+    milhar, e tratar '0.456' como milhar transformava 45,6% em 456%.
     """
-    tinha_simbolo = serie.map(lambda v: isinstance(v, str) and "%" in v)
-    numeros = serie.map(_para_float)
-    fracao = ~tinha_simbolo & numeros.notna()
-    if fracao.any() and numeros[fracao].max() <= 1:
-        numeros = numeros.where(~fracao, numeros * 100)
-    return numeros.round(2)
+    if valor is None or (not isinstance(valor, str) and pd.isna(valor)):
+        return float("nan")
+
+    if isinstance(valor, (int, float)) and not isinstance(valor, bool):
+        numero, tinha_simbolo = float(valor), False
+    else:
+        texto = str(valor).strip().replace(" ", "").replace(" ", "")
+        tinha_simbolo = "%" in texto
+        texto = texto.replace("%", "")
+        if not texto:
+            return float("nan")
+        if "," in texto:  # vírgula decimal pt-BR; ponto, se houver, é milhar
+            texto = texto.replace(".", "").replace(",", ".")
+        try:
+            numero = float(texto)
+        except ValueError as erro:
+            raise ValueError(f"Percentual inválido na planilha qualitativa: {valor!r}") from erro
+
+    if not tinha_simbolo and 0 <= numero <= 1:
+        numero *= 100
+    if not 0 <= numero <= 100:
+        print(f"Aviso: percentual fora de 0-100% na planilha qualitativa: {valor!r} -> {numero}")
+    return numero
+
+
+def _percentuais(serie: pd.Series) -> pd.Series:
+    """Percentual em pontos (51.0 = 51%), convertido valor a valor por `_para_percentual`."""
+    return serie.map(_para_percentual).astype("float64").round(2)
 
 
 def _montar_analise(bruto: pd.DataFrame) -> pd.DataFrame:
