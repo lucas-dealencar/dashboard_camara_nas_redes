@@ -275,12 +275,18 @@ def _para_percentual(valor) -> float:
         texto = texto.replace("%", "")
         if not texto:
             return float("nan")
+        inteiro_sem_virgula = texto.isdigit()
         if "," in texto:  # vírgula decimal pt-BR; ponto, se houver, é milhar
             texto = texto.replace(".", "").replace(",", ".")
         try:
             numero = float(texto)
         except ValueError as erro:
             raise ValueError(f"Percentual inválido na planilha qualitativa: {valor!r}") from erro
+        # '249' em texto = mesma vírgula perdida do número inteiro 249 -> 24.9
+        if not tinha_simbolo and inteiro_sem_virgula and numero > 1:
+            numero /= 10
+            while numero > 100:
+                numero /= 10
 
     if not tinha_simbolo and 0 <= numero <= 1:
         numero *= 100
