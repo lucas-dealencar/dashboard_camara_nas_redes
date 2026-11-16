@@ -5,6 +5,7 @@ let report = null;
 let selectedProposal = 0;
 let activeMethod = 'gerais';
 let activeWeekId = null;
+let weekPicked = false; // false = filtro mostra "Selecione a semana" (semana mais recente carregada por padrão)
 let proposalSearchQuery = '';
 let forceProposalIdx = null;
 
@@ -27,7 +28,8 @@ async function loadReport() {
     weekOptions = weekOptionsFromPayload();
     const wanted = new URLSearchParams(location.search).get('semana');
     const fallback = isMultiWeek() ? String(rawPayload.semana_padrao) : 'padrao';
-    activeWeekId = weekOptions.some(o => o.id === wanted) ? wanted : fallback;
+    weekPicked = weekOptions.some(o => o.id === wanted);
+    activeWeekId = weekPicked ? wanted : fallback;
     initSlicer();
     initProposalSearch();
     initAnnualToggle();
@@ -81,6 +83,7 @@ function initProposalSearch() {
     wrapper.classList.remove('aberto');
     
     if (activeWeekId !== weekId) {
+      weekPicked = true;
       activeWeekId = weekId;
       forceProposalIdx = idx;
       renderCurrentWeek();
@@ -285,6 +288,7 @@ function onSlicerKey(e) {
 }
 
 function selectWeek(id, { closeMenu = true } = {}) {
+  weekPicked = true;
   if (id !== activeWeekId) {
     const previous = activeWeekId;
     activeWeekId = id;
@@ -297,7 +301,7 @@ function selectWeek(id, { closeMenu = true } = {}) {
 function updateSlicerUI() {
   const opt = weekOptions.find(o => o.id === activeWeekId) || weekOptions[0];
   if (!opt) return;
-  document.getElementById('texto-semana-ativa').textContent = opt.short ? `${opt.title} · ${opt.short}` : opt.title;
+  document.getElementById('texto-semana-ativa').textContent = !weekPicked ? 'Selecione a semana' : (opt.short ? `${opt.title} · ${opt.short}` : opt.title);
   document.getElementById('btn-semana-atual').title = `${opt.title} · ${opt.range}`;
   const coverNum = document.getElementById('cover-week-num'), coverRange = document.getElementById('cover-week-range');
   if (coverNum) coverNum.textContent = opt.title.replace(/semana/i, 'Semana');
@@ -896,16 +900,11 @@ function renderProposalCharts(p) {
   }
   const args = p.arguments || [];
   if (args.length) {
-    renderColumnChart('proposal-args-chart', args.map(a => ({
+    renderBarChart('proposal-args-chart', args.map(a => ({
       name: a.name,
       value: a.share || 0,
-      label: percentage1(a.share || 0),
-      title: `${a.name}: ${percentage1(a.share || 0)} (${countLabel(a.count, 'ocorrência', 'ocorrências')})`
-    })), {
-      max: 100, ticks: [0, 20, 40, 60, 80, 100], tickFormat: v => `${v}%`,
-      colorFor: () => DASH_BAR_COLOR,
-      ariaLabel: 'Argumentos mais citados: ' + args.map(a => `${a.name}, ${percentage1(a.share || 0)}`).join('; ')
-    });
+      display: percentage1(a.share || 0)
+    })), { max: 100, tickFormat: v => `${v}%` });
   }
 }
 
