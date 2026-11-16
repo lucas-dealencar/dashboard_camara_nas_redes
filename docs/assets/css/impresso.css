@@ -1,0 +1,117 @@
+/* ==========================================================================
+   Câmara nas Redes — Impresso A4 (794 x 1123 px = 210 x 297 mm a 96 dpi)
+   ========================================================================== */
+:root {
+  --ink: #092e36;
+  --ink-2: #0f3d45;
+  --mint: #35cda4;
+  --verde-barra: #2a5446;
+  --linha: #5a5a5a;
+  --cinza: #f2f2f2;
+  --texto: #1f1f1f;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { background: #8c9a9c; font-family: Inter, "DM Sans", Arial, sans-serif; color: var(--texto); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.impresso { display: flex; flex-direction: column; align-items: center; gap: 22px; padding: 22px 12px; }
+.impresso-status { margin: 60px 0; color: #fff; font-size: 15px; font-weight: 600; }
+
+.page { position: relative; display: flex; flex-direction: column; width: 794px; height: 1123px; flex: none; overflow: hidden; background: #fff; box-shadow: 0 6px 24px rgba(0, 0, 0, .28); }
+body.capturando .page { box-shadow: none; }
+
+/* ---------- cabeçalho ---------- */
+.pg-head { position: relative; flex: none; height: 113px; padding: 13px 40px 0; background: var(--ink); color: #fff; overflow: hidden; }
+.pg-art { position: absolute; inset: 0; width: 100%; height: 100%; }
+.brand { position: relative; }
+.brand h1 { margin: 0; font-family: Manrope, Inter, sans-serif; font-size: 41px; font-weight: 500; line-height: 1; letter-spacing: -.075em; }
+.brand-sem { margin: 3px 0 0; font-size: 14px; font-weight: 400; line-height: 1.2; }
+.brand-ed { margin: 4px 0 0; font-family: Manrope, Inter, sans-serif; font-size: 16.5px; font-weight: 800; letter-spacing: -.03em; }
+.qr-area { position: absolute; top: 12px; right: 146px; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; text-align: right; }
+.qr-area p { margin: 0; font-family: Manrope, Inter, sans-serif; font-size: 11.5px; font-weight: 800; line-height: 1.17; }
+.qr-area b { color: var(--mint); }
+.qr-seta { display: grid; place-items: center; width: 32px; height: 12px; border: 1px solid #fff; border-radius: 999px; }
+.qr-seta svg { width: 20px; height: 6px; fill: none; stroke: #fff; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
+.qr { position: absolute; top: 10px; right: 40px; width: 94px; height: 94px; padding: 5px; border-radius: 8px; background: #fff; }
+.qr img, .qr canvas { display: block; width: 84px !important; height: 84px !important; }
+
+/* ---------- corpo / rodapé ---------- */
+.pg-body { flex: 1; display: flex; flex-direction: column; padding: 30px 40px 0; min-height: 0; }
+.pg-num { flex: none; padding: 0 0 8px; text-align: center; font-size: 13px; font-weight: 700; }
+.pg-foot { flex: none; display: flex; justify-content: flex-end; align-items: center; height: 36px; padding: 0 40px; background: var(--ink); }
+.pg-foot img { display: block; height: 27px; width: auto; }
+
+/* ---------- faixa de seção (Evolução / Panorama / título da proposta / Metodologia) ---------- */
+.faixa { display: flex; align-items: center; min-height: 31px; padding: 3px 30px 3px 40px; border-radius: 22px 22px 0 0; background: linear-gradient(90deg, #092e36 0%, #0d3940 55%, #1f5853 82%, #3d7a6c 100%); color: #fff; font-family: Inter, sans-serif; font-size: 16px; font-weight: 700; }
+.faixa-prop { font-size: 14.5px; font-weight: 400; border-radius: 22px 22px 0 22px; }
+.faixa-prop b { font-size: 19px; font-weight: 800; letter-spacing: -.01em; }
+.sep { display: inline-block; width: 1.5px; height: 1.15em; margin: 0 7px; vertical-align: -.2em; background: currentColor; }
+.faixa-prop .sep { width: 1px; }
+
+.texto { margin: 0; font-size: 15.5px; line-height: 1.38; color: var(--texto); }
+.texto-linha { padding: 8px 0 18px 10px; border-left: 1px solid var(--linha); }
+.texto-just { text-align: justify; }
+
+/* ---------- página 1 ---------- */
+.intro { margin: 0 0 30px; padding: 16px 24px; border: 1.5px dashed #c7cfd0; border-radius: 16px; background: #f0f0f0; color: #444; font-size: 11.5px; line-height: 1.45; }
+.kpis { display: grid; gap: 14px; margin: 0 0 32px; }
+.kpis-3 { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.kpis-4 { grid-template-columns: 1.06fr 1fr 1fr 1fr; gap: 11px; margin: 22px 0 18px; }
+.kpi { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 86px; padding: 8px 10px; border-radius: 8px 26px 8px 26px; text-align: center; }
+.kpi-dark { background: linear-gradient(120deg, #092e36 0%, #0f3b42 60%, #23574f 100%); color: #fff; }
+.kpi-main { border-radius: 26px 26px 26px 8px; box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px #5f8a80; }
+.kpis-3 .kpi { min-height: 92px; }
+.kpi-light { background: var(--cinza); border: 1px solid var(--linha); border-radius: 8px 26px 8px 26px; color: var(--texto); }
+.k-label { font-family: Manrope, Inter, sans-serif; font-size: 17px; font-weight: 800; letter-spacing: -.04em; line-height: 1.1; }
+.kpi-light .k-label { font-family: Inter, sans-serif; font-size: 13.5px; font-weight: 500; letter-spacing: -.01em; }
+.k-val { margin-top: 2px; font-family: Manrope, Inter, sans-serif; font-size: 29px; font-weight: 800; letter-spacing: -.035em; line-height: 1.05; }
+.k-val-reg { font-family: Inter, sans-serif; font-weight: 400; letter-spacing: -.01em; }
+.kpi-light .k-val { font-family: Inter, sans-serif; font-size: 25px; font-weight: 400; letter-spacing: -.01em; }
+.kpis-4 .kpi-dark .k-val { font-size: 28px; }
+.k-foot { display: inline-flex; align-items: center; gap: 3px; margin-top: 3px; font-size: 10px; line-height: 1.2; white-space: nowrap; }
+.k-foot b { font-weight: 800; }
+.chg-ico { display: inline-grid; place-items: center; width: 15px; height: 15px; margin-right: 2px; border-radius: 50%; background: #d33b31; }
+.chg-ico.up { background: #2f9e6e; }
+.chg-ico svg { width: 10px; height: 10px; fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.kpis-3 .k-foot { font-size: 11px; }
+
+.cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; margin: 18px 0 30px; }
+.cards-4 { grid-template-columns: repeat(4, 1fr); }
+.cards-3 { grid-template-columns: repeat(3, 1fr); }
+.card { display: flex; flex-direction: column; min-height: 246px; padding: 10px 9px 9px; border: 1px solid var(--linha); border-radius: 6px 20px 6px 20px; background: var(--cinza); }
+.card-top { display: flex; align-items: flex-start; gap: 7px; }
+.card-n { display: grid; place-items: center; flex: none; width: 27px; height: 27px; margin-top: 5px; border-radius: 50%; background: var(--ink); color: #fff; font-size: 17px; font-weight: 600; }
+.card h3 { margin: 0; font-family: Inter, sans-serif; font-size: 14.5px; font-weight: 700; line-height: 1.2; letter-spacing: -.01em; overflow-wrap: anywhere; }
+.card-desc { margin: 12px 0 0; font-size: 10.5px; line-height: 1.3; color: #222; }
+.card-met { display: flex; flex-direction: column; align-items: center; gap: 3px; margin-top: auto; padding-top: 8px; font-size: 9px; color: #222; }
+.pill { display: block; width: 100%; padding: 5px 4px 6px; border-radius: 16px 4px 16px 4px; background: linear-gradient(110deg, #092e36 0%, #13434a 55%, #2a6158 100%); color: #fff; font-size: 15px; font-weight: 700; text-align: center; letter-spacing: -.01em; }
+.card-met span + .pill { margin-bottom: 4px; }
+
+/* ---------- páginas de propostas ---------- */
+.pg-body-props { padding-top: 24px; gap: 0; }
+.prop + .prop { margin-top: 26px; }
+.aba { display: flex; align-items: center; height: 30px; padding: 2px 40px 0; border: 1px solid var(--linha); border-bottom: 0; border-radius: 22px 22px 0 0; font-size: 15px; font-weight: 700; color: var(--texto); }
+.prop .texto { font-size: 15px; line-height: 1.33; max-height: 132px; overflow: hidden; padding-bottom: 6px; }
+.args { margin-top: 12px; border: 1px solid var(--linha); border-radius: 22px; overflow: hidden; }
+.args-head { display: flex; align-items: center; padding: 5px 40px 4px; border-bottom: 1px solid var(--linha); font-size: 14.5px; font-weight: 400; }
+.args-head b { font-weight: 700; }
+.args-body { display: grid; grid-template-columns: minmax(0, 1fr) 330px; align-items: center; gap: 7px 3px; padding: 8px 20px 12px 18px; }
+.arg-nome { overflow: hidden; text-align: right; white-space: nowrap; text-overflow: ellipsis; font-size: 12px; font-weight: 700; color: #111; }
+.arg-barra { display: flex; align-items: center; gap: 9px; }
+.arg-barra i { display: block; height: 25px; background: var(--verde-barra); }
+.arg-barra em { font-size: 11.5px; font-style: normal; font-weight: 700; color: #3d5a50; text-shadow: 0 0 2px #fff, 0 0 2px #fff; }
+
+/* ---------- metodologia ---------- */
+.metodo { margin-top: 70px; }
+.metodo .faixa { font-size: 17px; }
+.metodo-box { padding: 18px 24px 22px; border: 1.5px dashed #c7cfd0; border-top: 0; border-radius: 0 0 16px 16px; background: #f0f0f0; color: #444; font-size: 11.5px; line-height: 1.45; }
+.metodo-box p { margin: 0 0 12px; }
+.metodo-box p:last-child { margin: 0; }
+
+/* ---------- impressão ---------- */
+@page { size: A4 portrait; margin: 0; }
+@media print {
+  body { background: #fff; }
+  .impresso { display: block; padding: 0; }
+  .page { box-shadow: none; margin: 0; page-break-after: always; break-after: page; }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+}

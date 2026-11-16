@@ -1118,3 +1118,54 @@ navigateToPage(location.hash.slice(1)||'destaques',false);
   btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
   sync();
 })();
+
+/* ===== Impresso: pré-visualização (iframe com impresso.html) + download do PDF ===== */
+(function initImpresso() {
+  const btn = document.getElementById('btn-impresso');
+  const modal = document.getElementById('impresso-modal');
+  const frame = document.getElementById('impresso-frame');
+  const baixar = document.getElementById('impresso-baixar');
+  const imprimir = document.getElementById('impresso-imprimir');
+  if (!btn || !modal || !frame) return;
+  let lastFocus = null;
+
+  const semanaAtual = () => (activeWeekId && activeWeekId !== 'padrao' ? activeWeekId : '');
+  function abrir() {
+    lastFocus = document.activeElement;
+    const semana = semanaAtual();
+    const src = 'impresso.html' + (semana ? '?semana=' + encodeURIComponent(semana) : '');
+    if (frame.dataset.src !== src) { frame.src = src; frame.dataset.src = src; }
+    document.getElementById('impresso-titulo').textContent = semana ? 'Impresso · ' + semana + 'ª semana' : 'Impresso';
+    modal.hidden = false;
+    document.body.classList.add('impresso-aberto');
+    baixar.focus();
+  }
+  function fechar() {
+    modal.hidden = true;
+    document.body.classList.remove('impresso-aberto');
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  const janela = () => frame.contentWindow;
+
+  btn.addEventListener('click', abrir);
+  modal.querySelectorAll('[data-fechar-impresso]').forEach(el => el.addEventListener('click', fechar));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) fechar(); });
+
+  baixar.addEventListener('click', async () => {
+    const label = baixar.querySelector('span');
+    baixar.disabled = true; label.textContent = 'Gerando PDF...';
+    try {
+      const w = janela();
+      if (!w || !w.baixarPdf) throw new Error('O impresso ainda está carregando.');
+      await w.baixarPdf();
+    } catch (err) {
+      showToast((err && err.message) || 'Não foi possível gerar o PDF.');
+    } finally {
+      baixar.disabled = false; label.textContent = 'Baixar PDF';
+    }
+  });
+  imprimir.addEventListener('click', async () => {
+    try { const w = janela(); await w.impressoPronto; w.focus(); w.print(); }
+    catch (err) { showToast('O impresso ainda está carregando.'); }
+  });
+})();
