@@ -1280,3 +1280,46 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
    A sombra do menu principal (que fica por cima) escondia a borda; ela sai enquanto o submenu está fixo. */
 .main-nav.is-stuck.has-subnav-stuck { box-shadow: none; }
 .proposals-section .proposal-subnav.is-stuck { border-top: 0; box-shadow: inset 0 1px 0 #8fa8ac, 0 6px 22px rgba(7, 51, 58, .28); }
+
+/* Analítico: propostas da semana como legenda interativa dentro do painel do gráfico anual */
+.annual-body { display: grid; grid-template-columns: minmax(0, 1fr) 230px; gap: 0; align-items: stretch; }
+.annual-body .chart-annual { min-width: 0; }
+.annual-legend { display: flex; flex-direction: column; gap: 10px; padding: 4px 0 8px 20px; border-left: 1px solid rgba(19, 78, 94, .18); }
+.annual-legend-head { display: flex; flex-direction: column; gap: 3px; margin: 0 0 4px; scroll-margin-top: calc(var(--nav-h, 60px) + 14px); }
+.annual-legend-head .eyebrow { margin: 0; }
+.annual-legend-head .analytic-cards-week { margin: 0; color: #456970; font-size: 12.5px; font-weight: 700; line-height: 1.35; }
+.annual-legend-list { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.annual-legend-item { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; grid-template-areas: "rank name value" ". bar bar" ". share share"; align-items: center; column-gap: 9px; row-gap: 4px; width: 100%; padding: 9px 10px; border: 0; border-radius: 8px; background: transparent; color: var(--ink); text-align: left; font: inherit; cursor: pointer; transition: background .18s, transform .18s; }
+.annual-legend-item .proposal-tab-rank { grid-area: rank; width: 18px; height: 18px; border-radius: 3px; background: var(--ink); color: #fff; font-size: 9.5px; }
+.annual-legend-name { grid-area: name; font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.annual-legend-value { grid-area: value; font-size: 12.5px; font-weight: 800; color: #134e5e; }
+.annual-legend-bar { grid-area: bar; height: 4px; border-radius: 3px; background: rgba(19, 78, 94, .12); overflow: hidden; }
+.annual-legend-bar i { display: block; height: 100%; border-radius: 3px; background: #134e5e; transition: background .18s; }
+.annual-legend-share { grid-area: share; color: #5f7d82; font-size: 11px; font-weight: 600; }
+.annual-legend-item:hover, .annual-legend-item:focus-visible { background: rgba(255, 255, 255, .6); outline: none; transform: translateX(2px); }
+.annual-legend-item:hover .annual-legend-bar i, .annual-legend-item:focus-visible .annual-legend-bar i { background: var(--mint); }
+.annual-legend-item:focus-visible { box-shadow: 0 0 0 2px var(--ink); }
+/* ao passar pela legenda, o ponto da semana selecionada ganha destaque no gráfico */
+.chart-annual .annual-dot.current { transition: r .18s, stroke-width .18s; }
+.chart-annual.legend-hover .annual-dot.current { r: 9; stroke-width: 3.5; }
+@media (max-width: 850px) {
+  .annual-body { grid-template-columns: 1fr; }
+  .annual-legend { padding: 16px 0 0; border-left: 0; border-top: 1px solid rgba(19, 78, 94, .18); }
+}
+
+/* Legenda do gráfico anual: itens com aparência de botão clicável */
+.annual-legend-list { gap: 10px; }
+.annual-legend-item { padding: 11px 14px 10px; border: 1px solid #4a6c71; border-radius: 9px; background: rgba(255, 255, 255, .6); box-shadow: 0 2px 0 rgba(7, 51, 58, .14); position: relative; transition: background .18s, color .18s, border-color .18s, transform .18s, box-shadow .18s; }
+.annual-legend-item::after { content: "›"; position: absolute; right: 12px; bottom: 6px; font-size: 18px; line-height: 1; color: #4a6c71; transition: transform .18s, color .18s; }
+.annual-legend-item:hover, .annual-legend-item:focus-visible { background: var(--ink); border-color: var(--ink); color: #fff; transform: translateY(-2px); box-shadow: 0 6px 14px rgba(7, 51, 58, .25); }
+.annual-legend-item:hover .annual-legend-value, .annual-legend-item:focus-visible .annual-legend-value,
+.annual-legend-item:hover .annual-legend-share, .annual-legend-item:focus-visible .annual-legend-share { color: #cfe3e5; }
+.annual-legend-item:hover .proposal-tab-rank, .annual-legend-item:focus-visible .proposal-tab-rank { background: var(--pale); color: var(--ink); }
+.annual-legend-item:hover .annual-legend-bar, .annual-legend-item:focus-visible .annual-legend-bar { background: rgba(255, 255, 255, .22); }
+.annual-legend-item:hover::after, .annual-legend-item:focus-visible::after { color: var(--mint); transform: translateX(3px); }
+.annual-legend-item:active { transform: translateY(0); box-shadow: 0 1px 0 rgba(7, 51, 58, .14); }
+.annual-legend-item:focus-visible { box-shadow: 0 0 0 3px var(--mint); }
+.annual-body { grid-template-columns: minmax(0, 1fr) 280px; }
+.annual-legend-item { column-gap: 8px; padding-right: 12px; }
+.annual-legend-name { font-size: 13.5px; }
+@media (max-width: 850px) { .annual-body { grid-template-columns: 1fr; } }

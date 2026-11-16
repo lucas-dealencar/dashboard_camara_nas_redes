@@ -532,9 +532,21 @@ function renderAnalyticCards() {
   const opt = weekOptions.find(o => o.id === activeWeekId);
   const label = document.getElementById('analytic-cards-week');
   if (label) label.textContent = opt ? `${opt.title} · ${opt.range}` : '';
-  // linha no mesmo padrão do menu da aba Propostas; clicar abre a proposta
-  container.innerHTML = report.proposals.slice(0, 5).map((p, idx) => `<button type="button" class="proposal-tab" data-open="${idx}" aria-label="Abrir ${esc(p.id)} na aba Propostas"><span class="proposal-tab-rank">${String(idx + 1).padStart(2, '0')}</span><span>${esc(p.id)}</span></button>`).join('');
-  container.querySelectorAll('[data-open]').forEach(b => b.addEventListener('click', () => openProposal(Number(b.dataset.open))));
+  // legenda interativa ao lado do gráfico anual: clicar abre a proposta; passar o mouse destaca a semana no gráfico
+  const list = report.proposals.slice(0, 5);
+  container.innerHTML = list.map((p, idx) => `<li><button type="button" class="annual-legend-item" data-open="${idx}" aria-label="Abrir ${esc(p.id)} na aba Propostas">
+    <span class="proposal-tab-rank">${String(idx + 1).padStart(2, '0')}</span>
+    <span class="annual-legend-name">${esc(p.id)}</span>
+    <span class="annual-legend-value">${esc(formatNumber(p.engagement || 0, true))}</span>
+    <span class="annual-legend-bar" aria-hidden="true"><i style="width:${Math.max(2, Math.min(100, p.share || 0)).toFixed(1)}%"></i></span>
+    <span class="annual-legend-share">${esc(percentage(p.share || 0))} da semana</span>
+  </button></li>`).join('');
+  const chart = document.getElementById('annual-chart');
+  container.querySelectorAll('[data-open]').forEach(b => {
+    b.addEventListener('click', () => openProposal(Number(b.dataset.open)));
+    ['pointerenter', 'focus'].forEach(ev => b.addEventListener(ev, () => chart?.classList.add('legend-hover')));
+    ['pointerleave', 'blur'].forEach(ev => b.addEventListener(ev, () => chart?.classList.remove('legend-hover')));
+  });
 }
 
 function chartLabelLines(value,maxChars){
@@ -736,7 +748,6 @@ function wireAnnualInteractions(node) {
     const h = hitOf(e);
     if (!h) return;
     selectWeek(String(h.dataset.week));
-    document.getElementById('analytic-cards-head')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 }
 
