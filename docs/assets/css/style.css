@@ -1323,3 +1323,14 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
 .annual-legend-item { column-gap: 8px; padding-right: 12px; }
 .annual-legend-name { font-size: 13.5px; }
 @media (max-width: 850px) { .annual-body { grid-template-columns: 1fr; } }
+
+/* Gráfico anual: propostas da semana abaixo do gráfico, ainda como parte dele (legenda em linha) */
+.annual-body { grid-template-columns: minmax(0, 1fr); }
+.annual-legend { padding: 16px 0 4px; border-left: 0; border-top: 1px solid rgba(19, 78, 94, .18); margin-top: 6px; }
+.annual-legend-head { flex-direction: row; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 4px 14px; }
+.annual-legend-list { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 1100px) { .annual-legend-list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 700px) { .annual-legend-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 460px) { .annual-legend-list { grid-template-columns: 1fr; } }
+.annual-legend { border-top: 1px dashed rgba(19, 78, 94, .28); padding-left: 56px; padding-right: 20px; }
+@media (max-width: 700px) { .annual-legend { padding-left: 0; padding-right: 0; } }
