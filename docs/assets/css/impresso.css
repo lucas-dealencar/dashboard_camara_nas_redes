@@ -115,3 +115,8 @@ body.capturando .page { box-shadow: none; }
   .page { box-shadow: none; margin: 0; page-break-after: always; break-after: page; }
   .page:last-child { page-break-after: auto; break-after: auto; }
 }
+
+/* corpo da página nunca vaza: o JS reduz o zoom se necessário */
+.pg-body { overflow: hidden; }
+.card { min-height: 0; height: 236px; }
+body.capturando .impresso { zoom: 1 !important; }

@@ -172,6 +172,15 @@
   }
   const blocoMetodologia = () => `<section class="metodo">${faixa('Metodologia')}<div class="metodo-box">${METODOLOGIA.map(t => `<p>${t}</p>`).join('')}</div></section>`;
 
+  /* Garante que nada fique cortado: se o conteúdo passar da altura útil da página, reduz a escala do corpo até caber. */
+  function ajustarPaginas(root) {
+    root.querySelectorAll('.pg-body').forEach(corpo => {
+      let z = 1;
+      corpo.style.zoom = '1';
+      while (corpo.scrollHeight > corpo.clientHeight + 1 && z > 0.7) { z = +(z - 0.02).toFixed(2); corpo.style.zoom = String(z); }
+    });
+  }
+
   /* ---------- montagem ---------- */
   async function montar() {
     const root = document.getElementById('impresso');
@@ -203,8 +212,11 @@
     });
 
     await (document.fonts ? document.fonts.ready : Promise.resolve());
+    ajustarPaginas(root);
     await Promise.all([...root.querySelectorAll('img')].map(img => img.complete ? null : new Promise(ok => { img.onload = img.onerror = ok; })));
     window.impressoSemana = semana;
+    const caber = () => { const z = Math.min(1, (window.innerWidth - 24) / 794); root.style.zoom = z < 1 ? String(z) : ''; };
+    caber(); window.addEventListener('resize', caber);
     return semana;
   }
 
