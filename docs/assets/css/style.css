@@ -1342,3 +1342,11 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
 .annual-legend-item::after { display: none; }
 .annual-legend-list { gap: 10px; }
 .annual-legend { padding-left: 30px; padding-right: 0; }
+
+/* Cartões da legenda anual simétricos: mesma estrutura e altura em qualquer semana */
+.annual-legend-list { align-items: stretch; }
+.annual-legend-list > li { display: flex; min-width: 0; }
+.annual-legend-item { height: 100%; align-content: start; grid-template-columns: 18px minmax(0, 1fr) auto; grid-template-areas: "rank . value" "name name name" "bar bar bar" "share share share"; row-gap: 6px; }
+.annual-legend-name { white-space: nowrap; overflow: visible; font-size: 13.5px; }
+.annual-legend-share { white-space: nowrap; }
+.annual-legend-value { justify-self: end; }
