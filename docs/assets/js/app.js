@@ -739,6 +739,7 @@ function wireAnnualInteractions(node) {
     // sempre acima do ponto (nunca cobre a linha); no máximo encosta no topo do gráfico
     t.classList.remove('below');
     t.style.left = `${Math.min(Math.max(cx, 90), nodeBox.width - 90)}px`;
+    t.style.transform = 'translate(-50%, -100%)'; // ancora a base do balão no ponto, garantindo que fique acima
     t.style.top = `${Math.max(cy - 18, t.offsetHeight + 2)}px`;
     t.classList.add('show');
   };
