@@ -736,10 +736,10 @@ function wireAnnualInteractions(node) {
     const t = node.querySelector('.annual-tip');
     t.innerHTML = `<strong>${esc(week)}ª semana</strong><span>${esc(hit.dataset.label)}</span><span>${esc(formatNumber(Number(hit.dataset.value)))} pontos</span><em>${isActive ? 'Semana selecionada' : 'Clique para ver esta semana'}</em>`;
     const cx = box.left + box.width / 2 - nodeBox.left, cy = box.top + box.height / 2 - nodeBox.top;
-    const below = cy < 110; // perto do topo: mostra abaixo do ponto
+    // sempre acima do ponto (nunca cobre a linha); no máximo encosta no topo do gráfico
+    t.classList.remove('below');
     t.style.left = `${Math.min(Math.max(cx, 90), nodeBox.width - 90)}px`;
-    t.style.top = `${cy + (below ? 16 : -16)}px`;
-    t.classList.toggle('below', below);
+    t.style.top = `${Math.max(cy - 18, t.offsetHeight + 2)}px`;
     t.classList.add('show');
   };
   node.addEventListener('pointerover', e => { const h = hitOf(e); if (h) show(h); });
