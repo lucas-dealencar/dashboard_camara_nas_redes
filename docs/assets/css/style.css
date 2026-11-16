@@ -1417,3 +1417,13 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
   .cover-content h1 .cover-sub { display: inline-block; font-size: .88em; }
   .cover-week { top: 73%; }
 }
+
+/* Capa: proporções idênticas ao modelo (1280x280): fontes, selo, título e faixa da semana */
+@media (min-width: 851px) {
+  .cover { aspect-ratio: 1280 / 280; }
+  .cover-selo { top: 20.7%; }
+  .cover-content h1 { top: 42.5%; font-size: clamp(22px, 2.25vw, 44px); line-height: 1; letter-spacing: -.05em; }
+  .cover-content h1 .cover-sub { display: inline; font-size: 1em; }
+  .cover-week { top: 71.4%; font-size: clamp(11px, 1.02vw, 20px); padding: .62em 1.15em; border-radius: .5em; gap: .6em; background: rgba(255, 255, 255, .12); }
+  .cover-week-sep { width: 1.5px; height: 1.25em; }
+}
