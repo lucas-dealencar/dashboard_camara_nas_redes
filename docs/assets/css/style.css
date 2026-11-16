@@ -1408,3 +1408,12 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
 /* "O que Dizem": subtítulo (chip) uma linha abaixo do título; gráfico em barras horizontais */
 .say-head { flex-direction: column; align-items: flex-start; gap: 10px; margin-bottom: 18px; }
 #proposal-args-chart { padding: 14px 14px 8px; }
+
+/* Capa mais baixa, subtítulo menor e respiro entre o subtítulo e a faixa da semana */
+@media (min-width: 851px) {
+  .cover { aspect-ratio: 2576 / 470; }
+  .cover-selo { top: 14%; }
+  .cover-content h1 { top: 41%; }
+  .cover-content h1 .cover-sub { display: inline-block; font-size: .88em; }
+  .cover-week { top: 73%; }
+}
