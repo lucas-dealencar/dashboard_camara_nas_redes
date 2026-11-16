@@ -730,20 +730,31 @@ function wireAnnualInteractions(node) {
   if (node.dataset.wired) return;
   node.dataset.wired = '1';
   const hitOf = e => e.target.closest?.('.annual-hit');
-  const show = hit => {
+  const show = (hit, e) => {
     const nodeBox = node.getBoundingClientRect(), box = hit.getBoundingClientRect();
     const week = hit.dataset.week, isActive = String(week) === String(activeWeekId);
     const t = node.querySelector('.annual-tip');
     t.innerHTML = `<strong>${esc(week)}ª semana</strong><span>${esc(hit.dataset.label)}</span><span>${esc(formatNumber(Number(hit.dataset.value)))} pontos</span><em>${isActive ? 'Semana selecionada' : 'Clique para ver esta semana'}</em>`;
-    const cx = box.left + box.width / 2 - nodeBox.left, cy = box.top + box.height / 2 - nodeBox.top;
-    // sempre acima do ponto (nunca cobre a linha); no máximo encosta no topo do gráfico
     t.classList.remove('below');
-    t.style.left = `${Math.min(Math.max(cx, 90), nodeBox.width - 90)}px`;
-    t.style.transform = 'translate(-50%, -100%)'; // ancora a base do balão no ponto, garantindo que fique acima
-    t.style.top = `${Math.max(cy - 18, t.offsetHeight + 2)}px`;
+    t.style.transform = 'translate(-50%, -100%)'; // a base do balão fica na altura calculada abaixo
+    const half = t.offsetWidth / 2;
+    const cx = box.left + box.width / 2 - nodeBox.left;
+    const left = Math.min(Math.max(cx, half), nodeBox.width - half);
+    // ponto mais alto da linha dentro da largura do balão (inclui os vizinhos, que limitam os segmentos)
+    const pts = [...node.querySelectorAll('.annual-hit')].map(c => { const b = c.getBoundingClientRect(); return { x: b.left + b.width / 2 - nodeBox.left, y: b.top - nodeBox.top }; });
+    let lineTop = box.top - nodeBox.top;
+    pts.forEach((p, i) => {
+      const prev = pts[i - 1], next = pts[i + 1];
+      const inSpan = q => q && q.x >= left - half && q.x <= left + half;
+      if (inSpan(p) || inSpan(prev) || inSpan(next)) lineTop = Math.min(lineTop, p.y);
+    });
+    // sempre acima do cursor e de toda a linha sob o balão (pode avançar sobre o cabeçalho do painel)
+    const cursorY = e ? e.clientY - nodeBox.top : lineTop;
+    t.style.left = `${left}px`;
+    t.style.top = `${Math.min(lineTop, cursorY) - 14}px`;
     t.classList.add('show');
   };
-  node.addEventListener('pointerover', e => { const h = hitOf(e); if (h) show(h); });
+  node.addEventListener('pointerover', e => { const h = hitOf(e); if (h) show(h, e); });
   node.addEventListener('pointerout', e => { if (hitOf(e)) node.querySelector('.annual-tip')?.classList.remove('show'); });
   node.addEventListener('click', e => {
     const h = hitOf(e);
