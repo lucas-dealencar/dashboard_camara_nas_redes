@@ -299,6 +299,9 @@ function updateSlicerUI() {
   if (!opt) return;
   document.getElementById('texto-semana-ativa').textContent = opt.short ? `${opt.title} · ${opt.short}` : opt.title;
   document.getElementById('btn-semana-atual').title = `${opt.title} · ${opt.range}`;
+  const coverNum = document.getElementById('cover-week-num'), coverRange = document.getElementById('cover-week-range');
+  if (coverNum) coverNum.textContent = opt.title.replace(/semana/i, 'Semana');
+  if (coverRange) coverRange.textContent = opt.range ? `Dia ${opt.range}` : '';
   document.getElementById('limpar-semana').disabled = weekOptions.length < 2 || activeWeekId === weekOptions[0].id;
   renderSlicerList(document.getElementById('busca-semana').value);
 }
@@ -563,12 +566,12 @@ function niceMax(value, divisions) {
   const step = ([1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].map(m => m * order).find(v => v >= raw)) || raw;
   return step * divisions;
 }
-function renderBarChart(target, data, {max=null, compact=true, colorMap=null, tickFormat=null}={}) {
+function renderBarChart(target, data, {max=null, compact=true, colorMap=null, tickFormat=null, rightWide=70, rightNarrow=58}={}) {
   const node=document.getElementById(target);
   if(!node) return;
   if(!data.length){node.innerHTML='<div class="empty-state">Ainda não há dados suficientes para este gráfico.</div>';return;}
   const W=Math.max(220,Math.round(node.clientWidth||320)), wide=W>=560;
-  const right=wide?70:58, top=4, bottom=24, rowH=wide?36:44, barH=wide?18:14;
+  const right=wide?rightWide:rightNarrow, top=4, bottom=24, rowH=wide?36:44, barH=wide?18:14;
   const left=wide?Math.min(270,Math.round(W*.3)):2;
   const H=data.length*rowH+top+bottom, plotW=W-left-right;
   const maxVal=max||niceMax(Math.max(...data.map(d=>d.value||0)),wide?4:2);
@@ -651,12 +654,19 @@ function initAnnualToggle() {
   });
 }
 
+/* Rótulo das barras: valor bruto + porcentagem do total do gráfico ("1,2 mi · 45,3%"). */
+function withShare(list) {
+  const total = (list || []).reduce((s, d) => s + (Number(d.value) || 0), 0);
+  return (list || []).map(d => ({ ...d, display: `${formatNumber(d.value, true)} · ${percentage(total ? (Number(d.value) || 0) / total * 100 : 0)}` }));
+}
+
 function renderChannelChart(channels = report.channels){
   const sortedChannels = [...(channels || [])].sort((a, b) => b.value - a.value);
   
-  renderBarChart('channel-chart', sortedChannels, {
+  renderBarChart('channel-chart', withShare(sortedChannels), {
     labels: true, 
     compact: true,
+    rightWide: 130, rightNarrow: 112,
     colorMap: {
       'Instagram': '#C13584',
       'X (Twitter)': '#101010',
@@ -665,7 +675,7 @@ function renderChannelChart(channels = report.channels){
     }
   });
 }
-function renderTopics(topics = report.topics){renderBarChart('topic-chart',topics||[],{labels:true,compact:true});}
+function renderTopics(topics = report.topics){renderBarChart('topic-chart',withShare(topics||[]),{labels:true,compact:true,rightWide:130,rightNarrow:112});}
 
 /* ===== Evolução anual (linhas): todas as semanas do ano na base; semana selecionada em destaque ===== */
 function renderAnnualTrend() {
@@ -764,8 +774,8 @@ function wireAnnualInteractions(node) {
 }
 
 function renderShareChart(proposals = report.proposals) {
-  const data=(proposals||[]).slice(0,5).map(p=>({name:p.id,value:p.share||0,display:percentage(p.share||0)}));
-  renderBarChart('share-chart',data,{max:100,tickFormat:v=>percentage(v)});
+  const data=(proposals||[]).slice(0,5).map(p=>({name:p.id,value:p.share||0,display:`${formatNumber(p.engagement||0,true)} · ${percentage(p.share||0)}`}));
+  renderBarChart('share-chart',data,{max:100,tickFormat:v=>percentage(v),rightWide:130,rightNarrow:112});
 }
 
 /* ===== Aba "Propostas" (layout do wireframe) ===== */
@@ -981,10 +991,11 @@ function renderProposalDetail() {
 
   host.innerHTML = `
     <div class="proposal-title-block heading-rule">
-      <h3 class="proposal-title">${esc(p.id)}${p.link ? `<a class="proposal-ext-link" href="${esc(p.link)}" target="_blank" rel="noopener noreferrer" title="Abrir a página da proposta no site da Câmara" aria-label="Abrir a página de ${esc(p.id)} no site da Câmara (nova aba)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>` : ''}</h3>
+      <h3 class="proposal-title">${esc(p.id)}</h3>
+      ${p.link ? `<a class="proposal-ficha" href="${esc(p.link)}" target="_blank" rel="noopener noreferrer" title="Abrir a página da proposta no site da Câmara" aria-label="Ficha de tramitação de ${esc(p.id)} no site da Câmara (nova aba)"><span>Ficha de tramitação</span><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8"/><path d="M5.5 10.5 10.5 5.5M6.5 5.2h4.3v4.3"/></svg></a>` : ''}
     </div>
-    ${p.author || p.status ? `<p class="proposal-meta">${[p.author ? `<span><b>Autor:</b> ${esc(p.author)}</span>` : '', p.status ? `<span><b>Situação:</b> ${esc(p.status)}</span>` : ''].filter(Boolean).join('<span class="proposal-meta-sep" aria-hidden="true">|</span>')}</p>` : ''}
     ${p.description && p.description !== p.id ? `<p class="proposal-title-desc">${esc(p.description)}</p>` : ''}
+    ${p.author || p.status ? `<p class="proposal-meta">${p.author ? `<span><b>Autor:</b> ${esc(p.author)}</span>` : ''}${p.status ? `<span><b>Situação:</b> ${esc(p.status)}</span>` : ''}</p>` : ''}
     <div class="kpi-grid kpi-grid-compact" id="proposal-kpis"></div>
     <article class="panel prop-block">
       <div class="panel-heading"><h2 class="panel-title-sm">EVOLUÇÃO NAS ÚLTIMAS 4 SEMANAS</h2><span class="panel-note">Semana ${esc(String(report.edition || '').split('ª')[0])} em destaque</span></div>
@@ -1096,4 +1107,15 @@ navigateToPage(location.hash.slice(1)||'destaques',false);
   window.addEventListener('resize', update);
   if ('ResizeObserver' in window) new ResizeObserver(update).observe(document.body);
   update();
+})();
+
+
+/* Botão "voltar ao topo" */
+(function initToTop() {
+  const btn = document.getElementById('to-top');
+  if (!btn) return;
+  const sync = () => { btn.hidden = window.scrollY < 400; };
+  window.addEventListener('scroll', sync, { passive: true });
+  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  sync();
 })();

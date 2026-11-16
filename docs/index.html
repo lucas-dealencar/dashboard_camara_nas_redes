@@ -20,6 +20,7 @@
     <div class="cover-content">
       <img class="cover-selo" src="assets/img/capa-selo.svg" alt="Câmara nas Redes">
       <h1><strong>Destaques da Semana:</strong><br><span class="cover-sub">5 Propostas com maior engajamento.</span></h1>
+      <p class="cover-week" id="cover-week" aria-live="polite"><strong id="cover-week-num"></strong><span class="cover-week-sep" aria-hidden="true"></span><span id="cover-week-range"></span></p>
     </div>
   </header>
 
@@ -94,7 +95,7 @@
 
       <!-- 3. Propostas em destaque no final -->
       <div class="section-heading-lined">
-        <h2>PROPOSTAS EM DESTAQUE</h2>
+        <h2>TOP 5 PROPOSTAS EM DESTAQUE</h2>
       </div>
       <div id="highlight-cards" class="proposal-list"></div>
       
@@ -145,6 +146,9 @@
   <footer class="site-footer" aria-label="Coordenação de Relacionamento, Inteligência e Participação; Diretoria Executiva de Comunicação e Mídias Digitais; 200 anos da Câmara dos Deputados">
     <img class="footer-art" src="assets/img/rodape-camara.png" alt="Coordenação de Relacionamento, Inteligência e Participação · Diretoria Executiva de Comunicação e Mídias Digitais · 200 anos da Câmara dos Deputados">
   </footer>
+  <button type="button" class="to-top" id="to-top" aria-label="Voltar ao topo" title="Voltar ao topo" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg>
+  </button>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="assets/js/app.js" defer></script>

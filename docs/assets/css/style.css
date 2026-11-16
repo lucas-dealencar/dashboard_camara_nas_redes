@@ -1350,3 +1350,57 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
 .annual-legend-name { white-space: nowrap; overflow: visible; font-size: 13.5px; }
 .annual-legend-share { white-space: nowrap; }
 .annual-legend-value { justify-self: end; }
+
+/* ==========================================================================
+   Ajustes 11/2026 (5): capa no novo padrão, voltar ao topo, destaques, analítico e propostas
+   ========================================================================== */
+/* Capa: selo + título + faixa "N ª Semana | Dia dd/mm a dd/mm" (novo padrão de design) */
+.cover-week { margin: 0; display: inline-flex; align-items: center; gap: 12px; padding: 10px 20px; border-radius: 9px; background: rgba(255, 255, 255, .13); color: #fff; font-family: Manrope, "DM Sans", sans-serif; font-size: 15px; line-height: 1; letter-spacing: -.03em; white-space: nowrap; }
+.cover-week strong { font-weight: 800; }
+.cover-week > span:last-child { font-weight: 400; }
+.cover-week-sep { width: 2px; height: 1.5em; background: #fff; border-radius: 1px; }
+.cover-week:has(#cover-week-range:empty) { display: none; }
+@media (min-width: 851px) {
+  .cover { aspect-ratio: 2576 / 565; }
+  .cover > img.cover-art { height: 118%; }
+  .cover-selo { top: 20.5%; }
+  .cover-content h1 { top: 45%; transform: none; font-size: clamp(26px, 2.4vw, 46px); line-height: 1.04; letter-spacing: -.05em; }
+  .cover-week { position: absolute; left: max(5%, calc(50% - 470px)); top: 71.5%; font-size: clamp(13px, 1.25vw, 22px); padding: .6em 1.2em; }
+}
+@media (max-width: 850px) {
+  .cover-week { align-self: flex-start; margin: 2px 0 8px; }
+}
+
+/* Botão "voltar ao topo" */
+.to-top { position: fixed; right: clamp(14px, 2.4vw, 32px); bottom: clamp(14px, 2.4vw, 32px); z-index: 20; display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border: 0; border-radius: 50%; background: var(--mint); color: var(--ink); box-shadow: 0 8px 20px rgba(7, 51, 58, .28); cursor: pointer; transition: transform .18s, background .18s, box-shadow .18s; }
+.to-top[hidden] { display: none; }
+.to-top svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.to-top:hover, .to-top:focus-visible { transform: translateY(-3px); background: var(--ink); color: var(--mint); box-shadow: 0 12px 24px rgba(7, 51, 58, .34); outline: none; }
+.to-top:focus-visible { box-shadow: 0 0 0 3px var(--paper), 0 0 0 5px var(--mint); }
+
+/* Destaques: título e número de cada proposta maiores */
+.proposal-card { grid-template-columns: 300px 1fr; }
+.proposal-title-row { gap: 12px; margin-bottom: 16px; }
+.rank-badge { min-width: 46px; height: 42px; padding: 0 9px; border-radius: 7px; font-size: 24px; }
+.proposal-card h3 { font-size: 30px; }
+@media (max-width: 850px) {
+  .proposal-card { grid-template-columns: 1fr; }
+  .rank-badge { min-width: 40px; height: 36px; font-size: 20px; }
+  .proposal-card h3 { font-size: 25px; }
+}
+
+/* Analítico: menos espaço em branco acima do título */
+#analitico.analytics { padding-top: 0; }
+#analitico .section-heading { margin-top: 0; }
+
+/* Aba Propostas: "Ficha de tramitação" à direita do título; resumo antes de Autor e Situação */
+.proposal-title-block { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.proposal-ficha { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 5px; color: var(--ink); font-size: 15px; font-weight: 800; text-decoration: none; border-bottom: 1.5px solid var(--ink); padding-bottom: 2px; transition: color .15s, border-color .15s; }
+.proposal-ficha svg { width: 17px; height: 17px; flex: none; }
+.proposal-ficha svg circle { fill: var(--ink); transition: fill .15s; }
+.proposal-ficha svg path { fill: none; stroke: #fff; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.proposal-ficha:hover, .proposal-ficha:focus-visible { color: #1d7f69; border-color: #1d7f69; outline: none; }
+.proposal-ficha:hover svg circle, .proposal-ficha:focus-visible svg circle { fill: #1d7f69; }
+.proposal-title-desc { margin: 0 0 12px; color: var(--ink); font-size: 17px; font-weight: 800; line-height: 1.4; }
+.proposal-meta { flex-direction: column; align-items: flex-start; gap: 2px; margin: 0 0 18px; }
+@media (max-width: 850px) { .proposal-title-desc { font-size: 15px; } }
