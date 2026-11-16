@@ -1427,3 +1427,11 @@ main{width:min(100%,1000px);max-width:1000px;margin:0 auto;padding:28px 30px 64p
   .cover-week { top: 71.4%; font-size: clamp(11px, 1.02vw, 20px); padding: .62em 1.15em; border-radius: .5em; gap: .6em; background: rgba(255, 255, 255, .12); }
   .cover-week-sep { width: 1.5px; height: 1.25em; }
 }
+
+/* Capa 5% mais baixa: posições recalculadas (÷0,95) para manter fontes e espaçamentos em pixels */
+@media (min-width: 851px) {
+  .cover { aspect-ratio: 1280 / 266; }
+  .cover-selo { top: 21.8%; }
+  .cover-content h1 { top: 44.7%; }
+  .cover-week { top: 75.2%; }
+}
