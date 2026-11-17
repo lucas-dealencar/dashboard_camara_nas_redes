@@ -1520,3 +1520,22 @@ body.impresso-aberto { overflow: hidden; }
   /* arte do Congresso: mesma escala do modelo em relação à largura e prédio entre 67% e 82% da largura */
   .cover > img.cover-art { inset: auto 9.2% 0 auto; height: 133%; }
 }
+
+/* ==========================================================================
+   Capa: bloco de texto em coluna, alinhado à borda esquerda dos botões do menu,
+   com o espaço de 1 linha entre selo, título e faixa da semana
+   ========================================================================== */
+@media (min-width: 851px) {
+  .cover-content {
+    position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    gap: clamp(14px, 1.9vw, 34px);                                /* 1 linha entre os tópicos */
+    padding: 0 0 2% var(--cover-left, 19.6%);                     /* leve viés para cima; esquerda = botão "Destaques" */
+  }
+  .cover-content > .cover-selo,
+  .cover-content > h1,
+  .cover-content > .cover-week { position: static; top: auto; left: auto; max-width: none; margin: 0; }
+  .cover-selo { width: 27.7vw; transform: translateX(-7.23%); }   /* o texto do selo começa na linha dos botões */
+  .cover-content h1 { width: auto; transform: none; }
+  .cover-content h1 .cover-sub { font-size: .8em; }               /* subtítulo menor */
+  .cover-week { font-size: clamp(10px, .86vw, 17px); }            /* faixa da semana menor */
+}

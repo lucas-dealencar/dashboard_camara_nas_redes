@@ -1321,3 +1321,17 @@ navigateToPage(location.hash.slice(1)||'destaques',false);
     catch (err) { showToast('O impresso ainda está carregando.'); }
   });
 })();
+
+/* Capa: alinha o bloco de texto à borda esquerda do primeiro botão do menu (variável --cover-left) */
+(function alignCoverToNav() {
+  const cover = document.querySelector('.cover');
+  const ref = document.querySelector('.main-nav .nav-links .nav-link');
+  if (!cover || !ref) return;
+  const sync = () => {
+    const left = ref.getBoundingClientRect().left - cover.getBoundingClientRect().left;
+    if (left > 0) cover.style.setProperty('--cover-left', `${Math.round(left)}px`);
+  };
+  sync();
+  window.addEventListener('resize', sync);
+  if (document.fonts) document.fonts.ready.then(sync);
+})();
