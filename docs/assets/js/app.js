@@ -764,8 +764,11 @@ function wireAnnualInteractions(node) {
     t.style.transform = 'none'; // posição calculada aqui é o canto superior esquerdo do balão
     const tw = t.offsetWidth, th = t.offsetHeight;
     // pontos da linha convertidos para pixels relativos ao container
-    const nodeBox = node.getBoundingClientRect(), svgBox = svg.getBoundingClientRect();
-    const k = svgBox.width / geo.W, ox = svgBox.left - nodeBox.left, oy = svgBox.top - nodeBox.top;
+    // getBoundingClientRect inclui o zoom CSS da página; left/top do balão são em px locais (sem zoom)
+    const rect = node.getBoundingClientRect(), svgBox = svg.getBoundingClientRect();
+    const z = rect.width / (node.offsetWidth || rect.width) || 1;
+    const nodeBox = { width: node.offsetWidth, height: node.offsetHeight };
+    const k = svgBox.width / z / geo.W, ox = (svgBox.left - rect.left) / z, oy = (svgBox.top - rect.top) / z;
     const pts = geo.pts.map(p => ({ x: ox + p.x * k, y: oy + p.y * k }));
     const p = pts[Number(hit.dataset.i)];
     if (!p) return;
@@ -816,8 +819,7 @@ function wireAnnualInteractions(node) {
       if (!best || n < best.n || (n === best.n && n > 0 && dist < best.dist)) best = { ...r, n, dist };
       if (n === 0) break; // primeiro livre na ordem de preferência (mais próximo)
     }
-    if (!best) best = { x: clampX(p.x - tw / 2), y: p.y - G - th };
-    t.style.left = `${best.x}px`;
+    if (!best) best = { x: clampX(p.x - tw / 2), y: p.y - G - th };    t.style.left = `${best.x}px`;
     t.style.top = `${best.y}px`;
     t.classList.add('show');
   };
