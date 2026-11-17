@@ -470,7 +470,7 @@ function buildFallbackSummary(p, withStatus = true) {
 
 function proposalCardMarkup(p, idx) {
   return `
-    <article class="proposal-card${idx < 3 ? ` rank-${idx + 1}` : ""}" data-open="${idx}" tabindex="0" role="button" aria-label="Ver detalhes de ${esc(p.id)}">
+    <article class="proposal-card" data-open="${idx}" tabindex="0" role="button" aria-label="Ver detalhes de ${esc(p.id)}">
       <div class="proposal-card-left">
         <div class="proposal-title-row">
           <span class="rank-badge">${idx + 1}º</span>

@@ -1493,11 +1493,3 @@ body.impresso-aberto { overflow: hidden; }
 
 /* Aba Propostas: interruptor "Evolução Total" acima dos cartões de métricas */
 .proposal-mode-row { display: flex; justify-content: flex-end; margin: 4px 0 -6px; }
-
-/* Destaques: 3 primeiros cartões com um brilho discreto embaixo (luz indireta) em ouro, prata e bronze */
-.proposal-card.rank-1 { --glow: 226, 178, 31; }
-.proposal-card.rank-2 { --glow: 168, 180, 190; }
-.proposal-card.rank-3 { --glow: 196, 120, 52; }
-.proposal-card.rank-1, .proposal-card.rank-2, .proposal-card.rank-3 { box-shadow: var(--shadow), 0 16px 20px -14px rgba(var(--glow), .55); }
-.proposal-card.rank-1:hover, .proposal-card.rank-2:hover, .proposal-card.rank-3:hover { box-shadow: 0 14px 30px rgba(7, 51, 58, .11), 0 18px 24px -14px rgba(var(--glow), .8); }
-.proposal-card.rank-1::after, .proposal-card.rank-2::after, .proposal-card.rank-3::after { content: ""; position: absolute; left: 14%; right: 14%; bottom: 0; height: 2px; border-radius: 2px; background: linear-gradient(90deg, rgba(var(--glow), 0), rgba(var(--glow), .85) 50%, rgba(var(--glow), 0)); pointer-events: none; }
