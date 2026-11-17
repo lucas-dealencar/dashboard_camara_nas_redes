@@ -1542,3 +1542,6 @@ body.impresso-aberto { overflow: hidden; }
 
 /* Capa: selo "CÂMARA NAS REDES" menor */
 @media (min-width: 851px) { .cover-selo { width: 22vw; } }
+
+/* Capa: selo, título e faixa da semana começam exatamente na borda esquerda do botão "Destaques" */
+@media (min-width: 851px) { .cover-selo { transform: none; } }
