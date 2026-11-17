@@ -1113,10 +1113,10 @@ function renderProposalDetail() {
     const counts = [];
     if (a.posts) counts.push(countLabel(a.posts, 'post', 'posts'));
     if (a.comments) counts.push(countLabel(a.comments, 'comentário', 'comentários'));
-    const chip = [counts.join(' + ') + totalNote, 'Análise das postagens por IA com supervisão humana'].filter(Boolean).join(' | ');
+    const chip = counts.join(' + ') + totalNote;
     sayBlock = `
     <article class="panel prop-block">
-      <div class="say-head"><h3>O que Dizem</h3><span class="say-chip">${esc(chip)}</span></div>
+      <div class="say-head"><h3>O que Dizem</h3>${chip ? `<span class="say-chip">${esc(chip)} analisados</span>` : ''}<p class="say-sub">Análise das postagens por IA com supervisão humana</p></div>
       <div id="proposal-args-chart" class="chart col-chart" aria-label="Gráfico dos argumentos mais citados"></div>
       ${args.map((arg, i) => `
         <section class="say-item">

@@ -1574,3 +1574,8 @@ body.impresso-aberto { overflow: hidden; }
   .cover > .cover-content > .cover-week { position: static; height: auto; padding: 8px 12px; border-radius: 7px; font-size: 13px; gap: 8px; }
   .cover > .cover-content > .cover-week .cover-week-sep { width: 1.5px; height: 1.3em; }
 }
+
+/* O que Dizem: título + chip na mesma linha, subtítulo abaixo */
+.say-head { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-bottom: 18px; }
+.say-head h3 { margin: 0; }
+.say-head .say-sub { flex: 0 0 100%; margin: 0; color: var(--ink); font-size: 13px; font-weight: 600; opacity: .8; }
