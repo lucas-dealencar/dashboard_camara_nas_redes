@@ -1539,3 +1539,6 @@ body.impresso-aberto { overflow: hidden; }
   .cover-content h1 .cover-sub { font-size: .8em; }               /* subtítulo menor */
   .cover-week { font-size: clamp(10px, .86vw, 17px); }            /* faixa da semana menor */
 }
+
+/* Capa: selo "CÂMARA NAS REDES" menor */
+@media (min-width: 851px) { .cover-selo { width: 22vw; } }
