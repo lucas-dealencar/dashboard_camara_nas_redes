@@ -969,12 +969,14 @@ function renderProposalTotalTrend(p) {
   weeks.forEach(w => {
     if (keep.has(w)) out += `<text class="axis-label${w === current ? ' annual-cur-label' : ''}" x="${x(w)}" y="${H - 14}" text-anchor="middle">${w}ª</text>`;
   });
-  // barras: semana selecionada destacada; rótulo de valor no pico e na semana selecionada (todas, se forem poucas)
-  const peak = rows.reduce((m, r) => (r.engagement > m.engagement ? r : m), rows[0]);
+  // barras: semana selecionada destacada; o valor aparece só ao passar o mouse (coluna inteira é área de captura)
   rows.forEach(r => {
-    const isCur = r.week === current, yy = y(r.engagement);
-    out += `<rect class="bar-trend" style="fill:#134e5e;opacity:${isCur ? 1 : 0.55}" x="${x(r.week) - barW / 2}" y="${yy}" width="${barW}" height="${Math.max(1.5, base - yy)}" rx="${Math.min(4, barW / 3)}"><title>${r.week}ª semana${r.period ? ` (${esc(r.period)})` : ''}: ${esc(formatNumber(r.engagement))} pontos</title></rect>`;
-    if (rows.length <= 8 || r === peak || isCur) out += `<text class="value-label" x="${x(r.week)}" y="${yy - 8}" text-anchor="middle">${esc(formatNumber(r.engagement, true))}</text>`;
+    const isCur = r.week === current, yy = y(r.engagement), cx = x(r.week);
+    const tip = `${r.week}ª semana${r.period ? ` (${esc(r.period)})` : ''}: ${esc(formatNumber(r.engagement))} pontos`;
+    out += `<g class="tbar${isCur ? ' is-current' : ''}"><title>${tip}</title>
+      <rect class="tbar-hit" x="${cx - colStep / 2}" y="${top}" width="${colStep}" height="${base - top}" fill="transparent"/>
+      <rect class="bar-trend" style="fill:#134e5e" x="${cx - barW / 2}" y="${yy}" width="${barW}" height="${Math.max(1.5, base - yy)}" rx="${Math.min(4, barW / 3)}"/>
+      <text class="value-label tbar-value" x="${cx}" y="${yy - 8}" text-anchor="middle">${esc(formatNumber(r.engagement, true))}</text></g>`;
   });
   if (median) out += `<line class="median" x1="${left}" y1="${y(median)}" x2="${W - right}" y2="${y(median)}"/>${medianLabel(W - right, y(median), 'Mediana top 5', median)}`;
   node.innerHTML = svgWrap(`${W} ${H}`, out, `Histórico de engajamento de ${p.id}: ${rows.length} semanas em destaque entre a ${first}ª e a ${last}ª.`);
@@ -990,7 +992,9 @@ function applyProposalMode() {
   const n = proposalWeeklyRows(p).length;
   if (title) title.textContent = total ? 'EVOLUÇÃO TOTAL DA PROPOSTA' : 'EVOLUÇÃO NAS ÚLTIMAS 4 SEMANAS';
   if (note) note.textContent = total ? `${n} ${n === 1 ? 'semana' : 'semanas'} em destaque` : `Semana ${String(report.edition || '').split('ª')[0]} em destaque`;
+  document.getElementById('proposal-detail')?.classList.toggle('is-total', total);
   renderProposalTrend(p);
+  if (!total) renderProposalCharts(p); // blocos por semana voltam a aparecer: redesenha com a largura real
 }
 
 /* Gráfico "Evolução nas últimas 4 semanas" da proposta selecionada. */
@@ -1042,7 +1046,7 @@ function renderProposalDetail() {
   const args = p.arguments || [];
 
   const channelBlock = channels.length ? `
-    <article class="panel prop-block">
+    <article class="panel prop-block prop-week-only">
       <h3>Canais de Destaque</h3>
       <p class="block-copy">${esc(channelNarrative(channels))}</p>
       <div id="proposal-channel-chart" class="chart col-chart" aria-label="Gráfico de engajamento por canal da proposta"></div>
@@ -1059,7 +1063,7 @@ function renderProposalDetail() {
     if (a.comments) counts.push(countLabel(a.comments, 'comentário', 'comentários'));
     const chip = [counts.join(' + '), 'Análise das postagens por IA com supervisão humana'].filter(Boolean).join(' | ');
     sayBlock = `
-    <article class="panel prop-block">
+    <article class="panel prop-block prop-week-only">
       <div class="say-head"><h3>O que Dizem</h3><span class="say-chip">${esc(chip)}</span></div>
       <div id="proposal-args-chart" class="chart col-chart" aria-label="Gráfico dos argumentos mais citados"></div>
       ${args.map((arg, i) => `

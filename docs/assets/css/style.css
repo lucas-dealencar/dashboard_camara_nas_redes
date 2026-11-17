@@ -1493,3 +1493,18 @@ body.impresso-aberto { overflow: hidden; }
 
 /* Aba Propostas: interruptor "Evolução Total" acima dos cartões de métricas */
 .proposal-mode-row { display: flex; justify-content: flex-end; margin: 4px 0 -6px; }
+
+/* Aba Propostas: "Ficha de tramitação" com o sublinhado sobre a linha do título */
+.proposal-title-block { align-items: flex-end; }
+.proposal-ficha { margin-bottom: -1px; padding-bottom: 4px; border-bottom-width: 2px; }
+
+/* Evolução total: valor da barra só ao passar o mouse; barras com a opacidade da semana selecionada */
+.tbar .bar-trend { opacity: .55; transition: opacity .12s; }
+.tbar.is-current .bar-trend { opacity: 1; }
+.tbar:hover .bar-trend { opacity: 1; }
+.tbar .tbar-value { opacity: 0; pointer-events: none; transition: opacity .12s; }
+.tbar:hover .tbar-value { opacity: 1; }
+.tbar-hit { cursor: default; }
+
+/* Evolução total: blocos que dependem da semana (Canais de Destaque, O que Dizem) ficam ocultos */
+.proposal-detail.is-total .prop-week-only { display: none; }
