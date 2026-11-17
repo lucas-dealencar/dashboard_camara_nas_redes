@@ -303,6 +303,45 @@ def _percentuais(serie: pd.Series) -> pd.Series:
     return serie.map(_para_percentual).astype("float64").round(2)
 
 
+def _reconciliar_percentuais(df: pd.DataFrame) -> pd.DataFrame:
+    """Corrige percentuais que não batem com as ocorrências do próprio bloco de argumentos.
+
+    Em cada proposta, percentual = ocorrencias / total_analisado. A planilha às vezes perde a
+    vírgula ou ganha um zero ('9,0%' virando 90 ou 0,9), e a heurística por valor não consegue
+    distinguir 9,0% de 0,9%. Então o total implícito (ocorrencias / percentual) é estimado pela
+    MEDIANA do bloco, que tolera algumas linhas erradas, e as linhas que se afastam mais de
+    1 ponto percentual do esperado são recalculadas. Blocos com menos de 4 linhas válidas, ou sem
+    maioria concordando com o total estimado, não têm consenso confiável e ficam como estão.
+    """
+    df = df.copy()
+    for _, grupo in df.groupby("_bloco"):
+        validas = grupo[(grupo["ocorrencias"] > 0) & (grupo["percentual"] > 0)]
+        if len(validas) < 4:
+            continue
+        total = (validas["ocorrencias"] / (validas["percentual"] / 100)).median()
+        if not total or total <= 0:
+            continue
+        esperado = (grupo["ocorrencias"] / total * 100).clip(upper=100)
+        # só corrige se a MAIORIA das linhas válidas concorda com esse total (consenso real);
+        # com menos que isso (ex.: argumentos que não somam o total analisado) o dado fica como veio
+        concordam = ((esperado[validas.index] - validas["percentual"]).abs() <= 1.0).sum()
+        if concordam <= len(validas) / 2:
+            continue
+        errado = (esperado - grupo["percentual"]).abs() > 1.0
+        errado &= grupo["ocorrencias"] > 0
+        # só o erro típico de vírgula (fator 10 a mais ou a menos): qualquer outra divergência
+        # pode ser dado legítimo (argumentos que não somam o total) e é deixada como veio
+        fator10 = ((esperado - grupo["percentual"] * 10).abs() <= 1.5) | ((esperado - grupo["percentual"] / 10).abs() <= 0.6)
+        errado &= fator10
+        if errado.any():
+            for idx in grupo.index[errado]:
+                print(f"Aviso: percentual {df.at[idx, 'percentual']} de '{df.at[idx, 'argumento']}' "
+                      f"({df.at[idx, 'proposta']}, semana {df.at[idx, 'semana']}) não bate com as ocorrências; "
+                      f"corrigido para {round(float(esperado[idx]), 1)}.")
+            df.loc[grupo.index[errado], "percentual"] = esperado[errado].round(2)
+    return df
+
+
 def _montar_analise(bruto: pd.DataFrame) -> pd.DataFrame:
     """Uma linha por argumento de cada proposta em destaque.
 
@@ -341,6 +380,7 @@ def _montar_analise(bruto: pd.DataFrame) -> pd.DataFrame:
     df["argumento"] = df["argumentos"]
     df["percentual"] = _percentuais(df["percentual"])
     df["ocorrencias"] = df["ocorrencias"].map(_para_float).fillna(0).astype("int64")
+    df = _reconciliar_percentuais(df)
 
     partes = df["texto"].fillna("").astype(str).str.split(REGEX_POSTAGEM_REPRESENTATIVA, n=1, regex=True, expand=True)
     if partes.shape[1] < 2:

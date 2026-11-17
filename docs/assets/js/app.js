@@ -900,7 +900,7 @@ function renderProposalCharts(p) {
   }
   const args = p.arguments || [];
   if (args.length) {
-    renderBarChart('proposal-args-chart', args.map(a => ({
+    renderBarChart('proposal-args-chart', [...args].sort((x, y) => (y.share || 0) - (x.share || 0)).map(a => ({
       name: a.name,
       value: a.share || 0,
       display: percentage1(a.share || 0)
