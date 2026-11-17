@@ -473,7 +473,7 @@ function proposalCardMarkup(p, idx) {
     <article class="proposal-card" data-open="${idx}" tabindex="0" role="button" aria-label="Ver detalhes de ${esc(p.id)}">
       <div class="proposal-card-left">
         <div class="proposal-title-row">
-          <span class="rank-badge">${idx + 1}º</span>
+          <span class="rank-badge${idx < 3 ? ` rank-${idx + 1}` : ""}">${idx + 1}º</span>
           <h3>${esc(p.id)}</h3>
         </div>
         <div class="card-metrics">
@@ -908,8 +908,102 @@ function renderProposalCharts(p) {
   }
 }
 
+/* ===== Aba Propostas: interruptor "Evolução Total" =====
+   Ligado: métricas somam todas as semanas em que a proposta apareceu e o gráfico vira linha com o histórico geral. */
+let proposalTotalMode = false;
+
+/* Semanas em que a proposta aparece na base (por código), em ordem crescente. */
+function proposalWeeklyRows(p) {
+  const out = [];
+  Object.entries(rawPayload?.dados_semanas || {}).forEach(([week, data]) => {
+    const hit = (data.proposals || []).find(q => q.id === p.id);
+    if (hit) out.push({ week: Number(week), period: data.period || '', engagement: Number(hit.engagement) || 0, posts: Number(hit.posts) || 0, authors: Number(hit.authors) || 0, reach: Number(hit.reach) || 0 });
+  });
+  return out.sort((a, b) => a.week - b.week);
+}
+
+function buildProposalTotalKpis(p) {
+  const rows = proposalWeeklyRows(p);
+  const n = rows.length;
+  const sum = k => rows.reduce((s, r) => s + r[k], 0);
+  const foot = `Total em ${n} ${n === 1 ? 'semana' : 'semanas'}`;
+  const make = (label, value, f = foot) => ({ label, value, change: null, foot: f, format: value >= 1e9 ? 'compact' : '' });
+  return [
+    make('ENGAJAMENTO GERAL', sum('engagement')),
+    make('POSTAGEM', sum('posts')),
+    make('AUTORES', sum('authors'), `Soma dos autores de ${n} ${n === 1 ? 'semana' : 'semanas'}`),
+    make('ALCANCE ESTIMADO', sum('reach'))
+  ];
+}
+
+/* Histórico geral da proposta: linha com todas as semanas entre a primeira e a última aparição. */
+function renderProposalTotalTrend(p) {
+  const node = document.getElementById('proposal-trend-chart');
+  if (!node || !p) return;
+  const rows = proposalWeeklyRows(p);
+  if (!rows.length) { node.innerHTML = '<div class="empty-state">Ainda não há histórico para esta proposta.</div>'; return; }
+  const first = rows[0].week, last = rows[rows.length - 1].week;
+  const weeks = [];
+  for (let w = first; w <= last; w++) weeks.push(w);
+  const byWeek = new Map(rows.map(r => [r.week, r]));
+  const median = report.proposal_median || null;
+  const W = Math.max(320, Math.round(node.clientWidth || 900)), H = 300, left = 56, right = median ? MEDIAN_GUTTER : 24, top = 34, bottom = 44;
+  const dataMax = Math.max(...rows.map(r => r.engagement), median || 0, 1);
+  const max = niceCeil(dataMax);
+  const plotW = W - left - right, base = H - bottom;
+  const x = w => weeks.length === 1 ? left + plotW / 2 : left + plotW * (w - first) / (weeks.length - 1);
+  const y = v => top + (base - top) * (1 - v / max);
+  const step = Math.max(1, Math.ceil(weeks.length / Math.max(3, Math.floor(plotW / 56))));
+  const current = Number(activeWeekId);
+  let out = '';
+  [0, .25, .5, .75, 1].forEach(t => {
+    const v = max * t;
+    out += `<line class="gridline" x1="${left}" y1="${y(v)}" x2="${W - right}" y2="${y(v)}"/><text class="axis-label" x="${left - 12}" y="${y(v) + 4}" text-anchor="end">${formatNumber(v, true)}</text>`;
+  });
+  // segmentos contínuos: uma semana sem dado (fora do destaque) interrompe a linha
+  const segs = [];
+  let cur = [];
+  weeks.forEach(w => { const r = byWeek.get(w); if (r) cur.push(r); else if (cur.length) { segs.push(cur); cur = []; } });
+  if (cur.length) segs.push(cur);
+  segs.forEach(seg => {
+    if (seg.length < 2) return;
+    const pts = seg.map(r => `${x(r.week).toFixed(1)},${y(r.engagement).toFixed(1)}`);
+    out += `<path class="annual-area" d="M${x(seg[0].week).toFixed(1)},${base} L${pts.join(' L')} L${x(seg[seg.length - 1].week).toFixed(1)},${base} Z"/><path class="annual-line" d="M${pts.join(' L')}"/>`;
+  });
+  if (median) out += `<line class="median" x1="${left}" y1="${y(median)}" x2="${W - right}" y2="${y(median)}"/>${medianLabel(W - right, y(median), 'Mediana top 5', median)}`;
+  // eixo X (semanas): de step em step, mais a primeira, a última e a selecionada
+  const keep = new Set(weeks.filter(w => w === first || w === last || w === current));
+  weeks.forEach(w => { if ((w - first) % step === 0 && [...keep].every(k => Math.abs(x(w) - x(k)) >= 34)) keep.add(w); });
+  weeks.forEach(w => {
+    if (keep.has(w)) out += `<text class="axis-label${w === current ? ' annual-cur-label' : ''}" x="${x(w)}" y="${H - 14}" text-anchor="middle">${w}ª</text>`;
+  });
+  // rótulos de valor: todos quando são poucos; senão só o pico e a semana selecionada
+  const peak = rows.reduce((m, r) => (r.engagement > m.engagement ? r : m), rows[0]);
+  rows.forEach(r => {
+    const isCur = r.week === current;
+    const label = rows.length <= 8 || r === peak || isCur;
+    out += `<circle class="annual-dot${isCur ? ' current' : ''}" cx="${x(r.week)}" cy="${y(r.engagement)}" r="${isCur ? 6 : 4}"><title>${r.week}ª semana${r.period ? ` (${esc(r.period)})` : ''}: ${esc(formatNumber(r.engagement))} pontos</title></circle>`;
+    if (label) out += `<text class="value-label" x="${x(r.week)}" y="${y(r.engagement) - 12}" text-anchor="${r.week === first && weeks.length > 1 ? 'start' : (r.week === last && weeks.length > 1 ? 'end' : 'middle')}">${esc(formatNumber(r.engagement, true))}</text>`;
+  });
+  node.innerHTML = svgWrap(`${W} ${H}`, out, `Histórico de engajamento de ${p.id}: ${rows.length} semanas com destaque, da ${first}ª à ${last}ª.`);
+}
+
+/* Aplica o modo (semana × total) aos KPIs, ao título e ao gráfico da proposta aberta. */
+function applyProposalMode() {
+  const p = report?.proposals?.[selectedProposal];
+  if (!p) return;
+  const total = proposalTotalMode && isMultiWeek();
+  renderKpis(total ? buildProposalTotalKpis(p) : buildProposalKpis(p), 'proposal-kpis');
+  const title = document.getElementById('proposal-trend-title'), note = document.getElementById('proposal-trend-note');
+  const n = proposalWeeklyRows(p).length;
+  if (title) title.textContent = total ? 'EVOLUÇÃO TOTAL DA PROPOSTA' : 'EVOLUÇÃO NAS ÚLTIMAS 4 SEMANAS';
+  if (note) note.textContent = total ? `${n} ${n === 1 ? 'semana' : 'semanas'} em destaque` : `Semana ${String(report.edition || '').split('ª')[0]} em destaque`;
+  renderProposalTrend(p);
+}
+
 /* Gráfico "Evolução nas últimas 4 semanas" da proposta selecionada. */
 function renderProposalTrend(p) {
+  if (proposalTotalMode && isMultiWeek()) { renderProposalTotalTrend(p); return; }
   const node = document.getElementById('proposal-trend-chart');
   if (!node || !p) return;
   const values = p.history || [];
@@ -995,15 +1089,25 @@ function renderProposalDetail() {
     </div>
     ${p.description && p.description !== p.id ? `<p class="proposal-title-desc">${esc(p.description)}</p>` : ''}
     ${p.author || p.status ? `<p class="proposal-meta">${p.author ? `<span><b>Autor:</b> ${esc(p.author)}</span>` : ''}${p.status ? `<span><b>Situação:</b> ${esc(p.status)}</span>` : ''}</p>` : ''}
+    ${isMultiWeek() ? `<div class="proposal-mode-row"><label class="annual-toggle" for="toggle-evolucao-total">
+      <span class="annual-toggle-text">Evolução Total</span>
+      <input type="checkbox" id="toggle-evolucao-total" role="switch" aria-checked="${proposalTotalMode}"${proposalTotalMode ? ' checked' : ''}>
+      <span class="annual-toggle-track" aria-hidden="true"><span class="annual-toggle-thumb"></span></span>
+    </label></div>` : ''}
     <div class="kpi-grid kpi-grid-compact" id="proposal-kpis"></div>
     <article class="panel prop-block">
-      <div class="panel-heading"><h2 class="panel-title-sm">EVOLUÇÃO NAS ÚLTIMAS 4 SEMANAS</h2><span class="panel-note">Semana ${esc(String(report.edition || '').split('ª')[0])} em destaque</span></div>
+      <div class="panel-heading"><h2 class="panel-title-sm" id="proposal-trend-title">EVOLUÇÃO NAS ÚLTIMAS 4 SEMANAS</h2><span class="panel-note" id="proposal-trend-note">Semana ${esc(String(report.edition || '').split('ª')[0])} em destaque</span></div>
       <div id="proposal-trend-chart" class="chart chart-trend" aria-label="Gráfico de evolução semanal da proposta"></div>
     </article>
     ${channelBlock}${mobilizationBlock}${sayBlock}${emptyNote}`;
 
-  renderKpis(buildProposalKpis(p), 'proposal-kpis');
-  renderProposalTrend(p);
+  const toggle = document.getElementById('toggle-evolucao-total');
+  if (toggle) toggle.addEventListener('change', () => {
+    proposalTotalMode = toggle.checked;
+    toggle.setAttribute('aria-checked', String(proposalTotalMode));
+    applyProposalMode();
+  });
+  applyProposalMode();
   renderProposalCharts(p);
 }
 
