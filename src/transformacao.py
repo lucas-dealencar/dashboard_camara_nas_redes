@@ -156,9 +156,14 @@ def _validar(tabelas: dict[str, pd.DataFrame]) -> None:
         if aba not in tabelas or list(tabelas[aba].columns) != colunas:
             raise ValueError(f"[{aba}] ausente ou com colunas fora do molde")
 
+    # Rede sem linhas na origem (ex.: YouTube sem dados) é tolerada: apenas não aparece no dashboard.
+    vazias = [aba for aba in REDES.values() if tabelas[aba].empty]
+    if vazias:
+        print(f"Aviso: sem linhas na origem para {vazias}; essas redes ficam fora do dashboard.")
+    if len(vazias) == len(REDES):
+        raise ValueError("Nenhuma rede com linhas na planilha de origem")
+
     for aba in REDES.values():
-        if tabelas[aba].empty:
-            raise ValueError(f"[{aba}] sem nenhuma linha na planilha de origem")
         if tabelas[aba].duplicated("semana").any():
             raise ValueError(f"[{aba}] semana duplicada")
 

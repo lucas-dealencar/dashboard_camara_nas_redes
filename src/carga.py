@@ -51,7 +51,7 @@ def _periodo(inicio: pd.Timestamp, fim: pd.Timestamp, curto: bool = False) -> st
 # --------------------------------------------------------------------------- #
 def _totais_por_semana(tabelas: dict[str, pd.DataFrame]) -> pd.DataFrame:
     """Soma das redes por semana: engagement, menções (postagens), autores únicos e alcance."""
-    redes = pd.concat([tabelas[aba] for aba in REDES.values()], ignore_index=True)
+    redes = pd.concat([tabelas[aba] for aba in REDES.values() if not tabelas[aba].empty], ignore_index=True)
     return redes.groupby("semana")[["engagement_score", "mencoes", "autores_unicos", "alcance"]].sum()
 
 

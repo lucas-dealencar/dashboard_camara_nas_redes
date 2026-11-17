@@ -672,7 +672,7 @@ function withShare(list) {
 }
 
 function renderChannelChart(channels = report.channels){
-  const sortedChannels = [...(channels || [])].sort((a, b) => b.value - a.value);
+  const sortedChannels = [...(channels || [])].filter(c => Number(c.value) > 0).sort((a, b) => b.value - a.value);
   
   renderBarChart('channel-chart', withShare(sortedChannels), {
     labels: true, 
