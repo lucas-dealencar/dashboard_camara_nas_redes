@@ -936,56 +936,48 @@ function buildProposalTotalKpis(p) {
   ];
 }
 
-/* Histórico geral da proposta: linha com todas as semanas entre a primeira e a última aparição. */
+/* Histórico geral da proposta: barras semanais em toda a régua de semanas da base (sem barra = fora do destaque). */
 function renderProposalTotalTrend(p) {
   const node = document.getElementById('proposal-trend-chart');
   if (!node || !p) return;
   const rows = proposalWeeklyRows(p);
   if (!rows.length) { node.innerHTML = '<div class="empty-state">Ainda não há histórico para esta proposta.</div>'; return; }
-  const first = rows[0].week, last = rows[rows.length - 1].week;
+  // eixo X = todas as semanas da base (mesma régua para qualquer proposta): semana fora do destaque fica sem barra
+  const allWeeks = Object.keys(rawPayload?.dados_semanas || {}).map(Number).filter(Number.isFinite);
+  const first = Math.min(...allWeeks, rows[0].week), last = Math.max(...allWeeks, rows[rows.length - 1].week);
   const weeks = [];
   for (let w = first; w <= last; w++) weeks.push(w);
   const byWeek = new Map(rows.map(r => [r.week, r]));
   const median = report.proposal_median || null;
-  const W = Math.max(320, Math.round(node.clientWidth || 900)), H = 300, left = 56, right = median ? MEDIAN_GUTTER : 24, top = 34, bottom = 44;
+  const W = Math.max(320, Math.round(node.clientWidth || 900)), H = 300, left = 56, right = median ? MEDIAN_GUTTER : 20, top = 34, bottom = 46;
   const dataMax = Math.max(...rows.map(r => r.engagement), median || 0, 1);
-  const max = niceCeil(dataMax);
+  const max = niceMax(dataMax, 4); // teto com passos redondos (ex.: 0, 1, 2, 3, 4 mi)
   const plotW = W - left - right, base = H - bottom;
-  const x = w => weeks.length === 1 ? left + plotW / 2 : left + plotW * (w - first) / (weeks.length - 1);
+  const colStep = plotW / weeks.length, barW = Math.max(3, Math.min(34, colStep * 0.68));
+  const x = w => left + colStep * (w - first) + colStep / 2;
   const y = v => top + (base - top) * (1 - v / max);
-  const step = Math.max(1, Math.ceil(weeks.length / Math.max(3, Math.floor(plotW / 56))));
   const current = Number(activeWeekId);
   let out = '';
   [0, .25, .5, .75, 1].forEach(t => {
     const v = max * t;
     out += `<line class="gridline" x1="${left}" y1="${y(v)}" x2="${W - right}" y2="${y(v)}"/><text class="axis-label" x="${left - 12}" y="${y(v) + 4}" text-anchor="end">${formatNumber(v, true)}</text>`;
   });
-  // segmentos contínuos: uma semana sem dado (fora do destaque) interrompe a linha
-  const segs = [];
-  let cur = [];
-  weeks.forEach(w => { const r = byWeek.get(w); if (r) cur.push(r); else if (cur.length) { segs.push(cur); cur = []; } });
-  if (cur.length) segs.push(cur);
-  segs.forEach(seg => {
-    if (seg.length < 2) return;
-    const pts = seg.map(r => `${x(r.week).toFixed(1)},${y(r.engagement).toFixed(1)}`);
-    out += `<path class="annual-area" d="M${x(seg[0].week).toFixed(1)},${base} L${pts.join(' L')} L${x(seg[seg.length - 1].week).toFixed(1)},${base} Z"/><path class="annual-line" d="M${pts.join(' L')}"/>`;
-  });
-  if (median) out += `<line class="median" x1="${left}" y1="${y(median)}" x2="${W - right}" y2="${y(median)}"/>${medianLabel(W - right, y(median), 'Mediana top 5', median)}`;
-  // eixo X (semanas): de step em step, mais a primeira, a última e a selecionada
-  const keep = new Set(weeks.filter(w => w === first || w === last || w === current));
-  weeks.forEach(w => { if ((w - first) % step === 0 && [...keep].every(k => Math.abs(x(w) - x(k)) >= 34)) keep.add(w); });
+  // eixo X: de step em step, mais a semana selecionada e a última (sem encostar uns nos outros)
+  const step = Math.max(1, Math.ceil(36 / colStep));
+  const keep = new Set(weeks.filter(w => w === current || w === last));
+  weeks.forEach(w => { if ((w - first) % step === 0 && [...keep].every(k => Math.abs(x(w) - x(k)) >= 30)) keep.add(w); });
   weeks.forEach(w => {
     if (keep.has(w)) out += `<text class="axis-label${w === current ? ' annual-cur-label' : ''}" x="${x(w)}" y="${H - 14}" text-anchor="middle">${w}ª</text>`;
   });
-  // rótulos de valor: todos quando são poucos; senão só o pico e a semana selecionada
+  // barras: semana selecionada destacada; rótulo de valor no pico e na semana selecionada (todas, se forem poucas)
   const peak = rows.reduce((m, r) => (r.engagement > m.engagement ? r : m), rows[0]);
   rows.forEach(r => {
-    const isCur = r.week === current;
-    const label = rows.length <= 8 || r === peak || isCur;
-    out += `<circle class="annual-dot${isCur ? ' current' : ''}" cx="${x(r.week)}" cy="${y(r.engagement)}" r="${isCur ? 6 : 4}"><title>${r.week}ª semana${r.period ? ` (${esc(r.period)})` : ''}: ${esc(formatNumber(r.engagement))} pontos</title></circle>`;
-    if (label) out += `<text class="value-label" x="${x(r.week)}" y="${y(r.engagement) - 12}" text-anchor="${r.week === first && weeks.length > 1 ? 'start' : (r.week === last && weeks.length > 1 ? 'end' : 'middle')}">${esc(formatNumber(r.engagement, true))}</text>`;
+    const isCur = r.week === current, yy = y(r.engagement);
+    out += `<rect class="bar-trend" style="fill:#134e5e;opacity:${isCur ? 1 : 0.55}" x="${x(r.week) - barW / 2}" y="${yy}" width="${barW}" height="${Math.max(1.5, base - yy)}" rx="${Math.min(4, barW / 3)}"><title>${r.week}ª semana${r.period ? ` (${esc(r.period)})` : ''}: ${esc(formatNumber(r.engagement))} pontos</title></rect>`;
+    if (rows.length <= 8 || r === peak || isCur) out += `<text class="value-label" x="${x(r.week)}" y="${yy - 8}" text-anchor="middle">${esc(formatNumber(r.engagement, true))}</text>`;
   });
-  node.innerHTML = svgWrap(`${W} ${H}`, out, `Histórico de engajamento de ${p.id}: ${rows.length} semanas com destaque, da ${first}ª à ${last}ª.`);
+  if (median) out += `<line class="median" x1="${left}" y1="${y(median)}" x2="${W - right}" y2="${y(median)}"/>${medianLabel(W - right, y(median), 'Mediana top 5', median)}`;
+  node.innerHTML = svgWrap(`${W} ${H}`, out, `Histórico de engajamento de ${p.id}: ${rows.length} semanas em destaque entre a ${first}ª e a ${last}ª.`);
 }
 
 /* Aplica o modo (semana × total) aos KPIs, ao título e ao gráfico da proposta aberta. */
