@@ -1506,3 +1506,17 @@ body.impresso-aberto { overflow: hidden; }
 .tbar:hover .tbar-value { opacity: 1; }
 .tbar-hit { cursor: default; }
 
+
+/* ==========================================================================
+   Capa conforme o modelo (posições horizontais, arte e faixa), mantendo altura, fontes e quebras atuais
+   Medidas do modelo (1415 px de largura): selo de 248 a 640, texto a partir de 278, prédio de 950 a 1155
+   ========================================================================== */
+.cover { margin-top: 0; border-top: 0; background: #092e36; }
+@media (min-width: 851px) {
+  /* título e faixa da semana alinhados a 19,6% da largura; selo 27,7% (o texto do selo começa na mesma linha) */
+  .cover-content h1 { left: 19.6%; width: auto; max-width: 75%; }
+  .cover-selo { left: 19.6%; width: 27.7%; }
+  .cover-week { left: 19.6%; }
+  /* arte do Congresso: mesma escala do modelo em relação à largura e prédio entre 67% e 82% da largura */
+  .cover > img.cover-art { inset: auto 9.2% 0 auto; height: 133%; }
+}

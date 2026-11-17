@@ -305,7 +305,14 @@ function updateSlicerUI() {
   document.getElementById('btn-semana-atual').title = `${opt.title} · ${opt.range}`;
   const coverNum = document.getElementById('cover-week-num'), coverRange = document.getElementById('cover-week-range');
   if (coverNum) coverNum.textContent = opt.title.replace(/semana/i, 'Semana');
-  if (coverRange) coverRange.textContent = opt.range ? `Dia ${opt.range}` : '';
+  // capa no formato do modelo: "Dia 09/Nov a 15/Nov"
+  if (coverRange) {
+    const MES_CAPA = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    const m = String(opt.range || '').match(/(\d{1,2})\/(\d{1,2})(?:\/\d{4})?\s*a\s*(\d{1,2})\/(\d{1,2})/);
+    coverRange.textContent = m
+      ? `Dia ${m[1].padStart(2, '0')}/${MES_CAPA[m[2] - 1]} a ${m[3].padStart(2, '0')}/${MES_CAPA[m[4] - 1]}`
+      : (opt.range ? `Dia ${opt.range}` : '');
+  }
   document.getElementById('limpar-semana').disabled = weekOptions.length < 2 || activeWeekId === weekOptions[0].id;
   renderSlicerList(document.getElementById('busca-semana').value);
 }
