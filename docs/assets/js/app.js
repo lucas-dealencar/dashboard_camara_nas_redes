@@ -731,8 +731,10 @@ function renderAnnualTrend() {
   });
   // áreas de captura (maiores que os pontos): tooltip ao passar o mouse e seleção da semana ao clicar
   values.forEach((v, i) => {
-    out += `<circle class="annual-hit" data-week="${v.week}" data-label="${esc(v.label)}" data-value="${v.value}" cx="${x(i)}" cy="${y(v.value)}" r="11"/>`;
+    out += `<circle class="annual-hit" data-i="${i}" data-week="${v.week}" data-label="${esc(v.label)}" data-value="${v.value}" cx="${x(i)}" cy="${y(v.value)}" r="11"/>`;
   });
+  // geometria da linha (em unidades do viewBox) usada para posicionar o tooltip sem cobrir a linha
+  node._annualGeo = { W, pts: values.map((v, i) => ({ x: x(i), y: y(v.value) })) };
   if (current >= 0) {
     const v = values[current];
     const anchor = current === 0 ? 'start' : (current === values.length - 1 ? 'end' : 'middle');
@@ -751,28 +753,72 @@ function wireAnnualInteractions(node) {
   if (node.dataset.wired) return;
   node.dataset.wired = '1';
   const hitOf = e => e.target.closest?.('.annual-hit');
-  const show = (hit, e) => {
-    const nodeBox = node.getBoundingClientRect(), box = hit.getBoundingClientRect();
+  if (getComputedStyle(node).position === 'static') node.style.position = 'relative';
+  const show = hit => {
+    const geo = node._annualGeo, svg = node.querySelector('svg');
+    if (!geo || !svg) return;
     const week = hit.dataset.week, isActive = String(week) === String(activeWeekId);
     const t = node.querySelector('.annual-tip');
     t.innerHTML = `<strong>${esc(week)}ª semana</strong><span>${esc(hit.dataset.label)}</span><span>${esc(formatNumber(Number(hit.dataset.value)))} pontos</span><em>${isActive ? 'Semana selecionada' : 'Clique para ver esta semana'}</em>`;
     t.classList.remove('below');
-    t.style.transform = 'translate(-50%, -100%)'; // a base do balão fica na altura calculada abaixo
-    const half = t.offsetWidth / 2;
-    const cx = box.left + box.width / 2 - nodeBox.left;
-    const left = Math.min(Math.max(cx, half), nodeBox.width - half);
-    // ponto mais alto da linha dentro da largura do balão (inclui os vizinhos, que limitam os segmentos)
-    const pts = [...node.querySelectorAll('.annual-hit')].map(c => { const b = c.getBoundingClientRect(); return { x: b.left + b.width / 2 - nodeBox.left, y: b.top - nodeBox.top }; });
-    let lineTop = box.top - nodeBox.top;
-    pts.forEach((p, i) => {
-      const prev = pts[i - 1], next = pts[i + 1];
-      const inSpan = q => q && q.x >= left - half && q.x <= left + half;
-      if (inSpan(p) || inSpan(prev) || inSpan(next)) lineTop = Math.min(lineTop, p.y);
-    });
-    // sempre acima do cursor e de toda a linha sob o balão (pode avançar sobre o cabeçalho do painel)
-    const cursorY = e ? e.clientY - nodeBox.top : lineTop;
-    t.style.left = `${left}px`;
-    t.style.top = `${Math.min(lineTop, cursorY) - 14}px`;
+    t.style.transform = 'none'; // posição calculada aqui é o canto superior esquerdo do balão
+    const tw = t.offsetWidth, th = t.offsetHeight;
+    // pontos da linha convertidos para pixels relativos ao container
+    const nodeBox = node.getBoundingClientRect(), svgBox = svg.getBoundingClientRect();
+    const k = svgBox.width / geo.W, ox = svgBox.left - nodeBox.left, oy = svgBox.top - nodeBox.top;
+    const pts = geo.pts.map(p => ({ x: ox + p.x * k, y: oy + p.y * k }));
+    const p = pts[Number(hit.dataset.i)];
+    if (!p) return;
+    const G = 14, pad = 6; // distância do ponto; folga mínima entre balão e linha
+    // segmento cruza (ou encosta em) retângulo expandido pela folga?
+    const hitsSeg = (r, a, b) => {
+      const x0 = r.x - pad, x1 = r.x + tw + pad, y0 = r.y - pad, y1 = r.y + th + pad;
+      let t0 = 0, t1 = 1;
+      const dx = b.x - a.x, dy = b.y - a.y;
+      for (const [pp, q] of [[-dx, a.x - x0], [dx, x1 - a.x], [-dy, a.y - y0], [dy, y1 - a.y]]) {
+        if (pp === 0) { if (q < 0) return false; continue; }
+        const r2 = q / pp;
+        if (pp < 0) { if (r2 > t1) return false; if (r2 > t0) t0 = r2; }
+        else { if (r2 < t0) return false; if (r2 < t1) t1 = r2; }
+      }
+      return true;
+    };
+    const overlaps = r => {
+      let n = 0;
+      for (let i = 1; i < pts.length; i++) if (hitsSeg(r, pts[i - 1], pts[i])) n++;
+      return n;
+    };
+    const maxX = nodeBox.width - tw, maxY = nodeBox.height - th;
+    const clampX = v => Math.min(Math.max(v, 0), Math.max(0, maxX));
+    // candidatos ao redor do ponto, em ordem de preferência (acima, laterais, abaixo, diagonais)
+    const cands = [
+      { x: p.x - tw / 2, y: p.y - G - th },
+      { x: p.x + G, y: p.y - th / 2 },
+      { x: p.x - G - tw, y: p.y - th / 2 },
+      { x: p.x - tw / 2, y: p.y + G },
+      { x: p.x + G, y: p.y - G - th },
+      { x: p.x - G - tw, y: p.y - G - th },
+      { x: p.x + G, y: p.y + G },
+      { x: p.x - G - tw, y: p.y + G },
+    ];
+    // se nenhum lado imediato estiver livre, afasta progressivamente para cima/baixo
+    for (let d = G + 20; d <= 260; d += 20) {
+      cands.push({ x: p.x - tw / 2, y: p.y - d - th }, { x: p.x + G, y: p.y - d - th }, { x: p.x - G - tw, y: p.y - d - th }, { x: p.x - tw / 2, y: p.y + d });
+    }
+    let best = null;
+    for (const c of cands) {
+      const r = { x: clampX(c.x), y: c.y };
+      if (r.y < -th * 0.5 || r.y > maxY) continue; // fora do painel
+      // o balão não pode cobrir o próprio ponto após o ajuste horizontal
+      if (p.x > r.x - 4 && p.x < r.x + tw + 4 && p.y > r.y - 4 && p.y < r.y + th + 4) continue;
+      const n = overlaps(r);
+      const dist = Math.hypot(r.x + tw / 2 - p.x, r.y + th / 2 - p.y);
+      if (!best || n < best.n || (n === best.n && n > 0 && dist < best.dist)) best = { ...r, n, dist };
+      if (n === 0) break; // primeiro livre na ordem de preferência (mais próximo)
+    }
+    if (!best) best = { x: clampX(p.x - tw / 2), y: p.y - G - th };
+    t.style.left = `${best.x}px`;
+    t.style.top = `${best.y}px`;
     t.classList.add('show');
   };
   node.addEventListener('pointerover', e => { const h = hitOf(e); if (h) show(h, e); });
