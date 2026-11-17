@@ -1545,3 +1545,32 @@ body.impresso-aberto { overflow: hidden; }
 
 /* Capa: selo, título e faixa da semana começam exatamente na borda esquerda do botão "Destaques" */
 @media (min-width: 851px) { .cover-selo { transform: none; } }
+
+/* ==========================================================================
+   CAPA (nova arte "Wireframe - 6"): imagem única de 1440x314 com selo, título e prédio.
+   Só a faixa "Nª Semana | Dia dd/Mmm a dd/Mmm" é HTML, porque muda a cada semana.
+   Medidas da faixa no modelo (largura 1440): x=233, y=224, altura 34, raio 7, fundo #234D56.
+   ========================================================================== */
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+.cover { position: relative; display: block; width: 100%; aspect-ratio: 1440 / 314; min-height: 0; margin: 0; padding: 0; border: 0; overflow: hidden; background: #092e36; line-height: 0; container-type: inline-size; }
+.cover > img.cover-art { position: absolute; inset: 0; display: block; width: 100%; height: 100%; max-width: none; object-fit: fill; object-position: center; clip-path: none; transform: none; }
+.cover > .cover-content { position: absolute; inset: 0; display: block; padding: 0; gap: 0; pointer-events: none; }
+.cover > .cover-content > .cover-week {
+  position: absolute; left: 16.1806%; top: 71.3376%; width: auto; max-width: none; height: 10.828%; margin: 0; padding: 0 .76cqw;
+  display: inline-flex; align-items: center; gap: .55cqw; box-sizing: border-box;
+  border-radius: .486cqw; background: #234d56; color: #fff; white-space: nowrap; line-height: 1;
+  font-family: "DM Sans", Manrope, Arial, sans-serif; font-size: 1.2cqw; letter-spacing: -.02em; pointer-events: auto;
+}
+.cover > .cover-content > .cover-week strong { font-weight: 700; }
+.cover > .cover-content > .cover-week > span:last-child { font-weight: 400; }
+.cover > .cover-content > .cover-week .cover-week-sep { width: .14cqw; height: 1.35cqw; margin: 0; background: #fff; border-radius: 1px; }
+
+/* celular: a arte inteira ficaria ilegível; mostra o lado esquerdo (selo e título) e a faixa da semana vai abaixo */
+@media (max-width: 850px) {
+  .cover { display: flex !important; flex-direction: column !important; aspect-ratio: auto !important; container-type: normal; background: #092e36; }
+  .cover > img.cover-art { position: relative; inset: auto; width: 100%; height: 138px; object-fit: cover; object-position: left center; }
+  .cover > .cover-content { position: static; padding: 0 20px 16px; }
+  .cover > .cover-content > .cover-week { position: static; height: auto; padding: 8px 12px; border-radius: 7px; font-size: 13px; gap: 8px; }
+  .cover > .cover-content > .cover-week .cover-week-sep { width: 1.5px; height: 1.3em; }
+}
