@@ -250,7 +250,7 @@ def _para_percentual(valor) -> float:
 
     Formatos aceitos, valor a valor:
     - número INTEIRO > 1 -> vírgula decimal perdida na digitação: 208 -> 20.8,
-      78 -> 7.8, 4324 -> 43.24 (divide por 10 e segue dividindo enquanto passar de 100)
+      78 -> 7.8, 9 -> 0.9 (e NÃO 90%), 4324 -> 43.24 (divide por 10 e segue dividindo enquanto passar de 100)
       (a planilha grava '20,8' como 208; conferido contra ocorrências/base:
       198 de 952 = 20,8%, 586 de 708 = 82,8%, 8 de 102 = 7,8%)
     - número ou texto SEM '%' e <= 1 -> fração:  0.456 / '0.456' / '0,02' -> 45.6 / 2.0
@@ -264,14 +264,15 @@ def _para_percentual(valor) -> float:
         return float("nan")
 
     if isinstance(valor, (int, float)) and not isinstance(valor, bool):
-        numero, tinha_simbolo = float(valor), False
+        numero, tinha_simbolo, reescalado = float(valor), False, False
         if numero > 1 and numero.is_integer():
+            reescalado = True
             numero /= 10
             while numero > 100:  # 4324 -> 43.24 (duas casas perdidas)
                 numero /= 10
     else:
         texto = str(valor).strip().replace(" ", "").replace(" ", "")
-        tinha_simbolo = "%" in texto
+        tinha_simbolo, reescalado = "%" in texto, False
         texto = texto.replace("%", "")
         if not texto:
             return float("nan")
@@ -284,11 +285,13 @@ def _para_percentual(valor) -> float:
             raise ValueError(f"Percentual inválido na planilha qualitativa: {valor!r}") from erro
         # '249' em texto = mesma vírgula perdida do número inteiro 249 -> 24.9
         if not tinha_simbolo and inteiro_sem_virgula and numero > 1:
+            reescalado = True
             numero /= 10
             while numero > 100:
                 numero /= 10
 
-    if not tinha_simbolo and 0 <= numero <= 1:
+    # só vira fração se NÃO passou pelo reescalonamento: '9' (= 9,0%) -> 0.9 não pode virar 90%
+    if not tinha_simbolo and not reescalado and 0 <= numero <= 1:
         numero *= 100
     if not 0 <= numero <= 100:
         print(f"Aviso: percentual fora de 0-100% na planilha qualitativa: {valor!r} -> {numero}")

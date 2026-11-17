@@ -1487,3 +1487,6 @@ body.impresso-aberto { overflow: hidden; }
 .impresso-topo { flex: none; }
 .impresso-frame { flex: 1 1 0; min-height: 0; height: 0; }
 @media (max-width: 640px) { .impresso-modal { padding: 0; } }
+
+/* Barras horizontais sem cor própria (argumentos, categorias, propostas): verde-petróleo do painel; canais mantêm a cor inline */
+.chart .bar { fill: #134e5e; }
