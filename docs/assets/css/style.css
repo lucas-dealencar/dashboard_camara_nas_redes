@@ -1506,5 +1506,3 @@ body.impresso-aberto { overflow: hidden; }
 .tbar:hover .tbar-value { opacity: 1; }
 .tbar-hit { cursor: default; }
 
-/* Evolução total: blocos que dependem da semana (Canais de Destaque, O que Dizem) ficam ocultos */
-.proposal-detail.is-total .prop-week-only { display: none; }

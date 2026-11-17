@@ -883,6 +883,7 @@ function renderColumnChart(nodeId, items, { max, ticks, tickFormat, colorFor, ar
 
 function renderProposalCharts(p) {
   if (!p) return;
+  p = proposalView(p); // modo "Evolução Total": canais e argumentos somados
   const channels = (p.channels || []).filter(c => c.value > 0).sort((a, b) => b.value - a.value);
   if (channels.length) {
     const max = niceCeil(channels[0].value);
@@ -992,9 +993,50 @@ function applyProposalMode() {
   const n = proposalWeeklyRows(p).length;
   if (title) title.textContent = total ? 'EVOLUÇÃO TOTAL DA PROPOSTA' : 'EVOLUÇÃO NAS ÚLTIMAS 4 SEMANAS';
   if (note) note.textContent = total ? `${n} ${n === 1 ? 'semana' : 'semanas'} em destaque` : `Semana ${String(report.edition || '').split('ª')[0]} em destaque`;
-  document.getElementById('proposal-detail')?.classList.toggle('is-total', total);
   renderProposalTrend(p);
-  if (!total) renderProposalCharts(p); // blocos por semana voltam a aparecer: redesenha com a largura real
+}
+
+/* Canais e argumentos somados em todas as semanas em que a proposta aparece.
+   Argumentos: ocorrências somadas por nome; % = ocorrências / (posts + comentários analisados) somados.
+   Descrição e postagem representativa vêm da semana mais recente em que o argumento apareceu. */
+function proposalAggregate(p) {
+  const channels = new Map(), args = new Map();
+  let posts = 0, comments = 0, analyzed = 0, weeksCount = 0;
+  Object.entries(rawPayload?.dados_semanas || {}).sort((a, b) => Number(a[0]) - Number(b[0])).forEach(([, data]) => {
+    const hit = (data.proposals || []).find(q => q.id === p.id);
+    if (!hit) return;
+    weeksCount++;
+    (hit.channels || []).forEach(c => channels.set(c.name, (channels.get(c.name) || 0) + (Number(c.value) || 0)));
+    const an = hit.analysis || {};
+    posts += Number(an.posts) || 0;
+    comments += Number(an.comments) || 0;
+    if ((hit.arguments || []).length) analyzed += (Number(an.posts) || 0) + (Number(an.comments) || 0);
+    (hit.arguments || []).forEach(g => {
+      const key = normText(g.name).trim();
+      const cur = args.get(key) || { name: g.name, count: 0, description: '', sample: '' };
+      cur.count += Number(g.count) || 0;
+      if (g.description) cur.description = g.description;
+      if (g.sample) cur.sample = g.sample;
+      args.set(key, cur);
+    });
+  });
+  const totalCount = [...args.values()].reduce((s, g) => s + g.count, 0);
+  const base = analyzed || totalCount;
+  const argumentsList = [...args.values()]
+    .map(g => ({ ...g, share: base ? Math.min(100, g.count / base * 100) : 0 }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
+  return {
+    channels: [...channels].map(([name, value]) => ({ name, value })),
+    arguments: argumentsList,
+    analysis: { posts, comments },
+    weeksCount
+  };
+}
+
+/* Dados da proposta no modo atual (semana ou total). */
+function proposalView(p) {
+  return proposalTotalMode && isMultiWeek() && p ? { ...p, ...proposalAggregate(p) } : p;
 }
 
 /* Gráfico "Evolução nas últimas 4 semanas" da proposta selecionada. */
@@ -1042,11 +1084,14 @@ function renderProposalDetail() {
   const p = report.proposals[selectedProposal];
   if (!p) { host.innerHTML = '<div class="empty-state">Selecione uma proposta para ver o detalhamento.</div>'; return; }
 
-  const channels = (p.channels || []).filter(c => c.value > 0).sort((a, b) => b.value - a.value);
-  const args = p.arguments || [];
+  // com "Evolução Total" ligado, canais e argumentos somam todas as semanas da proposta
+  const v = proposalView(p);
+  const totalNote = v.weeksCount ? ` · soma de ${v.weeksCount} ${v.weeksCount === 1 ? 'semana' : 'semanas'}` : '';
+  const channels = (v.channels || []).filter(c => c.value > 0).sort((a, b) => b.value - a.value);
+  const args = v.arguments || [];
 
   const channelBlock = channels.length ? `
-    <article class="panel prop-block prop-week-only">
+    <article class="panel prop-block">
       <h3>Canais de Destaque</h3>
       <p class="block-copy">${esc(channelNarrative(channels))}</p>
       <div id="proposal-channel-chart" class="chart col-chart" aria-label="Gráfico de engajamento por canal da proposta"></div>
@@ -1057,13 +1102,13 @@ function renderProposalDetail() {
 
   let sayBlock = '';
   if (args.length) {
-    const a = p.analysis || {};
+    const a = v.analysis || {};
     const counts = [];
     if (a.posts) counts.push(countLabel(a.posts, 'post', 'posts'));
     if (a.comments) counts.push(countLabel(a.comments, 'comentário', 'comentários'));
-    const chip = [counts.join(' + '), 'Análise das postagens por IA com supervisão humana'].filter(Boolean).join(' | ');
+    const chip = [counts.join(' + ') + totalNote, 'Análise das postagens por IA com supervisão humana'].filter(Boolean).join(' | ');
     sayBlock = `
-    <article class="panel prop-block prop-week-only">
+    <article class="panel prop-block">
       <div class="say-head"><h3>O que Dizem</h3><span class="say-chip">${esc(chip)}</span></div>
       <div id="proposal-args-chart" class="chart col-chart" aria-label="Gráfico dos argumentos mais citados"></div>
       ${args.map((arg, i) => `
@@ -1100,8 +1145,8 @@ function renderProposalDetail() {
   const toggle = document.getElementById('toggle-evolucao-total');
   if (toggle) toggle.addEventListener('change', () => {
     proposalTotalMode = toggle.checked;
-    toggle.setAttribute('aria-checked', String(proposalTotalMode));
-    applyProposalMode();
+    renderProposalDetail(); // redesenha tudo: métricas, evolução, canais e argumentos no novo modo
+    document.getElementById('toggle-evolucao-total')?.focus();
   });
   applyProposalMode();
   renderProposalCharts(p);
